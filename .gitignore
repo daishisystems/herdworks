@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Xcode user state
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+
+# Build products
+DerivedData/
+build/
+*.ipa
+*.xcarchive
+
+# SwiftPM
+.swiftpm/
+Packages/
+Package.resolved
+
+# Logs & misc
+*.log
+
+# Xcode previews cache
+*.preview-thumbnails
+*.preview-thumbnails/**
+
+# Optional: keep schemes, ignore user schemes only
+# (We keep shared schemes for CI.)
+# xcshareddata/WorkspaceSettings.xcsettings

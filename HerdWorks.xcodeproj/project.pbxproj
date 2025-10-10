@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EA71BDB72E993D900084FA11 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = EA71BDB62E993D850084FA11 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		EA71BD5C2E98FB510084FA11 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		EA71BD4E2E98FB500084FA11 /* HerdWorks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HerdWorks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA71BD5B2E98FB510084FA11 /* HerdWorksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HerdWorksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA71BD652E98FB510084FA11 /* HerdWorksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HerdWorksUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA71BDB62E993D850084FA11 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -93,6 +98,7 @@
 		EA71BD452E98FB500084FA11 = {
 			isa = PBXGroup;
 			children = (
+				EA71BDB62E993D850084FA11 /* README.md */,
 				EA71BD902E9925980084FA11 /* Config */,
 				EA71BD502E98FB500084FA11 /* HerdWorks */,
 				EA71BD5E2E98FB510084FA11 /* HerdWorksTests */,
@@ -256,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA71BDB72E993D900084FA11 /* README.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
