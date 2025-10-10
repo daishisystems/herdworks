@@ -1,9 +1,5 @@
-//
-//  Dev.xcconfig
-//  HerdWorks
-//
-//  Created by Paul Mooney on 2025/10/10.
-//
-
-// Configuration settings file format documentation can be found at:
-// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+#include "Base.xcconfig"
+PRODUCT_BUNDLE_IDENTIFIER = com.herdworks.dev
+APP_DISPLAY_NAME = HerdWorks Dev
+FIREBASE_PLIST_NAME = GoogleService-Info-Dev
+APP_ENV = DEV
