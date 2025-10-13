@@ -1,17 +1,45 @@
-//
-//  HerdWorksApp.swift
-//  HerdWorks
-//
-//  Created by Paul Mooney on 2025/10/10.
-//
-
 import SwiftUI
+import FirebaseCore
+import FirebaseAuth
 
 @main
 struct HerdWorksApp: App {
+    init() {
+        configureFirebase()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView() // Temporary placeholder; will become RootView()
         }
+    }
+}
+
+// MARK: - Firebase Configuration
+extension HerdWorksApp {
+    func configureFirebase() {
+        // Pick correct GoogleService-Info plist based on Info.plist key
+        let plistName = Bundle.main.object(forInfoDictionaryKey: "FIREBASE_PLIST_NAME") as? String
+            ?? "GoogleService-Info-Prod"
+        guard let path = Bundle.main.path(forResource: plistName, ofType: "plist"),
+              let options = FirebaseOptions(contentsOfFile: path) else {
+            fatalError("❌ Missing Firebase plist: \(plistName).plist")
+        }
+
+        print("Bundle.main.bundleIdentifier =", Bundle.main.bundleIdentifier ?? "nil")
+        print("Firebase options bundleID =", String(describing: options.bundleID))
+
+        FirebaseApp.configure(options: options)
+
+        // Use Auth emulator if flag is present
+        let useEmu = ProcessInfo.processInfo.arguments.contains("USE_AUTH_EMULATOR")
+        if useEmu {
+            Auth.auth().useEmulator(withHost: "localhost", port: 9099)
+            print("⚙️ Using Firebase Auth Emulator at localhost:9099")
+        }
+
+        #if DEBUG
+        print("✅ Firebase initialized for \(plistName)")
+        #endif
     }
 }
