@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		EAAA20662E9D3248005DBB11 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EAAA20652E9D3248005DBB11 /* FirebaseAuth */; };
 		EAAA20682E9D3248005DBB11 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = EAAA20672E9D3248005DBB11 /* FirebaseCore */; };
+		EAAA20842E9E5484005DBB11 /* firebase.json in Resources */ = {isa = PBXBuildFile; fileRef = EAAA20832E9E547C005DBB11 /* firebase.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +34,7 @@
 		EA71BD5B2E98FB510084FA11 /* HerdWorksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HerdWorksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA71BD652E98FB510084FA11 /* HerdWorksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HerdWorksUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA71BDB62E993D850084FA11 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = README.md; sourceTree = "<group>"; };
+		EAAA20832E9E547C005DBB11 /* firebase.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = firebase.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -101,6 +103,7 @@
 		EA71BD452E98FB500084FA11 = {
 			isa = PBXGroup;
 			children = (
+				EAAA20832E9E547C005DBB11 /* firebase.json */,
 				EA71BDB62E993D850084FA11 /* README.md */,
 				EA71BD902E9925980084FA11 /* Config */,
 				EA71BD502E98FB500084FA11 /* HerdWorks */,
@@ -254,6 +257,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAAA20842E9E5484005DBB11 /* firebase.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

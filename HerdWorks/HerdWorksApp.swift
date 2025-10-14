@@ -31,12 +31,19 @@ extension HerdWorksApp {
 
         FirebaseApp.configure(options: options)
 
-        // Use Auth emulator if flag is present
+        #if DEBUG
         let useEmu = ProcessInfo.processInfo.arguments.contains("USE_AUTH_EMULATOR")
         if useEmu {
-            Auth.auth().useEmulator(withHost: "localhost", port: 9099)
-            print("⚙️ Using Firebase Auth Emulator at localhost:9099")
+            #if targetEnvironment(simulator)
+            // Simulator connects to localhost
+            Auth.auth().useEmulator(withHost: "127.0.0.1", port: 9099)
+            #else
+            // On-device: replace with your Mac's LAN IP that's reachable from the device
+            Auth.auth().useEmulator(withHost: "192.168.15.225", port: 9099)
+            #endif
+            print("⚙️ Using Firebase Auth Emulator")
         }
+        #endif
 
         #if DEBUG
         print("✅ Firebase initialized for \(plistName)")
