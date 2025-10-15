@@ -4,28 +4,12 @@ import FirebaseAuth
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        configureFirebase()
         return true
     }
-}
-
-@main
-struct HerdWorksApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
-    init() {
-        configureFirebase()
-    }
-
-    var body: some Scene {
-        WindowGroup {
-            RootView() // Temporary placeholder; will become RootView()
-        }
-    }
-}
-
-// MARK: - Firebase Configuration
-extension HerdWorksApp {
-    func configureFirebase() {
+    
+    // MARK: - Firebase Configuration
+    private func configureFirebase() {
         // Pick correct GoogleService-Info plist based on Info.plist key
         let plistName = Bundle.main.object(forInfoDictionaryKey: "FIREBASE_PLIST_NAME") as? String
             ?? "GoogleService-Info-Prod"
@@ -48,3 +32,16 @@ extension HerdWorksApp {
         #endif
     }
 }
+
+@main
+struct HerdWorksApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
+    var body: some Scene {
+        WindowGroup {
+            RootView() // Temporary placeholder; will become RootView()
+        }
+    }
+}
+
+
