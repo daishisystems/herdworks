@@ -41,6 +41,22 @@ struct RootView: View {
                 // Still log initial state on first run
                 print("ℹ️ Auth state: \(isSignedIn ? "signed in" : "signed out")")
             }
+            // Runtime verification of Info.plist orientation keys (per device idiom)
+            if let info = Bundle.main.infoDictionary {
+                let idiom = UIDevice.current.userInterfaceIdiom
+                if idiom == .phone {
+                    let iphoneOrientations = info["UISupportedInterfaceOrientations"] as? [String] ?? []
+                    print("iPhone orientations: \(iphoneOrientations)")
+                } else if idiom == .pad {
+                    let ipadOrientations = info["UISupportedInterfaceOrientations~ipad"] as? [String] ?? []
+                    print("iPad orientations: \(ipadOrientations)")
+                } else {
+                    let orientations = info["UISupportedInterfaceOrientations"] as? [String] ?? []
+                    print("Orientations (idiom: \(idiom)): \(orientations)")
+                }
+            } else {
+                print("Unable to read Bundle.main.infoDictionary")
+            }
         }
     }
 
