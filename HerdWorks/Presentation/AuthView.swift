@@ -84,6 +84,7 @@ struct AuthView: View {
             }
         }
         .padding()
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .alert("Password Reset Sent", isPresented: $showPasswordResetSuccess) {
             Button("OK", role: .cancel) { }
         } message: {
