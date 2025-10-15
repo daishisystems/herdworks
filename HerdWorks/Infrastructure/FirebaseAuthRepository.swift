@@ -29,7 +29,17 @@ public final class FirebaseAuthRepository: AuthRepository {
     }
 
     public func sendPasswordReset(email: String) async throws {
-        try await Auth.auth().sendPasswordReset(withEmail: email)
+        print("🔄 Attempting to send password reset to: \(email)")
+        do {
+            try await Auth.auth().sendPasswordReset(withEmail: email)
+            print("✅ Password reset email sent successfully to: \(email)")
+        } catch let error as NSError {
+            print("❌ Password reset failed with error: \(error)")
+            print("   Error code: \(error.code)")
+            print("   Error domain: \(error.domain)")
+            print("   Error description: \(error.localizedDescription)")
+            throw error
+        }
     }
 
     public func authState() -> AsyncStream<AuthUser?> {

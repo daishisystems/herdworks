@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AuthView: View {
     @ObservedObject var vm: AuthViewModel
+    @State private var showPasswordResetSuccess = false
 
     var body: some View {
         VStack(spacing: 16) {
@@ -43,9 +44,26 @@ struct AuthView: View {
             .disabled(vm.isBusy || vm.email.isEmpty || vm.password.isEmpty)
 
             Button("Forgot password?") {
-                Task { await vm.resetPassword() }
+                Task { 
+                    print("🔄 User tapped forgot password for email: \(vm.email)")
+                    await vm.resetPassword()
+                    if vm.errorMessage == nil {
+                        print("✅ Password reset completed without error")
+                        showPasswordResetSuccess = true
+                    } else {
+                        print("❌ Password reset failed with error: \(vm.errorMessage ?? "unknown")")
+                    }
+                }
             }
             .disabled(vm.isBusy || vm.email.isEmpty)
+            .foregroundColor(vm.email.isEmpty ? .gray : .blue)
+            
+            if vm.email.isEmpty {
+                Text("Enter your email address above to reset password")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
 
             if let err = vm.errorMessage {
                 Text(err)
@@ -66,6 +84,11 @@ struct AuthView: View {
             }
         }
         .padding()
+        .alert("Password Reset Sent", isPresented: $showPasswordResetSuccess) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("A password reset link has been sent to \(vm.email). Check your email and follow the instructions to reset your password.")
+        }
     }
 }
 
