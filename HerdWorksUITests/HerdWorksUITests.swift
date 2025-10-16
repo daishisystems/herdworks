@@ -28,7 +28,12 @@ final class HerdWorksUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // Wait for the app to be ready
+        XCTAssert(app.waitForExistence(timeout: 5))
+        
+        // Verify the app launched successfully by checking if the main interface exists
+        // Add specific UI element checks based on your app's interface
+        // Example: XCTAssert(app.buttons["SomeButton"].exists)
     }
 
     @MainActor
