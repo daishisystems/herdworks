@@ -240,6 +240,66 @@ struct UserProfileTests {
         #expect(profileWithIncompleteAddress.isProfileComplete == false)
     }
     
+    @Test("UserProfile should detect incomplete profiles for each empty field")
+    @MainActor func userProfileShouldDetectAllIncompleteFields() {
+        let completeAddress = Address(
+            street: "123 Complete St",
+            city: "Complete City",
+            state: "TX",
+            zipCode: "12345",
+            country: "USA"
+        )
+        
+        // Test empty lastName
+        let emptyLastName = UserProfile(
+            userId: "test1", firstName: "John", lastName: "", 
+            email: "john@test.com", phoneNumber: "555-0001", 
+            personalAddress: completeAddress
+        )
+        #expect(emptyLastName.isProfileComplete == false)
+        
+        // Test empty email
+        let emptyEmail = UserProfile(
+            userId: "test2", firstName: "John", lastName: "Doe", 
+            email: "", phoneNumber: "555-0002", 
+            personalAddress: completeAddress
+        )
+        #expect(emptyEmail.isProfileComplete == false)
+        
+        // Test empty phone
+        let emptyPhone = UserProfile(
+            userId: "test3", firstName: "John", lastName: "Doe", 
+            email: "john@test.com", phoneNumber: "", 
+            personalAddress: completeAddress
+        )
+        #expect(emptyPhone.isProfileComplete == false)
+        
+        // Test each address field individually
+        let emptyCity = Address(street: "123 St", city: "", state: "TX", zipCode: "12345", country: "USA")
+        let emptyCityProfile = UserProfile(
+            userId: "test4", firstName: "John", lastName: "Doe", 
+            email: "john@test.com", phoneNumber: "555-0004", 
+            personalAddress: emptyCity
+        )
+        #expect(emptyCityProfile.isProfileComplete == false)
+        
+        let emptyZipCode = Address(street: "123 St", city: "City", state: "TX", zipCode: "", country: "USA")
+        let emptyZipProfile = UserProfile(
+            userId: "test5", firstName: "John", lastName: "Doe", 
+            email: "john@test.com", phoneNumber: "555-0005", 
+            personalAddress: emptyZipCode
+        )
+        #expect(emptyZipProfile.isProfileComplete == false)
+        
+        let emptyCountry = Address(street: "123 St", city: "City", state: "TX", zipCode: "12345", country: "")
+        let emptyCountryProfile = UserProfile(
+            userId: "test6", firstName: "John", lastName: "Doe", 
+            email: "john@test.com", phoneNumber: "555-0006", 
+            personalAddress: emptyCountry
+        )
+        #expect(emptyCountryProfile.isProfileComplete == false)
+    }
+    
     @Test("UserProfile should include timestamps for audit trail")  
     @MainActor func userProfileShouldIncludeTimestamps() {
         // Arrange
@@ -312,5 +372,45 @@ struct UserProfileTests {
         #expect(profile.email == "updated@test.com") 
         #expect(profile.phoneNumber == "555-0002")
         #expect(profile.updatedAt > originalUpdatedAt) // Should be newer
+    }
+    
+    @Test("UserProfile should preserve original createdAt when using updatedProfile")
+    @MainActor func userProfileShouldPreserveCreatedAt() async throws {
+        // Arrange
+        let address = Address(
+            street: "123 Original St",
+            city: "Original City",
+            state: "TX",
+            zipCode: "12345",
+            country: "USA"
+        )
+        
+        let original = UserProfile(
+            userId: "preserve123",
+            firstName: "Original",
+            lastName: "User",
+            email: "original@test.com",
+            phoneNumber: "555-0001",
+            personalAddress: address
+        )
+        
+        let originalCreatedAt = original.createdAt
+        let originalUpdatedAt = original.updatedAt
+        
+        // Act - Add a small delay to ensure timestamp difference, then update
+        try await Task.sleep(nanoseconds: 1_000_000) // 1ms delay
+        
+        let updated = original.updatedProfile(
+            firstName: "Updated",
+            lastName: "User",
+            email: "updated@test.com",
+            phoneNumber: "555-0002",
+            personalAddress: address
+        )
+        
+        // Assert - CreatedAt should remain the same, updatedAt should be newer
+        #expect(updated.createdAt == originalCreatedAt)
+        #expect(updated.updatedAt > originalUpdatedAt)
+        #expect(updated.userId == original.userId) // userId should be preserved
     }
 }
