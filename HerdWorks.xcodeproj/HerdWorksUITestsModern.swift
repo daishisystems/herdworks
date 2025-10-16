@@ -18,8 +18,11 @@ struct HerdWorksUITestsModern {
         app.launch()
         
         // Wait for the app to be ready
-        let appExists = app.waitForExistence(timeout: 5)
-        #expect(appExists, "App should launch within 5 seconds")
+        let appExists = app.waitForExistence(timeout: 10) // Increased timeout for device
+        #expect(appExists, "App should launch within 10 seconds")
+        
+        // Additional check for app state on physical device
+        #expect(app.state == .runningForeground, "App should be running in foreground")
     }
     
     @Test("Launch performance benchmark")
