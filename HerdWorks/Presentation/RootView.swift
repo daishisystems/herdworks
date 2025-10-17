@@ -7,12 +7,13 @@
 
 import SwiftUI
 import FirebaseAuth
+import Combine
 
 @MainActor
 struct RootView: View {
     @State private var isSignedIn: Bool = (Auth.auth().currentUser != nil)
     @StateObject private var vm = AuthViewModel(repo: FirebaseAuthRepository())
-    @State private var authListenerHandle: AuthStateDidChangeListenerHandle?
+    @EnvironmentObject private var profileGate: ProfileGate
 
     var body: some View {
         Group {
@@ -26,6 +27,9 @@ struct RootView: View {
         .onDisappear {
             stopAuthStateListener()
         }
+        .sheet(isPresented: $profileGate.shouldPresentProfileEdit) {
+            ProfileEditView()
+        }
     }
 
     private func startAuthStateListener() {
@@ -37,6 +41,11 @@ struct RootView: View {
                 withAnimation {
                     isSignedIn = nowSignedIn
                 }
+                if nowSignedIn, let uid = user?.uid {
+                    Task { await profileGate.evaluate(for: uid) }
+                } else {
+                    profileGate.shouldPresentProfileEdit = false
+                }
             }
         }
     }
@@ -45,8 +54,11 @@ struct RootView: View {
         if let handle = authListenerHandle {
             Auth.auth().removeStateDidChangeListener(handle)
             authListenerHandle = nil
+            profileGate.shouldPresentProfileEdit = false
         }
     }
+    
+    @State private var authListenerHandle: AuthStateDidChangeListenerHandle?
 }
 
 

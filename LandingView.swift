@@ -9,6 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct LandingView: View {
+    @EnvironmentObject private var profileGate: ProfileGate
     @State private var selectedTab: Tab = .home
     
     enum Tab: String, CaseIterable {
@@ -51,6 +52,8 @@ struct LandingView: View {
 
 // MARK: - Home Tab
 private struct HomeTab: View {
+    @EnvironmentObject private var profileGate: ProfileGate
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -85,31 +88,51 @@ private struct HomeTab: View {
                         
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                             QuickActionCard(
+                                title: profileGate.shouldPresentProfileEdit ? "Complete Profile" : "Edit Profile",
+                                subtitle: profileGate.shouldPresentProfileEdit ? "Finish setup to continue" : "Update your details",
+                                systemImage: "person.crop.circle",
+                                color: .blue,
+                                action: { profileGate.shouldPresentProfileEdit = true }
+                            )
+                            
+                            QuickActionCard(
                                 title: "Get Started",
                                 subtitle: "Begin your journey",
                                 systemImage: "play.circle",
-                                color: .blue
+                                color: .blue,
+                                action: {
+                                    // TODO: Add action for each quick action
+                                }
                             )
                             
                             QuickActionCard(
                                 title: "Learn More",
                                 subtitle: "Discover features",
                                 systemImage: "book.circle",
-                                color: .green
+                                color: .green,
+                                action: {
+                                    // TODO: Add action for each quick action
+                                }
                             )
                             
                             QuickActionCard(
                                 title: "Settings",
                                 subtitle: "Customize your experience",
                                 systemImage: "gearshape.circle",
-                                color: .orange
+                                color: .orange,
+                                action: {
+                                    // TODO: Add action for each quick action
+                                }
                             )
                             
                             QuickActionCard(
                                 title: "Support",
                                 subtitle: "Get help when needed",
                                 systemImage: "questionmark.circle",
-                                color: .purple
+                                color: .purple,
+                                action: {
+                                    // TODO: Add action for each quick action
+                                }
                             )
                         }
                         .padding(.horizontal)
@@ -159,6 +182,7 @@ private struct ExploreTab: View {
 
 // MARK: - Profile Tab
 private struct ProfileTab: View {
+    @EnvironmentObject private var profileGate: ProfileGate
     @State private var showingSignOutAlert = false
     
     private var currentUserEmail: String {
@@ -209,6 +233,12 @@ private struct ProfileTab: View {
                         title: "Privacy & Security",
                         systemImage: "shield",
                         action: { /* TODO: Navigate to privacy settings */ }
+                    )
+                    
+                    SettingsRow(
+                        title: "Edit Profile",
+                        systemImage: "pencil",
+                        action: { profileGate.shouldPresentProfileEdit = true }
                     )
                 }
                 
@@ -266,11 +296,10 @@ private struct QuickActionCard: View {
     let subtitle: String
     let systemImage: String
     let color: Color
+    let action: () -> Void
     
     var body: some View {
-        Button(action: {
-            // TODO: Add action for each quick action
-        }) {
+        Button(action: action) {
             VStack(spacing: 12) {
                 Image(systemName: systemImage)
                     .font(.title2)

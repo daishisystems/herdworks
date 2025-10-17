@@ -1,6 +1,7 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseAuth
+import Combine
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
@@ -37,11 +38,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct HerdWorksApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    @StateObject private var profileGate = ProfileGate(store: InMemoryUserProfileStore())
+
     var body: some Scene {
         WindowGroup {
-            RootView() // Temporary placeholder; will become RootView()
+            RootView()
+                .environmentObject(profileGate)
         }
     }
 }
-
-
