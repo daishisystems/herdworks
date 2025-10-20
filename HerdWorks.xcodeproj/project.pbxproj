@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA83E6B92EA6259700475F1E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EA83E6B82EA6259700475F1E /* FirebaseFirestore */; };
 		EA8DC9322EA12AE70004523C /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8DC9312EA12AE70004523C /* ProfileEditView.swift */; };
 		EAAA20662E9D3248005DBB11 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EAAA20652E9D3248005DBB11 /* FirebaseAuth */; };
 		EAAA20682E9D3248005DBB11 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = EAAA20672E9D3248005DBB11 /* FirebaseCore */; };
@@ -84,6 +85,7 @@
 			files = (
 				EAAA20682E9D3248005DBB11 /* FirebaseCore in Frameworks */,
 				EAAA20662E9D3248005DBB11 /* FirebaseAuth in Frameworks */,
+				EA83E6B92EA6259700475F1E /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +162,7 @@
 			packageProductDependencies = (
 				EAAA20652E9D3248005DBB11 /* FirebaseAuth */,
 				EAAA20672E9D3248005DBB11 /* FirebaseCore */,
+				EA83E6B82EA6259700475F1E /* FirebaseFirestore */,
 			);
 			productName = HerdWorks;
 			productReference = EA71BD4E2E98FB500084FA11 /* HerdWorks.app */;
@@ -1548,6 +1551,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		EA83E6B82EA6259700475F1E /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAAA205B2E9D1D28005DBB11 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
 		EAAA20652E9D3248005DBB11 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EAAA205B2E9D1D28005DBB11 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

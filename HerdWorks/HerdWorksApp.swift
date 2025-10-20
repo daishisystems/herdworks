@@ -1,6 +1,7 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseAuth
+import FirebaseFirestore
 import Combine
 
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -27,9 +28,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         print("Firebase options bundleID =", String(describing: options.bundleID))
 
         FirebaseApp.configure(options: options)
+        
+        // ✅ MODERN API: Enable offline persistence for field users
+        let settings = FirestoreSettings()
+        settings.cacheSettings = PersistentCacheSettings(sizeBytes: NSNumber(value: FirestoreCacheSizeUnlimited))
+        
+        let db = Firestore.firestore()
+        db.settings = settings
 
         #if DEBUG
         print("✅ Firebase initialized for \(plistName)")
+        print("✅ Firestore offline persistence enabled with unlimited cache")
         #endif
     }
 }
