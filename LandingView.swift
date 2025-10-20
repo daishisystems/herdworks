@@ -54,6 +54,10 @@ struct LandingView: View {
 private struct HomeTab: View {
     @EnvironmentObject private var profileGate: ProfileGate
     
+    private var currentUserEmail: String {
+            Auth.auth().currentUser?.email ?? "Guest"
+        }
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -66,7 +70,7 @@ private struct HomeTab: View {
                                     .font(.title2)
                                     .fontWeight(.semibold)
                                 
-                                Text("Ready to get started")
+                                Text(currentUserEmail)
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
