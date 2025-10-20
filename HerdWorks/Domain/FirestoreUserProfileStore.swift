@@ -7,7 +7,7 @@ actor FirestoreUserProfileStore: UserProfileStore {
     private let db: Firestore
     private let collectionName: String
 
-    nonisolated init(db: Firestore = .firestore(), collectionName: String = "users") {
+    init(db: Firestore = .firestore(), collectionName: String = "users") {
         self.db = db
         self.collectionName = collectionName
     }
@@ -56,7 +56,7 @@ actor FirestoreUserProfileStore: UserProfileStore {
 
 // Fallback stub to keep builds green when Firebase isn't available.
 actor FirestoreUserProfileStore: UserProfileStore {
-    nonisolated init() {}
+    init() {}
     
     func createOrUpdate(_ profile: UserProfile) async throws {
         fatalError("Firebase not linked")
