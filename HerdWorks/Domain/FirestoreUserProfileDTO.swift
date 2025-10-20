@@ -1,15 +1,15 @@
 import Foundation
 
-// Firestore transport model with optional timestamps to tolerate pending server values
-struct FirestoreUserProfileDTO: Codable, Equatable {
+// ✅ Make it Sendable, no @MainActor needed
+struct FirestoreUserProfileDTO: Codable, Equatable, Sendable {
     var userId: String
     var firstName: String
     var lastName: String
     var email: String
     var phoneNumber: String
     var personalAddress: Address
-    var createdAt: Date? // server timestamp may be pending
-    var updatedAt: Date? // server timestamp may be pending
+    var createdAt: Date?
+    var updatedAt: Date?
 }
 
 extension FirestoreUserProfileDTO {
@@ -25,13 +25,8 @@ extension FirestoreUserProfileDTO {
     }
 }
 
+// ✅ No actor isolation needed for pure data transformation
 struct UserProfileMapper {
-    /// Maps a DTO to a domain model, providing fallbacks when timestamps are pending.
-    /// - Parameters:
-    ///   - dto: The Firestore transport model (may contain nil timestamps when pending).
-    ///   - lastKnown: An optional last-known domain model to preserve stable timestamps while offline.
-    ///   - fallbackNow: A date to use when both dto and lastKnown are nil for timestamps.
-    /// - Returns: A fully-populated domain UserProfile with non-optional dates.
     static func toDomain(dto: FirestoreUserProfileDTO, lastKnown: UserProfile? = nil, fallbackNow: Date = Date()) -> UserProfile {
         let created = dto.createdAt ?? lastKnown?.createdAt ?? fallbackNow
         let updatedCandidate = dto.updatedAt ?? lastKnown?.updatedAt ?? fallbackNow

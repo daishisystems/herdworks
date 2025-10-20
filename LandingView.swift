@@ -47,6 +47,10 @@ struct LandingView: View {
                 .tag(Tab.profile)
         }
         .tint(.accentColor)
+        // ✅ ADD THIS: Present ProfileEditView when triggered
+        .sheet(isPresented: $profileGate.shouldPresentProfileEdit) {
+            ProfileEditView(store: FirestoreUserProfileStore())
+        }
     }
 }
 
@@ -55,8 +59,8 @@ private struct HomeTab: View {
     @EnvironmentObject private var profileGate: ProfileGate
     
     private var currentUserEmail: String {
-            Auth.auth().currentUser?.email ?? "Guest"
-        }
+        Auth.auth().currentUser?.email ?? "Guest"
+    }
     
     var body: some View {
         NavigationStack {

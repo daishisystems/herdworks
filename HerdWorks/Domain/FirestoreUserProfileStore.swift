@@ -1,14 +1,13 @@
 import Foundation
 
-#if canImport(FirebaseFirestore) && canImport(FirebaseFirestoreSwift)
+#if canImport(FirebaseFirestore)
 import FirebaseFirestore
-import FirebaseFirestoreSwift
 
 actor FirestoreUserProfileStore: UserProfileStore {
     private let db: Firestore
     private let collectionName: String
 
-    init(db: Firestore = .firestore(), collectionName: String = "users") {
+    nonisolated init(db: Firestore = .firestore(), collectionName: String = "users") {
         self.db = db
         self.collectionName = collectionName
     }
@@ -18,7 +17,7 @@ actor FirestoreUserProfileStore: UserProfileStore {
 
         // Encode domain model to DTO first
         let dto = FirestoreUserProfileDTO(fromDomain: profile)
-        var data = try FirestoreEncoder().encode(dto)
+        var data = try Firestore.Encoder().encode(dto)
 
         // Use server timestamps: createdAt only if document doesn't exist; updatedAt always
         let snapshot = try await ref.getDocument()
@@ -33,10 +32,16 @@ actor FirestoreUserProfileStore: UserProfileStore {
     func fetch(userId: String) async throws -> UserProfile? {
         let ref = db.collection(collectionName).document(userId)
         let snapshot = try await ref.getDocument()
-        guard snapshot.exists, var dto = try snapshot.data(as: FirestoreUserProfileDTO.self) else {
+        
+        guard snapshot.exists else {
             return nil
         }
-        // Map to domain; we don't have lastKnown here, so use fallback
+        
+        guard let dto = try? snapshot.data(as: FirestoreUserProfileDTO.self) else {
+            return nil
+        }
+        
+        // Map to domain
         let domain = UserProfileMapper.toDomain(dto: dto)
         return domain
     }
@@ -51,9 +56,17 @@ actor FirestoreUserProfileStore: UserProfileStore {
 
 // Fallback stub to keep builds green when Firebase isn't available.
 actor FirestoreUserProfileStore: UserProfileStore {
-    func createOrUpdate(_ profile: UserProfile) async throws { fatalError("Firebase not linked") }
-    func fetch(userId: String) async throws -> UserProfile? { fatalError("Firebase not linked") }
-    func delete(userId: String) async throws { fatalError("Firebase not linked") }
+    nonisolated init() {}
+    
+    func createOrUpdate(_ profile: UserProfile) async throws {
+        fatalError("Firebase not linked")
+    }
+    func fetch(userId: String) async throws -> UserProfile? {
+        fatalError("Firebase not linked")
+    }
+    func delete(userId: String) async throws {
+        fatalError("Firebase not linked")
+    }
 }
 
 #endif

@@ -47,7 +47,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct HerdWorksApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    @StateObject private var profileGate = ProfileGate(store: InMemoryUserProfileStore())
+    // ✅ Use FirestoreUserProfileStore for production
+    @StateObject private var profileGate = ProfileGate(
+        store: FirestoreUserProfileStore()
+    )
 
     var body: some Scene {
         WindowGroup {

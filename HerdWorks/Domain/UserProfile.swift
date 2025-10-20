@@ -10,7 +10,7 @@ import Foundation
 /// Represents a user's personal profile information
 /// Domain entity containing user data and business logic for profile completion
 /// Designed for livestock farmers with personal address (separate from farm addresses)
-struct UserProfile: Codable, Equatable {
+struct UserProfile: Codable, Equatable, Sendable {
     let userId: String
     var firstName: String
     var lastName: String

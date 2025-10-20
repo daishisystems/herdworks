@@ -27,9 +27,6 @@ struct RootView: View {
         .onDisappear {
             stopAuthStateListener()
         }
-        .sheet(isPresented: $profileGate.shouldPresentProfileEdit) {
-            ProfileEditView()
-        }
     }
 
     private func startAuthStateListener() {
@@ -60,8 +57,6 @@ struct RootView: View {
     
     @State private var authListenerHandle: AuthStateDidChangeListenerHandle?
 }
-
-
 
 #Preview {
     RootView()

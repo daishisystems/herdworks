@@ -1,5 +1,14 @@
+//
+//  ProfileEditViewModel.swift
+//  HerdWorks
+//
+//  Created by Paul Mooney on 2025/10/20.
+//
+
+
 import SwiftUI
 import FirebaseAuth
+import Combine
 
 @MainActor
 final class ProfileEditViewModel: ObservableObject {
