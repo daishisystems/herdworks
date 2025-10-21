@@ -71,8 +71,8 @@ struct FarmDetailView: View {
             TextField("Farm Name", text: $viewModel.name)
                 .textInputAutocapitalization(.words)
             
-            // Company Name (optional but prominent)
-            TextField("Company Name (Optional)", text: $viewModel.companyName)
+            // Company Name
+            TextField("Company Name", text: $viewModel.companyName)
                 .textInputAutocapitalization(.words)
             
             // Breed
@@ -137,18 +137,30 @@ struct FarmDetailView: View {
             }
             
             // Business Partners Section
-            Section("Business Partners (Optional)") {
-                TextField("Preferred Agent", text: $viewModel.preferredAgent)
-                    .textInputAutocapitalization(.words)
+            Section("Business Partners") {
+                // Preferred Agent - Dropdown
+                Picker("Preferred Agent", selection: $viewModel.preferredAgent) {
+                    Text("Not Specified").tag(nil as PreferredAgent?)
+                    ForEach(PreferredAgent.allCases, id: \.self) { agent in
+                        Text(agent.displayName).tag(agent as PreferredAgent?)
+                    }
+                }
                 
+                // Preferred Abattoir - Text Field
                 TextField("Preferred Abattoir", text: $viewModel.preferredAbattoir)
                     .textInputAutocapitalization(.words)
                 
+                // Preferred Veterinarian - Text Field
                 TextField("Preferred Veterinarian", text: $viewModel.preferredVeterinarian)
                     .textInputAutocapitalization(.words)
                 
-                TextField("Co-Op", text: $viewModel.coOp)
-                    .textInputAutocapitalization(.words)
+                // Co-Op - Dropdown
+                Picker("Co-Op", selection: $viewModel.coOp) {
+                    Text("Not Specified").tag(nil as CoOp?)
+                    ForEach(CoOp.allCases, id: \.self) { coop in
+                        Text(coop.displayName).tag(coop as CoOp?)
+                    }
+                }
             }
         }
     }

@@ -26,11 +26,11 @@ final class FarmDetailViewModel: ObservableObject {
     @Published var streetAddress: String = ""
     @Published var postalCode: String = ""
     @Published var productionSystem: ProductionSystem?
-    @Published var preferredAgent: String = ""
+    @Published var preferredAgent: PreferredAgent?
     @Published var preferredAbattoir: String = ""
     @Published var preferredVeterinarian: String = ""
-    @Published var coOp: String = ""
-    
+    @Published var coOp: CoOp?
+
     // State
     @Published var isSaving = false
     @Published var errorMessage: String?
@@ -75,10 +75,10 @@ final class FarmDetailViewModel: ObservableObject {
         streetAddress = farm.streetAddress ?? ""
         postalCode = farm.postalCode ?? ""
         productionSystem = farm.productionSystem
-        preferredAgent = farm.preferredAgent ?? ""
+        preferredAgent = farm.preferredAgent  // Now optional enum
         preferredAbattoir = farm.preferredAbattoir ?? ""
         preferredVeterinarian = farm.preferredVeterinarian ?? ""
-        coOp = farm.coOp ?? ""
+        coOp = farm.coOp  // Now optional enum
         
         // Show optional fields if any are filled
         showOptionalFields = farm.companyName != nil ||
@@ -158,10 +158,10 @@ final class FarmDetailViewModel: ObservableObject {
                     postalCode: postalCode.isEmpty ? nil : postalCode.trimmingCharacters(in: .whitespacesAndNewlines),
                     gpsLocation: gpsLocation,
                     productionSystem: productionSystem,
-                    preferredAgent: preferredAgent.isEmpty ? nil : preferredAgent.trimmingCharacters(in: .whitespacesAndNewlines),
+                    preferredAgent: preferredAgent,
                     preferredAbattoir: preferredAbattoir.isEmpty ? nil : preferredAbattoir.trimmingCharacters(in: .whitespacesAndNewlines),
                     preferredVeterinarian: preferredVeterinarian.isEmpty ? nil : preferredVeterinarian.trimmingCharacters(in: .whitespacesAndNewlines),
-                    coOp: coOp.isEmpty ? nil : coOp.trimmingCharacters(in: .whitespacesAndNewlines),
+                    coOp: coOp,
                     createdAt: existing.createdAt,
                     updatedAt: Date()
                 )
@@ -184,10 +184,10 @@ final class FarmDetailViewModel: ObservableObject {
                     postalCode: postalCode.isEmpty ? nil : postalCode.trimmingCharacters(in: .whitespacesAndNewlines),
                     gpsLocation: gpsLocation,
                     productionSystem: productionSystem,
-                    preferredAgent: preferredAgent.isEmpty ? nil : preferredAgent.trimmingCharacters(in: .whitespacesAndNewlines),
+                    preferredAgent: preferredAgent,
                     preferredAbattoir: preferredAbattoir.isEmpty ? nil : preferredAbattoir.trimmingCharacters(in: .whitespacesAndNewlines),
                     preferredVeterinarian: preferredVeterinarian.isEmpty ? nil : preferredVeterinarian.trimmingCharacters(in: .whitespacesAndNewlines),
-                    coOp: coOp.isEmpty ? nil : coOp.trimmingCharacters(in: .whitespacesAndNewlines)
+                    coOp: coOp
                 )
                 print("🔵 [VIEWMODEL] Farm object created with ID: \(farm.id)")
                 print("🔵 [VIEWMODEL] Calling store.create()")
@@ -225,25 +225,37 @@ final class FarmDetailViewModel: ObservableObject {
         let addressString = components.joined(separator: ", ")
         print("🔵 [GEOCODE] Address string: \(addressString)")
         
-        // Use modern MapKit geocoding
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = addressString
-        request.region = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: -30.5595, longitude: 22.9375),
-            span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)
-        )
+        // Use Nominatim (OpenStreetMap) API
+        let encodedAddress = addressString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let urlString = "https://nominatim.openstreetmap.org/search?q=\(encodedAddress)&format=json&limit=1&countrycodes=za"
+        
+        guard let url = URL(string: urlString) else {
+            print("⚠️ [GEOCODE] Invalid URL")
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.setValue("HerdWorks/1.0 (Sheep Farm Management App)", forHTTPHeaderField: "User-Agent")
         
         do {
-            let search = MKLocalSearch(request: request)
-            let response = try await search.start()
+            let (data, _) = try await URLSession.shared.data(for: request)
             
-            if let firstItem = response.mapItems.first {
-                let location = firstItem.location
-                print("✅ [GEOCODE] Success: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-                return GPSCoordinate(
-                    latitude: location.coordinate.latitude,
-                    longitude: location.coordinate.longitude
-                )
+            struct NominatimResponse: Codable {
+                let lat: String
+                let lon: String
+                let display_name: String?
+            }
+            
+            let results = try JSONDecoder().decode([NominatimResponse].self, from: data)
+            
+            if let first = results.first,
+               let lat = Double(first.lat),
+               let lon = Double(first.lon) {
+                print("✅ [GEOCODE] Success: \(lat), \(lon)")
+                if let displayName = first.display_name {
+                    print("✅ [GEOCODE] Found location: \(displayName)")
+                }
+                return GPSCoordinate(latitude: lat, longitude: lon)
             } else {
                 print("⚠️ [GEOCODE] No results found")
             }

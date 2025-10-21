@@ -25,10 +25,10 @@ struct Farm: Codable, Equatable, Sendable, Identifiable {
     var postalCode: String?
     var gpsLocation: GPSCoordinate?
     var productionSystem: ProductionSystem?
-    var preferredAgent: String?
+    var preferredAgent: PreferredAgent?
     var preferredAbattoir: String?
     var preferredVeterinarian: String?
-    var coOp: String?
+    var coOp: CoOp?
     
     let createdAt: Date
     var updatedAt: Date
@@ -48,10 +48,10 @@ struct Farm: Codable, Equatable, Sendable, Identifiable {
         postalCode: String? = nil,
         gpsLocation: GPSCoordinate? = nil,
         productionSystem: ProductionSystem? = nil,
-        preferredAgent: String? = nil,
+        preferredAgent: PreferredAgent? = nil,
         preferredAbattoir: String? = nil,
         preferredVeterinarian: String? = nil,
-        coOp: String? = nil
+        coOp: CoOp? = nil
     ) {
         self.id = id
         self.userId = userId
@@ -91,10 +91,10 @@ struct Farm: Codable, Equatable, Sendable, Identifiable {
         postalCode: String?,
         gpsLocation: GPSCoordinate?,
         productionSystem: ProductionSystem?,
-        preferredAgent: String?,
+        preferredAgent: PreferredAgent?,
         preferredAbattoir: String?,
         preferredVeterinarian: String?,
-        coOp: String?,
+        coOp: CoOp?,
         createdAt: Date,
         updatedAt: Date
     ) {

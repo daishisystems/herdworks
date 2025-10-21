@@ -23,10 +23,10 @@ struct FirestoreFarmDTO: Codable, Equatable, Sendable {
     var gpsLatitude: Double?
     var gpsLongitude: Double?
     var productionSystem: String?
-    var preferredAgent: String?
+    var preferredAgent: PreferredAgent?
     var preferredAbattoir: String?
     var preferredVeterinarian: String?
-    var coOp: String?
+    var coOp: CoOp?
     var createdAt: Date?
     var updatedAt: Date?
 }
