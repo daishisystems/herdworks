@@ -11,6 +11,7 @@ import FirebaseAuth
 struct LandingView: View {
     @EnvironmentObject private var profileGate: ProfileGate
     @State private var selectedTab: Tab = .home
+    @State private var showingFarmManagement = false  // ✅ ADD THIS
     
     enum Tab: String, CaseIterable {
         case home = "Home"
@@ -28,7 +29,9 @@ struct LandingView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeTab()
+            HomeTab(onFarmManagementTapped: {  // ✅ MODIFY THIS LINE
+                showingFarmManagement = true
+            })
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
@@ -47,9 +50,12 @@ struct LandingView: View {
                 .tag(Tab.profile)
         }
         .tint(.accentColor)
-        // ✅ ADD THIS: Present ProfileEditView when triggered
         .sheet(isPresented: $profileGate.shouldPresentProfileEdit) {
             ProfileEditView(store: FirestoreUserProfileStore())
+        }
+        // ✅ ADD THIS SHEET
+        .sheet(isPresented: $showingFarmManagement) {
+            FarmListView(store: FirestoreFarmStore())
         }
     }
 }
@@ -57,6 +63,7 @@ struct LandingView: View {
 // MARK: - Home Tab
 private struct HomeTab: View {
     @EnvironmentObject private var profileGate: ProfileGate
+    let onFarmManagementTapped: () -> Void  // ✅ ADD THIS PARAMETER
     
     private var currentUserEmail: String {
         Auth.auth().currentUser?.email ?? "Guest"
@@ -101,6 +108,15 @@ private struct HomeTab: View {
                                 systemImage: "person.crop.circle",
                                 color: .blue,
                                 action: { profileGate.shouldPresentProfileEdit = true }
+                            )
+                            
+                            // ✅ ADD THIS FARM MANAGEMENT CARD
+                            QuickActionCard(
+                                title: "Manage Farms",
+                                subtitle: "Add and edit your farms",
+                                systemImage: "building.2.crop.circle",
+                                color: .green,
+                                action: onFarmManagementTapped
                             )
                             
                             QuickActionCard(

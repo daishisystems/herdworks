@@ -8,7 +8,7 @@
 import SwiftUI
 import FirebaseAuth
 import Combine
-import MapKit  // ✅ Changed from CoreLocation
+import MapKit
 
 @MainActor
 final class FarmDetailViewModel: ObservableObject {
@@ -53,12 +53,18 @@ final class FarmDetailViewModel: ObservableObject {
         self.userId = userId
         self.existingFarm = farm
         
+        print("🔵 [VIEWMODEL] FarmDetailViewModel initialized")
+        print("🔵 [VIEWMODEL] User ID: \(userId)")
+        print("🔵 [VIEWMODEL] Auth user: \(Auth.auth().currentUser?.uid ?? "NONE")")
+        print("🔵 [VIEWMODEL] Is editing: \(farm != nil)")
+        
         if let farm = farm {
             loadFarm(farm)
         }
     }
     
     private func loadFarm(_ farm: Farm) {
+        print("🔵 [VIEWMODEL] Loading existing farm: \(farm.name)")
         name = farm.name
         breed = farm.breed
         ewesText = "\(farm.totalProductionEwes)"
@@ -98,27 +104,45 @@ final class FarmDetailViewModel: ObservableObject {
     }
     
     func saveFarm() async -> Bool {
+        print("🔵 [VIEWMODEL] saveFarm() called")
+        print("🔵 [VIEWMODEL] Name: \(name)")
+        print("🔵 [VIEWMODEL] Breed: \(breed.rawValue)")
+        print("🔵 [VIEWMODEL] Ewes text: \(ewesText)")
+        print("🔵 [VIEWMODEL] City: \(city)")
+        print("🔵 [VIEWMODEL] Province: \(province.rawValue)")
+        
         guard isValid else {
+            print("⚠️ [VIEWMODEL] Validation failed")
             errorMessage = "Please fill in all required fields"
             showError = true
             return false
         }
         
         guard let ewes = totalEwes else {
+            print("⚠️ [VIEWMODEL] Invalid ewes number")
             errorMessage = "Please enter a valid number of ewes"
             showError = true
             return false
         }
+        
+        print("✅ [VIEWMODEL] Validation passed, ewes: \(ewes)")
         
         isSaving = true
         defer { isSaving = false }
         
         do {
             // Geocode address if we have enough info
+            print("🔵 [VIEWMODEL] Starting geocoding...")
             let gpsLocation = await geocodeAddress()
+            if let gps = gpsLocation {
+                print("✅ [VIEWMODEL] Geocoded: \(gps.latitude), \(gps.longitude)")
+            } else {
+                print("⚠️ [VIEWMODEL] Geocoding returned nil")
+            }
             
             let farm: Farm
             if let existing = existingFarm {
+                print("🔵 [VIEWMODEL] Updating existing farm")
                 // Update existing
                 farm = Farm(
                     id: existing.id,
@@ -141,8 +165,11 @@ final class FarmDetailViewModel: ObservableObject {
                     createdAt: existing.createdAt,
                     updatedAt: Date()
                 )
+                print("🔵 [VIEWMODEL] Calling store.update()")
                 try await store.update(farm)
+                print("✅ [VIEWMODEL] store.update() completed")
             } else {
+                print("🔵 [VIEWMODEL] Creating new farm")
                 // Create new
                 farm = Farm(
                     userId: userId,
@@ -162,18 +189,25 @@ final class FarmDetailViewModel: ObservableObject {
                     preferredVeterinarian: preferredVeterinarian.isEmpty ? nil : preferredVeterinarian.trimmingCharacters(in: .whitespacesAndNewlines),
                     coOp: coOp.isEmpty ? nil : coOp.trimmingCharacters(in: .whitespacesAndNewlines)
                 )
+                print("🔵 [VIEWMODEL] Farm object created with ID: \(farm.id)")
+                print("🔵 [VIEWMODEL] Calling store.create()")
                 try await store.create(farm)
+                print("✅ [VIEWMODEL] store.create() completed successfully")
             }
             
+            print("✅ [VIEWMODEL] Save completed, returning true")
             return true
         } catch {
+            print("❌ [VIEWMODEL] Save failed with error")
+            print("❌ [VIEWMODEL] Error: \(error)")
+            print("❌ [VIEWMODEL] Error type: \(type(of: error))")
+            print("❌ [VIEWMODEL] Error description: \(error.localizedDescription)")
             errorMessage = "Failed to save farm: \(error.localizedDescription)"
             showError = true
             return false
         }
     }
     
-    // ✅ Updated: Modern MapKit geocoding
     private func geocodeAddress() async -> GPSCoordinate? {
         // Build address string
         var components: [String] = []
@@ -189,12 +223,13 @@ final class FarmDetailViewModel: ObservableObject {
         components.append("South Africa")
         
         let addressString = components.joined(separator: ", ")
+        print("🔵 [GEOCODE] Address string: \(addressString)")
         
         // Use modern MapKit geocoding
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = addressString
         request.region = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: -30.5595, longitude: 22.9375), // South Africa center
+            center: CLLocationCoordinate2D(latitude: -30.5595, longitude: 22.9375),
             span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)
         )
         
@@ -202,17 +237,18 @@ final class FarmDetailViewModel: ObservableObject {
             let search = MKLocalSearch(request: request)
             let response = try await search.start()
             
-            // ✅ location is not optional - just access it directly
             if let firstItem = response.mapItems.first {
                 let location = firstItem.location
+                print("✅ [GEOCODE] Success: \(location.coordinate.latitude), \(location.coordinate.longitude)")
                 return GPSCoordinate(
                     latitude: location.coordinate.latitude,
                     longitude: location.coordinate.longitude
                 )
+            } else {
+                print("⚠️ [GEOCODE] No results found")
             }
         } catch {
-            // Silently fail - GPS is optional
-            print("Geocoding failed: \(error.localizedDescription)")
+            print("⚠️ [GEOCODE] Failed: \(error.localizedDescription)")
         }
         
         return nil
