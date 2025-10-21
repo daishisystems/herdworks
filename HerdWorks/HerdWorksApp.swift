@@ -51,11 +51,15 @@ struct HerdWorksApp: App {
     @StateObject private var profileGate = ProfileGate(
         store: FirestoreUserProfileStore()
     )
+    
+    // ✅ Add LanguageManager
+    @StateObject private var languageManager = LanguageManager.shared
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(profileGate)
+                .environmentObject(languageManager)  // ✅ Inject language manager
         }
     }
 }

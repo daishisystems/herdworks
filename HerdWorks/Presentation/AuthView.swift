@@ -5,35 +5,35 @@
 //  Created by Paul Mooney on 2025/10/14.
 //
 
-
 import SwiftUI
 
 struct AuthView: View {
     @ObservedObject var vm: AuthViewModel
+    @EnvironmentObject private var languageManager: LanguageManager
     @State private var showPasswordResetSuccess = false
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("HerdWorks")
+            Text("auth.app_title".localized())
                 .font(.system(size: 48, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             Picker("", selection: $vm.mode) {
-                Text("Sign In").tag(AuthViewModel.Mode.signIn)
-                Text("Sign Up").tag(AuthViewModel.Mode.signUp)
+                Text("auth.sign_in".localized()).tag(AuthViewModel.Mode.signIn)
+                Text("auth.sign_up".localized()).tag(AuthViewModel.Mode.signUp)
             }
             .pickerStyle(.segmented)
 
-            TextField("Email", text: $vm.email)
+            TextField("auth.email".localized(), text: $vm.email)
                 .keyboardType(.emailAddress)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .textFieldStyle(.roundedBorder)
 
-            SecureField("Password", text: $vm.password)
+            SecureField("auth.password".localized(), text: $vm.password)
                 .textFieldStyle(.roundedBorder)
 
-            Button(vm.mode == .signIn ? "Sign In" : "Sign Up") {
+            Button(vm.mode == .signIn ? "auth.sign_in".localized() : "auth.sign_up".localized()) {
                 Task {
                     if vm.mode == .signIn { await vm.signIn() }
                     else { await vm.signUp() }
@@ -43,8 +43,8 @@ struct AuthView: View {
             .frame(maxWidth: .infinity)
             .disabled(vm.isBusy || vm.email.isEmpty || vm.password.isEmpty)
 
-            Button("Forgot password?") {
-                Task { 
+            Button("auth.forgot_password".localized()) {
+                Task {
                     print("🔄 User tapped forgot password for email: \(vm.email)")
                     await vm.resetPassword()
                     if vm.errorMessage == nil {
@@ -59,7 +59,7 @@ struct AuthView: View {
             .foregroundColor(vm.email.isEmpty ? .gray : .blue)
             
             if vm.email.isEmpty {
-                Text("Enter your email address above to reset password")
+                Text("auth.enter_email_prompt".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -76,23 +76,24 @@ struct AuthView: View {
 
             if let user = vm.currentUser {
                 VStack(spacing: 8) {
-                    Text("Logged in as: \(user.email ?? user.uid)")
+                    Text(String(format: "auth.logged_in_as".localized(), user.email ?? user.uid))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                    Button("Sign Out") { vm.signOut() }
+                    Button("auth.sign_out".localized()) { vm.signOut() }
                 }
             }
         }
         .padding()
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .alert("Password Reset Sent", isPresented: $showPasswordResetSuccess) {
-            Button("OK", role: .cancel) { }
+        .alert("auth.password_reset_sent_title".localized(), isPresented: $showPasswordResetSuccess) {
+            Button("common.ok".localized(), role: .cancel) { }
         } message: {
-            Text("A password reset link has been sent to \(vm.email). Check your email and follow the instructions to reset your password.")
+            Text(String(format: "auth.password_reset_sent_message".localized(), vm.email))
         }
     }
 }
 
 #Preview {
     AuthView(vm: AuthViewModel(repo: FirebaseAuthRepository()))
+        .environmentObject(LanguageManager.shared)
 }

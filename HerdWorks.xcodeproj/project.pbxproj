@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA672C3E2EA7C9B20030D14D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EA672C3C2EA7C9B20030D14D /* Localizable.strings */; };
 		EA83E6B92EA6259700475F1E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EA83E6B82EA6259700475F1E /* FirebaseFirestore */; };
 		EA8DC9322EA12AE70004523C /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8DC9312EA12AE70004523C /* ProfileEditView.swift */; };
 		EAAA20662E9D3248005DBB11 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EAAA20652E9D3248005DBB11 /* FirebaseAuth */; };
@@ -33,6 +34,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EA672C3D2EA7C9B20030D14D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EA672C3F2EA7C9CA0030D14D /* af */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = af; path = af.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EA71BD4E2E98FB500084FA11 /* HerdWorks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HerdWorks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA71BD5B2E98FB510084FA11 /* HerdWorksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HerdWorksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA71BD652E98FB510084FA11 /* HerdWorksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HerdWorksUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -109,6 +112,7 @@
 		EA71BD452E98FB500084FA11 = {
 			isa = PBXGroup;
 			children = (
+				EA672C3C2EA7C9B20030D14D /* Localizable.strings */,
 				EAAA20832E9E547C005DBB11 /* firebase.json */,
 				EA71BDB62E993D850084FA11 /* README.md */,
 				EA71BD902E9925980084FA11 /* Config */,
@@ -243,6 +247,7 @@
 			knownRegions = (
 				en,
 				Base,
+				af,
 			);
 			mainGroup = EA71BD452E98FB500084FA11;
 			minimizedProjectReferenceProxies = 1;
@@ -266,6 +271,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA672C3E2EA7C9B20030D14D /* Localizable.strings in Resources */,
 				EAAA20842E9E5484005DBB11 /* firebase.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -324,6 +330,18 @@
 			targetProxy = EA71BD662E98FB510084FA11 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		EA672C3C2EA7C9B20030D14D /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EA672C3D2EA7C9B20030D14D /* en */,
+				EA672C3F2EA7C9CA0030D14D /* af */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		EA71BD6D2E98FB510084FA11 /* Debug */ = {
