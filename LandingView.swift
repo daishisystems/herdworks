@@ -10,50 +10,67 @@ import FirebaseAuth
 
 struct LandingView: View {
     @EnvironmentObject private var profileGate: ProfileGate
+    @EnvironmentObject private var languageManager: LanguageManager
     @State private var selectedTab: Tab = .home
-    @State private var showingFarmManagement = false  // ✅ ADD THIS
+    @State private var showingFarmManagement = false
     
     enum Tab: String, CaseIterable {
         case home = "Home"
         case explore = "Explore"
         case profile = "Profile"
+        case settings = "Settings"
         
         var systemImage: String {
             switch self {
             case .home: return "house"
             case .explore: return "safari"
             case .profile: return "person"
+            case .settings: return "gearshape"
+            }
+        }
+        
+        func localizedTitle() -> String {
+            switch self {
+            case .home: return "landing.home".localized()
+            case .explore: return "landing.explore".localized()
+            case .profile: return "landing.profile".localized()
+            case .settings: return "landing.settings".localized()
             }
         }
     }
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeTab(onFarmManagementTapped: {  // ✅ MODIFY THIS LINE
+            HomeTab(onFarmManagementTapped: {
                 showingFarmManagement = true
             })
                 .tabItem {
-                    Label("Home", systemImage: "house")
+                    Label("landing.home".localized(), systemImage: "house")
                 }
                 .tag(Tab.home)
             
             ExploreTab()
                 .tabItem {
-                    Label("Explore", systemImage: "safari")
+                    Label("landing.explore".localized(), systemImage: "safari")
                 }
                 .tag(Tab.explore)
             
             ProfileTab()
                 .tabItem {
-                    Label("Profile", systemImage: "person")
+                    Label("landing.profile".localized(), systemImage: "person")
                 }
                 .tag(Tab.profile)
+            
+            SettingsView()
+                .tabItem {
+                    Label("landing.settings".localized(), systemImage: "gearshape")
+                }
+                .tag(Tab.settings)
         }
         .tint(.accentColor)
         .sheet(isPresented: $profileGate.shouldPresentProfileEdit) {
             ProfileEditView(store: FirestoreUserProfileStore())
         }
-        // ✅ ADD THIS SHEET
         .sheet(isPresented: $showingFarmManagement) {
             FarmListView(store: FirestoreFarmStore())
         }
@@ -63,7 +80,8 @@ struct LandingView: View {
 // MARK: - Home Tab
 private struct HomeTab: View {
     @EnvironmentObject private var profileGate: ProfileGate
-    let onFarmManagementTapped: () -> Void  // ✅ ADD THIS PARAMETER
+    @EnvironmentObject private var languageManager: LanguageManager
+    let onFarmManagementTapped: () -> Void
     
     private var currentUserEmail: String {
         Auth.auth().currentUser?.email ?? "Guest"
@@ -77,7 +95,7 @@ private struct HomeTab: View {
                     VStack(spacing: 12) {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Welcome to HerdWorks")
+                                Text("landing.welcome".localized())
                                     .font(.title2)
                                     .fontWeight(.semibold)
                                 
@@ -94,7 +112,7 @@ private struct HomeTab: View {
                     // Quick Actions Section
                     VStack(alignment: .leading, spacing: 16) {
                         HStack {
-                            Text("Quick Actions")
+                            Text("landing.quick_actions".localized())
                                 .font(.headline)
                                 .fontWeight(.medium)
                             Spacer()
@@ -103,25 +121,24 @@ private struct HomeTab: View {
                         
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                             QuickActionCard(
-                                title: profileGate.shouldPresentProfileEdit ? "Complete Profile" : "Edit Profile",
-                                subtitle: profileGate.shouldPresentProfileEdit ? "Finish setup to continue" : "Update your details",
+                                title: profileGate.shouldPresentProfileEdit ? "quick_action.complete_profile".localized() : "quick_action.edit_profile".localized(),
+                                subtitle: profileGate.shouldPresentProfileEdit ? "quick_action.complete_profile_subtitle".localized() : "quick_action.edit_profile_subtitle".localized(),
                                 systemImage: "person.crop.circle",
                                 color: .blue,
                                 action: { profileGate.shouldPresentProfileEdit = true }
                             )
                             
-                            // ✅ ADD THIS FARM MANAGEMENT CARD
                             QuickActionCard(
-                                title: "Manage Farms",
-                                subtitle: "Add and edit your farms",
+                                title: "quick_action.manage_farms".localized(),
+                                subtitle: "quick_action.manage_farms_subtitle".localized(),
                                 systemImage: "building.2.crop.circle",
                                 color: .green,
                                 action: onFarmManagementTapped
                             )
                             
                             QuickActionCard(
-                                title: "Get Started",
-                                subtitle: "Begin your journey",
+                                title: "quick_action.get_started".localized(),
+                                subtitle: "quick_action.get_started_subtitle".localized(),
                                 systemImage: "play.circle",
                                 color: .blue,
                                 action: {
@@ -130,8 +147,8 @@ private struct HomeTab: View {
                             )
                             
                             QuickActionCard(
-                                title: "Learn More",
-                                subtitle: "Discover features",
+                                title: "quick_action.learn_more".localized(),
+                                subtitle: "quick_action.learn_more_subtitle".localized(),
                                 systemImage: "book.circle",
                                 color: .green,
                                 action: {
@@ -140,8 +157,8 @@ private struct HomeTab: View {
                             )
                             
                             QuickActionCard(
-                                title: "Settings",
-                                subtitle: "Customize your experience",
+                                title: "quick_action.settings".localized(),
+                                subtitle: "quick_action.settings_subtitle".localized(),
                                 systemImage: "gearshape.circle",
                                 color: .orange,
                                 action: {
@@ -150,8 +167,8 @@ private struct HomeTab: View {
                             )
                             
                             QuickActionCard(
-                                title: "Support",
-                                subtitle: "Get help when needed",
+                                title: "quick_action.support".localized(),
+                                subtitle: "quick_action.support_subtitle".localized(),
                                 systemImage: "questionmark.circle",
                                 color: .purple,
                                 action: {
@@ -174,6 +191,8 @@ private struct HomeTab: View {
 
 // MARK: - Explore Tab
 private struct ExploreTab: View {
+    @EnvironmentObject private var languageManager: LanguageManager
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
@@ -182,23 +201,23 @@ private struct ExploreTab: View {
                     .foregroundStyle(.secondary)
                 
                 VStack(spacing: 8) {
-                    Text("Explore")
+                    Text("explore.title".localized())
                         .font(.title2)
                         .fontWeight(.semibold)
                     
-                    Text("Discover new features and content")
+                    Text("explore.subtitle".localized())
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
                 
-                Text("More content coming soon")
+                Text("explore.coming_soon".localized())
                     .font(.caption)
                     .foregroundStyle(.tertiary)
                     .padding(.top, 20)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("Explore")
+            .navigationTitle("explore.title".localized())
             .navigationBarTitleDisplayMode(.large)
         }
     }
@@ -207,6 +226,7 @@ private struct ExploreTab: View {
 // MARK: - Profile Tab
 private struct ProfileTab: View {
     @EnvironmentObject private var profileGate: ProfileGate
+    @EnvironmentObject private var languageManager: LanguageManager
     @State private var showingSignOutAlert = false
     
     private var currentUserEmail: String {
@@ -228,7 +248,7 @@ private struct ProfileTab: View {
                             )
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Profile")
+                            Text("profile.title".localized())
                                 .font(.headline)
                             Text(currentUserEmail)
                                 .font(.subheadline)
@@ -240,41 +260,41 @@ private struct ProfileTab: View {
                     .padding(.vertical, 8)
                 }
                 
-                Section("Settings") {
+                Section("landing.settings".localized()) {
                     SettingsRow(
-                        title: "Preferences",
+                        title: "profile.preferences".localized(),
                         systemImage: "gearshape",
                         action: { /* TODO: Navigate to preferences */ }
                     )
                     
                     SettingsRow(
-                        title: "Notifications",
+                        title: "profile.notifications".localized(),
                         systemImage: "bell",
                         action: { /* TODO: Navigate to notifications */ }
                     )
                     
                     SettingsRow(
-                        title: "Privacy & Security",
+                        title: "profile.privacy_security".localized(),
                         systemImage: "shield",
                         action: { /* TODO: Navigate to privacy settings */ }
                     )
                     
                     SettingsRow(
-                        title: "Edit Profile",
+                        title: "quick_action.edit_profile".localized(),
                         systemImage: "pencil",
                         action: { profileGate.shouldPresentProfileEdit = true }
                     )
                 }
                 
-                Section("Support") {
+                Section("quick_action.support".localized()) {
                     SettingsRow(
-                        title: "Help & Support",
+                        title: "profile.help_support".localized(),
                         systemImage: "questionmark.circle",
                         action: { /* TODO: Navigate to support */ }
                     )
                     
                     SettingsRow(
-                        title: "Send Feedback",
+                        title: "profile.send_feedback".localized(),
                         systemImage: "envelope",
                         action: { /* TODO: Open feedback form */ }
                     )
@@ -285,21 +305,21 @@ private struct ProfileTab: View {
                         HStack {
                             Image(systemName: "rectangle.portrait.and.arrow.right")
                                 .foregroundStyle(.red)
-                            Text("Sign Out")
+                            Text("auth.sign_out".localized())
                                 .foregroundStyle(.red)
                         }
                     }
                 }
             }
-            .navigationTitle("Profile")
+            .navigationTitle("profile.title".localized())
             .navigationBarTitleDisplayMode(.large)
-            .alert("Sign Out", isPresented: $showingSignOutAlert) {
-                Button("Cancel", role: .cancel) { }
-                Button("Sign Out", role: .destructive) {
+            .alert("settings.sign_out_alert_title".localized(), isPresented: $showingSignOutAlert) {
+                Button("common.cancel".localized(), role: .cancel) { }
+                Button("auth.sign_out".localized(), role: .destructive) {
                     signOut()
                 }
             } message: {
-                Text("Are you sure you want to sign out?")
+                Text("settings.sign_out_alert_message".localized())
             }
         }
     }
@@ -377,4 +397,5 @@ private struct SettingsRow: View {
 
 #Preview {
     LandingView()
+        .environmentObject(LanguageManager.shared)
 }

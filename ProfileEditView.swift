@@ -3,6 +3,7 @@ import FirebaseAuth
 
 struct ProfileEditView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var languageManager: LanguageManager
     @StateObject private var viewModel: ProfileEditViewModel
     
     init(store: UserProfileStore) {
@@ -15,75 +16,75 @@ struct ProfileEditView: View {
             Form {
                 // Personal Information Section
                 Section {
-                    TextField("First Name", text: $viewModel.firstName)
+                    TextField("profile_edit.first_name".localized(), text: $viewModel.firstName)
                         .textContentType(.givenName)
                         .autocorrectionDisabled()
                     
-                    TextField("Last Name", text: $viewModel.lastName)
+                    TextField("profile_edit.last_name".localized(), text: $viewModel.lastName)
                         .textContentType(.familyName)
                         .autocorrectionDisabled()
                     
-                    TextField("Email", text: $viewModel.email)
+                    TextField("profile_edit.email".localized(), text: $viewModel.email)
                         .textContentType(.emailAddress)
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
                         .autocorrectionDisabled()
                     
-                    TextField("Phone Number", text: $viewModel.phoneNumber)
+                    TextField("profile_edit.phone_number".localized(), text: $viewModel.phoneNumber)
                         .textContentType(.telephoneNumber)
                         .keyboardType(.phonePad)
                 } header: {
-                    Text("Personal Information")
+                    Text("profile_edit.personal_info".localized())
                 } footer: {
-                    Text("This information will be used for your account.")
+                    Text("profile_edit.personal_info_footer".localized())
                 }
                 
                 // Address Section
                 Section {
-                    TextField("Street Address", text: $viewModel.street)
+                    TextField("profile_edit.street_address".localized(), text: $viewModel.street)
                         .textContentType(.streetAddressLine1)
                     
-                    TextField("City", text: $viewModel.city)
+                    TextField("profile_edit.city".localized(), text: $viewModel.city)
                         .textContentType(.addressCity)
                     
-                    TextField("State/Province", text: $viewModel.state)
+                    TextField("profile_edit.state_province".localized(), text: $viewModel.state)
                         .textContentType(.addressState)
                     
                     HStack {
-                        TextField("ZIP Code", text: $viewModel.zipCode)
+                        TextField("profile_edit.zip_code".localized(), text: $viewModel.zipCode)
                             .textContentType(.postalCode)
                             .keyboardType(.numbersAndPunctuation)
                         
-                        TextField("Country", text: $viewModel.country)
+                        TextField("profile_edit.country".localized(), text: $viewModel.country)
                             .textContentType(.countryName)
                     }
                 } header: {
-                    Text("Personal Address")
+                    Text("profile_edit.personal_address".localized())
                 } footer: {
-                    Text("Your home address (separate from farm locations).")
+                    Text("profile_edit.personal_address_footer".localized())
                 }
                 
                 // Validation Feedback
                 if !viewModel.isValid {
                     Section {
-                        Label("Please fill in all required fields", systemImage: "exclamationmark.triangle")
+                        Label("profile_edit.fill_required_fields".localized(), systemImage: "exclamationmark.triangle")
                             .foregroundStyle(.orange)
                             .font(.caption)
                     }
                 }
             }
-            .navigationTitle("Edit Profile")
+            .navigationTitle("profile_edit.title".localized())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("common.cancel".localized()) {
                         dismiss()
                     }
                     .disabled(viewModel.isSaving)
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button("common.save".localized()) {
                         Task {
                             if await viewModel.saveProfile() {
                                 dismiss()
@@ -101,14 +102,14 @@ struct ProfileEditView: View {
                         Color.black.opacity(0.2)
                             .ignoresSafeArea()
                         
-                        ProgressView("Saving...")
+                        ProgressView("profile_edit.saving".localized())
                             .padding()
                             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
                     }
                 }
             }
-            .alert("Error", isPresented: $viewModel.showError) {
-                Button("OK", role: .cancel) { }
+            .alert("common.error".localized(), isPresented: $viewModel.showError) {
+                Button("common.ok".localized(), role: .cancel) { }
             } message: {
                 Text(viewModel.errorMessage ?? "An unknown error occurred")
             }
@@ -121,6 +122,7 @@ struct ProfileEditView: View {
 
 #Preview("New Profile") {
     ProfileEditView(store: InMemoryUserProfileStore())
+        .environmentObject(LanguageManager.shared)
 }
 
 #Preview("Existing Profile") {
@@ -146,4 +148,5 @@ struct ProfileEditView: View {
     }
     
     return ProfileEditView(store: store)
+        .environmentObject(LanguageManager.shared)
 }

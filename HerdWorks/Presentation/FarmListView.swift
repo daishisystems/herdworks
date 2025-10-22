@@ -10,6 +10,7 @@ import FirebaseAuth
 
 struct FarmListView: View {
     @StateObject private var viewModel: FarmListViewModel
+    @EnvironmentObject private var languageManager: LanguageManager
     @State private var showingAddFarm = false
     @State private var selectedFarm: Farm?
     @Environment(\.dismiss) private var dismiss
@@ -30,10 +31,9 @@ struct FarmListView: View {
         }
     }
     
-    // ✅ Extract everything into mainContent
     private var mainContent: some View {
         contentView
-            .navigationTitle("Farms")
+            .navigationTitle("farm.list_title".localized())
             .navigationBarTitleDisplayMode(.large)
             .toolbar { toolbarContent }
             .modifier(SheetsModifier(
@@ -51,7 +51,7 @@ struct FarmListView: View {
     @ViewBuilder
     private var contentView: some View {
         if viewModel.isLoading {
-            ProgressView("Loading farms...")
+            ProgressView("farm.loading".localized())
         } else if viewModel.farms.isEmpty {
             emptyStateView
         } else {
@@ -62,7 +62,7 @@ struct FarmListView: View {
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
-            Button("Done") {
+            Button("common.done".localized()) {
                 dismiss()
             }
         }
@@ -84,11 +84,11 @@ struct FarmListView: View {
                 .foregroundStyle(.secondary)
             
             VStack(spacing: 8) {
-                Text("No Farms Yet")
+                Text("farm.empty_title".localized())
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                Text("Add your first farm to get started")
+                Text("farm.empty_subtitle".localized())
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -97,7 +97,7 @@ struct FarmListView: View {
             Button {
                 showingAddFarm = true
             } label: {
-                Label("Add Your First Farm", systemImage: "plus.circle.fill")
+                Label("farm.add_first_farm".localized(), systemImage: "plus.circle.fill")
                     .font(.headline)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
@@ -123,7 +123,7 @@ struct FarmListView: View {
                         Button(role: .destructive) {
                             viewModel.confirmDelete(farm)
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            Label("common.delete".localized(), systemImage: "trash")
                         }
                     }
             }
@@ -164,18 +164,18 @@ struct AlertsModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .alert("Delete Farm", isPresented: $viewModel.showDeleteConfirmation) {
-                Button("Cancel", role: .cancel) { }
-                Button("Delete", role: .destructive) {
+            .alert("farm.delete_confirmation_title".localized(), isPresented: $viewModel.showDeleteConfirmation) {
+                Button("common.cancel".localized(), role: .cancel) { }
+                Button("common.delete".localized(), role: .destructive) {
                     Task { await viewModel.deleteFarm() }
                 }
             } message: {
                 if let farm = viewModel.farmToDelete {
-                    Text("Are you sure you want to delete \(farm.name)?")
+                    Text(String(format: "farm.delete_confirmation_message".localized(), farm.name))
                 }
             }
-            .alert("Error", isPresented: $viewModel.showError) {
-                Button("OK", role: .cancel) { }
+            .alert("common.error".localized(), isPresented: $viewModel.showError) {
+                Button("common.ok".localized(), role: .cancel) { }
             } message: {
                 if let error = viewModel.errorMessage {
                     Text(error)
@@ -207,7 +207,7 @@ struct FarmRowView: View {
                 HStack(spacing: 4) {
                     Text(farm.breed.displayName)
                     Text("•")
-                    Text("\(farm.totalProductionEwes.formatted()) ewes")
+                    Text("\(farm.totalProductionEwes.formatted()) \("farm.ewes".localized())")
                 }
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -229,4 +229,5 @@ struct FarmRowView: View {
 
 #Preview {
     FarmListView(store: InMemoryFarmStore())
+        .environmentObject(LanguageManager.shared)
 }

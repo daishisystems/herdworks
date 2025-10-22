@@ -7,20 +7,19 @@
 
 import SwiftUI
 import FirebaseAuth
-import Combine
-import MapKit
+import Combine  // ✅ ADD THIS LINE
 
 @MainActor
 final class FarmDetailViewModel: ObservableObject {
-    // Required fields
+    // MARK: - Published Properties
     @Published var name: String = ""
     @Published var breed: SheepBreed = .dohneMerino
+    // ... rest of the file stays the same
     @Published var ewesText: String = ""
     @Published var city: String = ""
     @Published var province: SouthAfricanProvince = .westernCape
     
     // Optional fields
-    @Published var showOptionalFields = false
     @Published var companyName: String = ""
     @Published var sizeText: String = ""
     @Published var streetAddress: String = ""
@@ -30,24 +29,45 @@ final class FarmDetailViewModel: ObservableObject {
     @Published var preferredAbattoir: String = ""
     @Published var preferredVeterinarian: String = ""
     @Published var coOp: CoOp?
-
-    // State
-    @Published var isSaving = false
-    @Published var errorMessage: String?
-    @Published var showError = false
     
+    // Manual GPS fields
+    @Published var useManualGPS: Bool = false
+    @Published var manualLatitude: String = ""
+    @Published var manualLongitude: String = ""
+    
+    // UI State
+    @Published var isSaving: Bool = false
+    @Published var showError: Bool = false
+    @Published var errorMessage: String?
+    @Published var showOptionalFields: Bool = false
+    
+    // MARK: - Private Properties
     private let store: FarmStore
     private let userId: String
-    private var existingFarm: Farm?
+    private let existingFarm: Farm?
     
-    var isEditing: Bool {
-        existingFarm != nil
+    // MARK: - Computed Properties
+    var isValid: Bool {
+        !name.isEmpty &&
+        !city.isEmpty &&
+        totalEwes != nil &&
+        (totalEwes ?? 0) > 0
     }
     
     var navigationTitle: String {
-        isEditing ? "Edit Farm" : "Add Farm"
+        existingFarm == nil ? "farm.add_farm".localized() : "farm.edit_farm".localized()
     }
     
+    var totalEwes: Int? {
+        Int(ewesText.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+    
+    var farmSize: Double? {
+        guard !sizeText.isEmpty else { return nil }
+        return Double(sizeText.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+    
+    // MARK: - Initialization
     init(store: FarmStore, userId: String, farm: Farm? = nil) {
         self.store = store
         self.userId = userId
@@ -55,7 +75,7 @@ final class FarmDetailViewModel: ObservableObject {
         
         print("🔵 [VIEWMODEL] FarmDetailViewModel initialized")
         print("🔵 [VIEWMODEL] User ID: \(userId)")
-        print("🔵 [VIEWMODEL] Auth user: \(Auth.auth().currentUser?.uid ?? "NONE")")
+        print("🔵 [VIEWMODEL] Auth user: \(Auth.auth().currentUser?.uid ?? "none")")
         print("🔵 [VIEWMODEL] Is editing: \(farm != nil)")
         
         if let farm = farm {
@@ -63,6 +83,7 @@ final class FarmDetailViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Private Methods
     private func loadFarm(_ farm: Farm) {
         print("🔵 [VIEWMODEL] Loading existing farm: \(farm.name)")
         name = farm.name
@@ -75,10 +96,17 @@ final class FarmDetailViewModel: ObservableObject {
         streetAddress = farm.streetAddress ?? ""
         postalCode = farm.postalCode ?? ""
         productionSystem = farm.productionSystem
-        preferredAgent = farm.preferredAgent  // Now optional enum
+        preferredAgent = farm.preferredAgent
         preferredAbattoir = farm.preferredAbattoir ?? ""
         preferredVeterinarian = farm.preferredVeterinarian ?? ""
-        coOp = farm.coOp  // Now optional enum
+        coOp = farm.coOp
+        
+        // Load GPS coordinates if available
+        if let gps = farm.gpsLocation {
+            manualLatitude = "\(gps.latitude)"
+            manualLongitude = "\(gps.longitude)"
+            useManualGPS = true
+        }
         
         // Show optional fields if any are filled
         showOptionalFields = farm.companyName != nil ||
@@ -87,22 +115,65 @@ final class FarmDetailViewModel: ObservableObject {
                             farm.productionSystem != nil
     }
     
-    var isValid: Bool {
-        !name.isEmpty &&
-        !city.isEmpty &&
-        totalEwes != nil &&
-        (totalEwes ?? 0) > 0
+    private func geocodeAddress() async -> GPSCoordinate? {
+        // Build address string
+        var components: [String] = []
+        
+        if !streetAddress.isEmpty {
+            components.append(streetAddress)
+        }
+        components.append(city)
+        components.append(province.rawValue)
+        if !postalCode.isEmpty {
+            components.append(postalCode)
+        }
+        components.append("South Africa")
+        
+        let addressString = components.joined(separator: ", ")
+        print("🔵 [GEOCODE] Address string: \(addressString)")
+        
+        // Use Nominatim (OpenStreetMap) API
+        let encodedAddress = addressString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let urlString = "https://nominatim.openstreetmap.org/search?q=\(encodedAddress)&format=json&limit=1&countrycodes=za"
+        
+        guard let url = URL(string: urlString) else {
+            print("⚠️ [GEOCODE] Invalid URL")
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.setValue("HerdWorks/1.0 (Sheep Farm Management App)", forHTTPHeaderField: "User-Agent")
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            
+            struct NominatimResponse: Codable {
+                let lat: String
+                let lon: String
+                let display_name: String?
+            }
+            
+            let results = try JSONDecoder().decode([NominatimResponse].self, from: data)
+            
+            if let first = results.first,
+               let lat = Double(first.lat),
+               let lon = Double(first.lon) {
+                print("✅ [GEOCODE] Success: \(lat), \(lon)")
+                if let displayName = first.display_name {
+                    print("✅ [GEOCODE] Found location: \(displayName)")
+                }
+                return GPSCoordinate(latitude: lat, longitude: lon)
+            } else {
+                print("⚠️ [GEOCODE] No results found")
+            }
+        } catch {
+            print("⚠️ [GEOCODE] Failed: \(error.localizedDescription)")
+        }
+        
+        return nil
     }
     
-    private var totalEwes: Int? {
-        Int(ewesText.trimmingCharacters(in: .whitespaces))
-    }
-    
-    private var farmSize: Double? {
-        let trimmed = sizeText.trimmingCharacters(in: .whitespaces)
-        return trimmed.isEmpty ? nil : Double(trimmed)
-    }
-    
+    // MARK: - Public Methods
     func saveFarm() async -> Bool {
         print("🔵 [VIEWMODEL] saveFarm() called")
         print("🔵 [VIEWMODEL] Name: \(name)")
@@ -113,14 +184,14 @@ final class FarmDetailViewModel: ObservableObject {
         
         guard isValid else {
             print("⚠️ [VIEWMODEL] Validation failed")
-            errorMessage = "Please fill in all required fields"
+            errorMessage = "error.fill_required_fields".localized()
             showError = true
             return false
         }
         
         guard let ewes = totalEwes else {
             print("⚠️ [VIEWMODEL] Invalid ewes number")
-            errorMessage = "Please enter a valid number of ewes"
+            errorMessage = "error.invalid_ewes_number".localized()
             showError = true
             return false
         }
@@ -131,13 +202,24 @@ final class FarmDetailViewModel: ObservableObject {
         defer { isSaving = false }
         
         do {
-            // Geocode address if we have enough info
-            print("🔵 [VIEWMODEL] Starting geocoding...")
-            let gpsLocation = await geocodeAddress()
-            if let gps = gpsLocation {
-                print("✅ [VIEWMODEL] Geocoded: \(gps.latitude), \(gps.longitude)")
+            // Determine GPS location
+            let gpsLocation: GPSCoordinate?
+            
+            if useManualGPS,
+               let lat = Double(manualLatitude.trimmingCharacters(in: .whitespacesAndNewlines)),
+               let lon = Double(manualLongitude.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                // Use manual coordinates
+                print("🔵 [VIEWMODEL] Using manual GPS coordinates")
+                gpsLocation = GPSCoordinate(latitude: lat, longitude: lon)
             } else {
-                print("⚠️ [VIEWMODEL] Geocoding returned nil")
+                // Auto-geocode from address
+                print("🔵 [VIEWMODEL] Starting geocoding...")
+                gpsLocation = await geocodeAddress()
+                if let gps = gpsLocation {
+                    print("✅ [VIEWMODEL] Geocoded: \(gps.latitude), \(gps.longitude)")
+                } else {
+                    print("⚠️ [VIEWMODEL] Geocoding returned nil")
+                }
             }
             
             let farm: Farm
@@ -202,67 +284,9 @@ final class FarmDetailViewModel: ObservableObject {
             print("❌ [VIEWMODEL] Error: \(error)")
             print("❌ [VIEWMODEL] Error type: \(type(of: error))")
             print("❌ [VIEWMODEL] Error description: \(error.localizedDescription)")
-            errorMessage = "Failed to save farm: \(error.localizedDescription)"
+            errorMessage = String(format: "error.failed_to_save".localized(), error.localizedDescription)
             showError = true
             return false
         }
-    }
-    
-    private func geocodeAddress() async -> GPSCoordinate? {
-        // Build address string
-        var components: [String] = []
-        
-        if !streetAddress.isEmpty {
-            components.append(streetAddress)
-        }
-        components.append(city)
-        components.append(province.rawValue)
-        if !postalCode.isEmpty {
-            components.append(postalCode)
-        }
-        components.append("South Africa")
-        
-        let addressString = components.joined(separator: ", ")
-        print("🔵 [GEOCODE] Address string: \(addressString)")
-        
-        // Use Nominatim (OpenStreetMap) API
-        let encodedAddress = addressString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let urlString = "https://nominatim.openstreetmap.org/search?q=\(encodedAddress)&format=json&limit=1&countrycodes=za"
-        
-        guard let url = URL(string: urlString) else {
-            print("⚠️ [GEOCODE] Invalid URL")
-            return nil
-        }
-        
-        var request = URLRequest(url: url)
-        request.setValue("HerdWorks/1.0 (Sheep Farm Management App)", forHTTPHeaderField: "User-Agent")
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            
-            struct NominatimResponse: Codable {
-                let lat: String
-                let lon: String
-                let display_name: String?
-            }
-            
-            let results = try JSONDecoder().decode([NominatimResponse].self, from: data)
-            
-            if let first = results.first,
-               let lat = Double(first.lat),
-               let lon = Double(first.lon) {
-                print("✅ [GEOCODE] Success: \(lat), \(lon)")
-                if let displayName = first.display_name {
-                    print("✅ [GEOCODE] Found location: \(displayName)")
-                }
-                return GPSCoordinate(latitude: lat, longitude: lon)
-            } else {
-                print("⚠️ [GEOCODE] No results found")
-            }
-        } catch {
-            print("⚠️ [GEOCODE] Failed: \(error.localizedDescription)")
-        }
-        
-        return nil
     }
 }

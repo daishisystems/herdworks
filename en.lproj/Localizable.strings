@@ -1,7 +1,155 @@
-/* 
+/*
   Localizable.strings
   HerdWorks
 
   Created by Paul Mooney on 2025/10/21.
   
 */
+
+// MARK: - Common
+"common.save" = "Save";
+"common.cancel" = "Cancel";
+"common.delete" = "Delete";
+"common.edit" = "Edit";
+"common.done" = "Done";
+"common.error" = "Error";
+"common.ok" = "OK";
+"common.yes" = "Yes";
+"common.no" = "No";
+
+// MARK: - Auth
+"auth.app_title" = "HerdWorks";
+"auth.sign_in" = "Sign In";
+"auth.sign_up" = "Sign Up";
+"auth.email" = "Email";
+"auth.password" = "Password";
+"auth.forgot_password" = "Forgot password?";
+"auth.enter_email_prompt" = "Enter your email address above to reset password";
+"auth.password_reset_sent_title" = "Password Reset Sent";
+"auth.password_reset_sent_message" = "A password reset link has been sent to %@. Check your email and follow the instructions to reset your password.";
+"auth.logged_in_as" = "Logged in as: %@";
+"auth.sign_out" = "Sign Out";
+
+// MARK: - Landing/Home
+"landing.welcome" = "Welcome to HerdWorks";
+"landing.quick_actions" = "Quick Actions";
+"landing.home" = "Home";
+"landing.explore" = "Explore";
+"landing.profile" = "Profile";
+"landing.settings" = "Settings";
+
+// Quick Actions
+"quick_action.complete_profile" = "Complete Profile";
+"quick_action.complete_profile_subtitle" = "Finish setup to continue";
+"quick_action.edit_profile" = "Edit Profile";
+"quick_action.edit_profile_subtitle" = "Update your details";
+"quick_action.manage_farms" = "Manage Farms";
+"quick_action.manage_farms_subtitle" = "Add and edit your farms";
+"quick_action.get_started" = "Get Started";
+"quick_action.get_started_subtitle" = "Begin your journey";
+"quick_action.learn_more" = "Learn More";
+"quick_action.learn_more_subtitle" = "Discover features";
+"quick_action.settings" = "Settings";
+"quick_action.settings_subtitle" = "Customize your experience";
+"quick_action.support" = "Support";
+"quick_action.support_subtitle" = "Get help when needed";
+
+// Explore
+"explore.title" = "Explore";
+"explore.subtitle" = "Discover new features and content";
+"explore.coming_soon" = "More content coming soon";
+
+// Profile Tab
+"profile.title" = "Profile";
+"profile.preferences" = "Preferences";
+"profile.notifications" = "Notifications";
+"profile.privacy_security" = "Privacy & Security";
+"profile.help_support" = "Help & Support";
+"profile.send_feedback" = "Send Feedback";
+
+// MARK: - Profile Edit
+"profile_edit.title" = "Edit Profile";
+"profile_edit.personal_info" = "Personal Information";
+"profile_edit.personal_info_footer" = "This information will be used for your account.";
+"profile_edit.personal_address" = "Personal Address";
+"profile_edit.personal_address_footer" = "Your home address (separate from farm locations).";
+"profile_edit.first_name" = "First Name";
+"profile_edit.last_name" = "Last Name";
+"profile_edit.email" = "Email";
+"profile_edit.phone_number" = "Phone Number";
+"profile_edit.street_address" = "Street Address";
+"profile_edit.city" = "City";
+"profile_edit.state_province" = "State/Province";
+"profile_edit.zip_code" = "ZIP Code";
+"profile_edit.country" = "Country";
+"profile_edit.fill_required_fields" = "Please fill in all required fields";
+"profile_edit.saving" = "Saving...";
+
+// MARK: - Farm Management
+"farm.list_title" = "Farms";
+"farm.empty_title" = "No Farms Yet";
+"farm.empty_subtitle" = "Add your first farm to get started";
+"farm.add_first_farm" = "Add Your First Farm";
+"farm.add_farm" = "Add Farm";
+"farm.edit_farm" = "Edit Farm";
+"farm.delete_confirmation_title" = "Delete Farm";
+"farm.delete_confirmation_message" = "Are you sure you want to delete %@?";
+"farm.loading" = "Loading farms...";
+"farm.ewes" = "ewes";
+
+// Farm Detail
+"farm.required_information" = "Required Information";
+"farm.required_footer" = "These fields are required to create a farm";
+"farm.farm_name" = "Farm Name";
+"farm.company_name" = "Company Name";
+"farm.breed" = "Breed";
+"farm.production_ewes" = "Number of Production Ewes";
+"farm.farm_size_hectares" = "Farm Size (Hectares)";
+
+// Address
+"farm.address" = "Address";
+"farm.address_footer" = "We'll automatically calculate GPS coordinates from your address";
+"farm.street_address" = "Street Address";
+"farm.city" = "City";
+"farm.province" = "Province";
+"farm.postal_code" = "Postal Code";
+"farm.postal_code_help" = "Postal code helps us pinpoint your farm's exact location for accurate mapping";
+
+// GPS
+"farm.gps_location" = "GPS Location (Optional)";
+"farm.manual_gps_toggle" = "Enter GPS Coordinates Manually";
+"farm.latitude" = "Latitude (e.g., -34.318802)";
+"farm.longitude" = "Longitude (e.g., 21.856028)";
+"farm.gps_footer_manual" = "Enter precise coordinates if the auto-calculated location is inaccurate";
+"farm.gps_footer_auto" = "Enable this if you know the exact GPS coordinates of your farm";
+
+// Production
+"farm.production_system" = "Production System";
+"farm.system_type" = "System Type";
+"farm.not_specified" = "Not Specified";
+
+// Business Partners
+"farm.business_partners" = "Business Partners";
+"farm.preferred_agent" = "Preferred Agent";
+"farm.preferred_abattoir" = "Preferred Abattoir";
+"farm.preferred_veterinarian" = "Preferred Veterinarian";
+"farm.coop" = "Co-Op";
+
+// MARK: - Settings
+"settings.title" = "Settings";
+"settings.language" = "Language";
+"settings.language_section" = "Language";
+"settings.language_footer" = "Choose your preferred language for the app";
+"settings.account" = "Account";
+"settings.email" = "Email";
+"settings.sign_out" = "Sign Out";
+"settings.sign_out_alert_title" = "Sign Out";
+"settings.sign_out_alert_message" = "Are you sure you want to sign out?";
+"settings.unknown_user" = "Unknown User";
+
+// MARK: - Errors
+"error.failed_to_load" = "Failed to load: %@";
+"error.failed_to_save" = "Failed to save: %@";
+"error.failed_to_delete" = "Failed to delete: %@";
+"error.fill_required_fields" = "Please fill in all required fields";
+"error.invalid_ewes_number" = "Please enter a valid number of ewes";
