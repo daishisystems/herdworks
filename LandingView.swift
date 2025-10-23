@@ -13,6 +13,7 @@ struct LandingView: View {
     @EnvironmentObject private var languageManager: LanguageManager
     @State private var selectedTab: Tab = .home
     @State private var showingFarmManagement = false
+    @State private var showingAllLambingSeasons = false
     
     enum Tab: String, CaseIterable {
         case home = "Home"
@@ -41,9 +42,14 @@ struct LandingView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeTab(onFarmManagementTapped: {
-                showingFarmManagement = true
-            })
+            HomeTab(
+                onFarmManagementTapped: {
+                    showingFarmManagement = true
+                },
+                onAllLambingSeasonsTapped: {
+                    showingAllLambingSeasons = true
+                }
+            )
                 .tabItem {
                     Label("landing.home".localized(), systemImage: "house")
                 }
@@ -74,6 +80,12 @@ struct LandingView: View {
         .sheet(isPresented: $showingFarmManagement) {
             FarmListView(store: FirestoreFarmStore())
         }
+        .sheet(isPresented: $showingAllLambingSeasons) {
+            AllLambingSeasonsView(
+                lambingStore: FirestoreLambingSeasonGroupStore(),
+                farmStore: FirestoreFarmStore()
+            )
+        }
     }
 }
 
@@ -82,6 +94,7 @@ private struct HomeTab: View {
     @EnvironmentObject private var profileGate: ProfileGate
     @EnvironmentObject private var languageManager: LanguageManager
     let onFarmManagementTapped: () -> Void
+    let onAllLambingSeasonsTapped: () -> Void
     
     private var currentUserEmail: String {
         Auth.auth().currentUser?.email ?? "Guest"
@@ -127,7 +140,7 @@ private struct HomeTab: View {
                                 color: .blue,
                                 action: { profileGate.shouldPresentProfileEdit = true }
                             )
-                            
+
                             QuickActionCard(
                                 title: "quick_action.manage_farms".localized(),
                                 subtitle: "quick_action.manage_farms_subtitle".localized(),
@@ -135,7 +148,15 @@ private struct HomeTab: View {
                                 color: .green,
                                 action: onFarmManagementTapped
                             )
-                            
+
+                            QuickActionCard(
+                                title: "lambing.all_seasons_title".localized(),
+                                subtitle: "lambing.all_seasons_subtitle".localized(),
+                                systemImage: "calendar.badge.clock",
+                                color: .orange,
+                                action: onAllLambingSeasonsTapped
+                            )
+
                             QuickActionCard(
                                 title: "quick_action.get_started".localized(),
                                 subtitle: "quick_action.get_started_subtitle".localized(),
@@ -398,4 +419,5 @@ private struct SettingsRow: View {
 #Preview {
     LandingView()
         .environmentObject(LanguageManager.shared)
+        .environmentObject(ProfileGate())
 }

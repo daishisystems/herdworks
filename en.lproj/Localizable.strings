@@ -16,6 +16,7 @@
 "common.ok" = "OK";
 "common.yes" = "Yes";
 "common.no" = "No";
+"common.loading" = "Loading...";
 
 // MARK: - Auth
 "auth.app_title" = "HerdWorks";
@@ -87,6 +88,7 @@
 
 // MARK: - Farm Management
 "farm.list_title" = "Farms";
+"farm.unknown_farm" = "Unknown Farm";
 "farm.empty_title" = "No Farms Yet";
 "farm.empty_subtitle" = "Add your first farm to get started";
 "farm.add_first_farm" = "Add Your First Farm";
@@ -157,6 +159,15 @@
 // MARK: - Lambing Season Groups
 "lambing.loading" = "Loading lambing groups...";
 "lambing.list_title" = "Lambing Seasons";
+"lambing.all_seasons_title" = "All Lambing Seasons";
+"lambing.all_seasons_subtitle" = "View and manage all seasons";
+"lambing.no_active_seasons" = "No Active Seasons";
+"lambing.no_seasons" = "No Lambing Seasons";
+"lambing.no_seasons_subtitle" = "Start tracking your lambing seasons by adding your first group";
+"lambing.add_first_season" = "Add First Season";
+"lambing.show_active_only" = "Active Only";
+"lambing.show_active" = "Show Active";
+"lambing.inactive" = "Inactive";
 "lambing.empty_title" = "No Lambing Seasons Yet";
 "lambing.empty_subtitle" = "Add your first lambing season to track mating and lambing periods";
 "lambing.empty_active_title" = "No Active Lambing Seasons";
@@ -197,6 +208,13 @@
 "lambing.gestation_period" = "Gestation Period";
 "lambing.gestation_warning_short" = "Gestation period is shorter than typical (140-160 days)";
 "lambing.gestation_warning_long" = "Gestation period is longer than typical (140-160 days)";
+"lambing.farm_selection" = "Farm Selection";
+"lambing.select_farm" = "Select Farm";
+"lambing.choose_farm" = "Choose a farm...";
+"lambing.farm_selection_required" = "Please select a farm for this lambing season";
+"lambing.no_farms_available" = "No farms available. Please create a farm first.";
+"lambing.no_farms_title" = "No Farms Found";
+"lambing.no_farms_message" = "You need to create at least one farm before adding lambing seasons. Go to 'Manage Farms' to create your first farm.";
 
 // Errors
 "lambing.error_code_required" = "Season code is required";

@@ -16,6 +16,7 @@
 "common.ok" = "OK";
 "common.yes" = "Ja";
 "common.no" = "Nee";
+"common.loading" = "Laai...";
 
 // MARK: - Auth
 "auth.app_title" = "HerdWorks";
@@ -87,6 +88,7 @@
 
 // MARK: - Farm Management
 "farm.list_title" = "Plase";
+"farm.unknown_farm" = "Onbekende Plaas";
 "farm.empty_title" = "Nog Geen Plase Nie";
 "farm.empty_subtitle" = "Voeg jou eerste plaas by om te begin";
 "farm.add_first_farm" = "Voeg Jou Eerste Plaas By";
@@ -156,6 +158,15 @@
 // MARK: - Lambing Season Groups
 "lambing.loading" = "Laai lamseisoen groepe...";
 "lambing.list_title" = "Lamseisoene";
+"lambing.all_seasons_title" = "Alle Lamseisoene";
+"lambing.all_seasons_subtitle" = "Bekyk en bestuur alle seisoene";
+"lambing.no_active_seasons" = "Geen Aktiewe Seisoene";
+"lambing.no_seasons" = "Geen Lamseisoene Nie";
+"lambing.no_seasons_subtitle" = "Begin om jou lamseisoene na te spoor deur jou eerste groep by te voeg";
+"lambing.add_first_season" = "Voeg Eerste Seisoen By";
+"lambing.show_active_only" = "Slegs Aktief";
+"lambing.show_active" = "Wys Aktief";
+"lambing.inactive" = "Onaktief";
 "lambing.empty_title" = "Nog Geen Lamseisoene Nie";
 "lambing.empty_subtitle" = "Voeg jou eerste lamseisoen by om par- en lamtye na te spoor";
 "lambing.empty_active_title" = "Geen Aktiewe Lamseisoene";
@@ -196,6 +207,13 @@
 "lambing.gestation_period" = "Dragtigheidsperiode";
 "lambing.gestation_warning_short" = "Dragtigheidsperiode is korter as tipies (140-160 dae)";
 "lambing.gestation_warning_long" = "Dragtigheidsperiode is langer as tipies (140-160 dae)";
+"lambing.farm_selection" = "Plaaskeuse";
+"lambing.select_farm" = "Kies Plaas";
+"lambing.choose_farm" = "Kies 'n plaas...";
+"lambing.farm_selection_required" = "Kies asseblief 'n plaas vir hierdie lamseisoen";
+"lambing.no_farms_available" = "Geen plase beskikbaar nie. Skep eers 'n plaas.";
+"lambing.no_farms_title" = "Geen Plase Gevind Nie";
+"lambing.no_farms_message" = "Jy moet ten minste een plaas skep voordat jy lamseisoene kan byvoeg. Gaan na 'Bestuur Plase' om jou eerste plaas te skep.";
 
 // Errors
 "lambing.error_code_required" = "Seisoen kode is vereis";
