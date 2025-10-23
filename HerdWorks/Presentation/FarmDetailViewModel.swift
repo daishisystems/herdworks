@@ -67,6 +67,10 @@ final class FarmDetailViewModel: ObservableObject {
         return Double(sizeText.trimmingCharacters(in: .whitespacesAndNewlines))
     }
     
+    var currentFarm: Farm? {
+        existingFarm
+    }
+    
     // MARK: - Initialization
     init(store: FarmStore, userId: String, farm: Farm? = nil) {
         self.store = store

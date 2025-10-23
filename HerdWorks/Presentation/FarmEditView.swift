@@ -1,5 +1,5 @@
 //
-//  FarmDetailView.swift
+//  FarmEditView.swift
 //  HerdWorks
 //
 //  Created by Paul Mooney on 2025/10/20.
@@ -8,7 +8,7 @@
 import SwiftUI
 import FirebaseAuth
 
-struct FarmDetailView: View {
+struct FarmEditView: View {
     @StateObject private var viewModel: FarmDetailViewModel
     @EnvironmentObject private var languageManager: LanguageManager
     @Environment(\.dismiss) private var dismiss
@@ -30,6 +30,9 @@ struct FarmDetailView: View {
                 gpsSection
                 productionSection
                 businessPartnersSection
+            }
+            .onAppear {
+                print("🔵 [FARM-DETAIL] currentFarm: \(viewModel.currentFarm?.name ?? "nil")")
             }
             .navigationTitle(viewModel.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -179,6 +182,6 @@ struct FarmDetailView: View {
 }
 
 #Preview {
-    FarmDetailView(store: InMemoryFarmStore())
+    FarmEditView(store: InMemoryFarmStore())
         .environmentObject(LanguageManager.shared)
 }

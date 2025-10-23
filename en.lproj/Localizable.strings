@@ -153,3 +153,62 @@
 "error.failed_to_delete" = "Failed to delete: %@";
 "error.fill_required_fields" = "Please fill in all required fields";
 "error.invalid_ewes_number" = "Please enter a valid number of ewes";
+
+// MARK: - Lambing Season Groups
+"lambing.loading" = "Loading lambing groups...";
+"lambing.list_title" = "Lambing Seasons";
+"lambing.empty_title" = "No Lambing Seasons Yet";
+"lambing.empty_subtitle" = "Add your first lambing season to track mating and lambing periods";
+"lambing.empty_active_title" = "No Active Lambing Seasons";
+"lambing.empty_active_subtitle" = "All lambing seasons are currently inactive";
+"lambing.add_first_group" = "Add Your First Lambing Season";
+"lambing.add_group" = "Add Lambing Season";
+"lambing.edit_group" = "Edit Lambing Season";
+"lambing.show_all" = "Show All Seasons";
+"lambing.delete_confirmation_title" = "Delete Lambing Season";
+"lambing.delete_confirmation_message" = "Are you sure you want to delete %@?";
+"lambing.seasons_short" = "Seasons";
+
+// Basic Info
+"lambing.basic_info" = "Basic Information";
+"lambing.basic_info_footer" = "Code and name help identify this lambing season";
+"lambing.code" = "Season Code";
+"lambing.name" = "Season Name";
+"lambing.active" = "Active";
+
+// Mating Period
+"lambing.mating_period" = "Mating Period";
+"lambing.mating_period_footer" = "When rams are with ewes for breeding";
+"lambing.mating_short" = "Mating";
+"lambing.start_date" = "Start Date";
+"lambing.end_date" = "End Date";
+"lambing.duration" = "Duration";
+"lambing.days" = "days";
+
+// Lambing Period
+"lambing.lambing_period" = "Lambing Period";
+"lambing.lambing_period_footer" = "Expected lambing dates based on gestation period";
+"lambing.lambing_short" = "Lambing";
+"lambing.auto_calculate" = "Auto-calculate from mating dates";
+
+// Calculated Info
+"lambing.calculated_info" = "Calculated Information";
+"lambing.calculated_info_footer" = "Normal sheep gestation is 140-160 days";
+"lambing.gestation_period" = "Gestation Period";
+"lambing.gestation_warning_short" = "Gestation period is shorter than typical (140-160 days)";
+"lambing.gestation_warning_long" = "Gestation period is longer than typical (140-160 days)";
+
+// Errors
+"lambing.error_code_required" = "Season code is required";
+"lambing.error_name_required" = "Season name is required";
+"lambing.error_mating_end" = "Mating end date must be after start date";
+"lambing.error_lambing_start" = "Lambing start date must be after mating end date";
+"lambing.error_lambing_end" = "Lambing end date must be after lambing start date";
+
+// Farm Overview
+"farm.details" = "Details";
+"farm.manage_lambing_seasons_subtitle" = "Track mating and lambing periods";
+"farm.production_stats" = "Production Stats";
+"farm.production_stats_subtitle" = "View performance metrics";
+"farm.view_on_map" = "View on Map";
+"farm.view_on_map_subtitle" = "See farm location";

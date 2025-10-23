@@ -153,3 +153,61 @@
 "error.failed_to_delete" = "Kon nie skrap nie: %@";
 "error.fill_required_fields" = "Vul asseblief alle verpligte velde in";
 "error.invalid_ewes_number" = "Voer asseblief 'n geldige aantal ooie in";
+// MARK: - Lambing Season Groups
+"lambing.loading" = "Laai lamseisoen groepe...";
+"lambing.list_title" = "Lamseisoene";
+"lambing.empty_title" = "Nog Geen Lamseisoene Nie";
+"lambing.empty_subtitle" = "Voeg jou eerste lamseisoen by om par- en lamtye na te spoor";
+"lambing.empty_active_title" = "Geen Aktiewe Lamseisoene";
+"lambing.empty_active_subtitle" = "Alle lamseisoene is tans onaktief";
+"lambing.add_first_group" = "Voeg Jou Eerste Lamseisoen By";
+"lambing.add_group" = "Voeg Lamseisoen By";
+"lambing.edit_group" = "Wysig Lamseisoen";
+"lambing.show_all" = "Wys Alle Seisoene";
+"lambing.delete_confirmation_title" = "Skrap Lamseisoen";
+"lambing.delete_confirmation_message" = "Is jy seker jy wil %@ skrap?";
+"lambing.seasons_short" = "Seisoene";
+
+// Basic Info
+"lambing.basic_info" = "Basiese Inligting";
+"lambing.basic_info_footer" = "Kode en naam help om hierdie lamseisoen te identifiseer";
+"lambing.code" = "Seisoen Kode";
+"lambing.name" = "Seisoen Naam";
+"lambing.active" = "Aktief";
+
+// Mating Period
+"lambing.mating_period" = "Partyd";
+"lambing.mating_period_footer" = "Wanneer ramme by ooie is vir teling";
+"lambing.mating_short" = "Par";
+"lambing.start_date" = "Begin Datum";
+"lambing.end_date" = "Eind Datum";
+"lambing.duration" = "Duur";
+"lambing.days" = "dae";
+
+// Lambing Period
+"lambing.lambing_period" = "Lamtyd";
+"lambing.lambing_period_footer" = "Verwagte lamdatums gebaseer op dragtigheidsperiode";
+"lambing.lambing_short" = "Lam";
+"lambing.auto_calculate" = "Outo-bereken vanaf pardatums";
+
+// Calculated Info
+"lambing.calculated_info" = "Berekende Inligting";
+"lambing.calculated_info_footer" = "Normale skaap dragtigheid is 140-160 dae";
+"lambing.gestation_period" = "Dragtigheidsperiode";
+"lambing.gestation_warning_short" = "Dragtigheidsperiode is korter as tipies (140-160 dae)";
+"lambing.gestation_warning_long" = "Dragtigheidsperiode is langer as tipies (140-160 dae)";
+
+// Errors
+"lambing.error_code_required" = "Seisoen kode is vereis";
+"lambing.error_name_required" = "Seisoen naam is vereis";
+"lambing.error_mating_end" = "Pareind datum moet ná begin datum wees";
+"lambing.error_lambing_start" = "Lambegin datum moet ná pareind datum wees";
+"lambing.error_lambing_end" = "Lameind datum moet ná lambegin datum wees";
+
+// Farm Overview
+"farm.details" = "Besonderhede";
+"farm.manage_lambing_seasons_subtitle" = "Volg par- en lamtye";
+"farm.production_stats" = "Produksie Statistieke";
+"farm.production_stats_subtitle" = "Bekyk prestasie maatstawwe";
+"farm.view_on_map" = "Bekyk op Kaart";
+"farm.view_on_map_subtitle" = "Sien plaasligging";

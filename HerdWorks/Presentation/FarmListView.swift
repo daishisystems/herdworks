@@ -36,14 +36,13 @@ struct FarmListView: View {
             .navigationTitle("farm.list_title".localized())
             .navigationBarTitleDisplayMode(.large)
             .toolbar { toolbarContent }
-            .modifier(SheetsModifier(
-                showingAddFarm: $showingAddFarm,
-                selectedFarm: $selectedFarm,
-                store: store,
-                userId: userId,
-                onDismissAdd: { Task { await viewModel.loadFarms() } },
-                onDismissEdit: { Task { await viewModel.loadFarms() } }
-            ))
+            .sheet(isPresented: $showingAddFarm) {
+                // Create new farm - use edit view
+                FarmEditView(store: store)
+            }
+            .onChange(of: showingAddFarm) { _, newValue in
+                if !newValue { Task { await viewModel.loadFarms() } }
+            }
             .modifier(AlertsModifier(viewModel: viewModel))
             .task { await viewModel.loadFarms() }
     }
@@ -114,18 +113,16 @@ struct FarmListView: View {
     private var farmListView: some View {
         List {
             ForEach(viewModel.farms) { farm in
-                FarmRowView(farm: farm)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        selectedFarm = farm
+                NavigationLink(destination: FarmOverviewView(farm: farm, store: store)) {
+                    FarmRowView(farm: farm)
+                }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        viewModel.confirmDelete(farm)
+                    } label: {
+                        Label("common.delete".localized(), systemImage: "trash")
                     }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button(role: .destructive) {
-                            viewModel.confirmDelete(farm)
-                        } label: {
-                            Label("common.delete".localized(), systemImage: "trash")
-                        }
-                    }
+                }
             }
         }
         .listStyle(.insetGrouped)
@@ -133,31 +130,6 @@ struct FarmListView: View {
 }
 
 // MARK: - View Modifiers
-
-struct SheetsModifier: ViewModifier {
-    @Binding var showingAddFarm: Bool
-    @Binding var selectedFarm: Farm?
-    let store: FarmStore
-    let userId: String
-    let onDismissAdd: () -> Void
-    let onDismissEdit: () -> Void
-    
-    func body(content: Content) -> some View {
-        content
-            .sheet(isPresented: $showingAddFarm) {
-                FarmDetailView(store: store)
-            }
-            .onChange(of: showingAddFarm) { _, newValue in
-                if !newValue { onDismissAdd() }
-            }
-            .sheet(item: $selectedFarm) { farm in
-                FarmDetailView(store: store, farm: farm)
-            }
-            .onChange(of: selectedFarm) { oldValue, newValue in
-                if newValue == nil && oldValue != nil { onDismissEdit() }
-            }
-    }
-}
 
 struct AlertsModifier: ViewModifier {
     @ObservedObject var viewModel: FarmListViewModel
@@ -218,10 +190,6 @@ struct FarmRowView: View {
             }
             
             Spacer()
-            
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
         }
         .padding(.vertical, 8)
     }
