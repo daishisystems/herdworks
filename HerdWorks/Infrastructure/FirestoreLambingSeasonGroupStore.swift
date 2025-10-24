@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseFirestore
+import Combine
 
 final class FirestoreLambingSeasonGroupStore: LambingSeasonGroupStore {
     private let db = Firestore.firestore()
@@ -191,6 +192,41 @@ final class FirestoreLambingSeasonGroupStore: LambingSeasonGroupStore {
         } catch {
             print("❌ [LSG-DELETE] Error: \(error.localizedDescription)")
             throw error
+        }
+    }
+    
+    // MARK: - Real-time Listeners
+    
+    func listenAll(userId: String, farmId: String, onChange: @escaping (Result<[LambingSeasonGroup], Error>) -> Void) -> AnyCancellable {
+        let path = collectionPath(userId: userId, farmId: farmId)
+        print("🔵 [LSG-LISTEN] Attaching listener for farm: \(farmId)")
+        let listener = path.addSnapshotListener { snapshot, error in
+            if let error = error {
+                print("❌ [LSG-LISTEN] Snapshot error: \(error)")
+                onChange(.failure(error))
+                return
+            }
+            guard let docs = snapshot?.documents else {
+                print("⚠️ [LSG-LISTEN] No documents in snapshot")
+                onChange(.success([]))
+                return
+            }
+            let groups: [LambingSeasonGroup] = docs.compactMap { doc in
+                do {
+                    let group = try doc.data(as: LambingSeasonGroup.self)
+                    return group
+                } catch {
+                    print("⚠️ [LSG-LISTEN] Failed to decode document \(doc.documentID): \(error)")
+                    return nil
+                }
+            }
+            let sorted = groups.sorted { $0.matingStart > $1.matingStart }
+            print("📡 [LSG-LISTEN] Emitting \(sorted.count) groups for farm: \(farmId)")
+            onChange(.success(sorted))
+        }
+        return AnyCancellable {
+            print("🔵 [LSG-LISTEN] Removing listener for farm: \(farmId)")
+            listener.remove()
         }
     }
 }

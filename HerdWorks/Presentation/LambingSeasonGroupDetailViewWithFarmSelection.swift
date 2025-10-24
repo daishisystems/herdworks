@@ -164,8 +164,8 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
                 displayedComponents: [.date]
             )
             .datePickerStyle(.wheel)
-            .onChange(of: viewModel.matingStart) { newStart in
-                if viewModel.matingEnd < newStart { viewModel.matingEnd = newStart }
+            .onChange(of: viewModel.matingStart) { _, newValue in
+                if viewModel.matingEnd < newValue { viewModel.matingEnd = newValue }
             }
 
             DatePicker(
@@ -218,8 +218,8 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
                 displayedComponents: [.date]
             )
             .datePickerStyle(.wheel)
-            .onChange(of: viewModel.lambingStart) { newStart in
-                if viewModel.lambingEnd < newStart { viewModel.lambingEnd = newStart }
+            .onChange(of: viewModel.lambingStart) { _, newValue in
+                if viewModel.lambingEnd < newValue { viewModel.lambingEnd = newValue }
             }
 
             DatePicker(

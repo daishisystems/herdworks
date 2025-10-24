@@ -6,13 +6,37 @@
 //
 
 import Foundation
+import Combine
 
 /// In-memory implementation of LambingSeasonGroupStore for previews and testing
 actor InMemoryLambingSeasonGroupStore: LambingSeasonGroupStore {
     private var groups: [String: LambingSeasonGroup] = [:]
+    private var listeners: [String: [UUID: (Result<[LambingSeasonGroup], Error>) -> Void]] = [:]
     
     init() {
         print("🔵 InMemoryLambingSeasonGroupStore initialized")
+    }
+
+    private func notifyListeners(userId: String, farmId: String) {
+        let current = groups.values.filter { $0.userId == userId && $0.farmId == farmId }
+            .sorted { $0.matingStart > $1.matingStart }
+        if let farmListeners = listeners[farmId] {
+            for (_, callback) in farmListeners {
+                callback(.success(current))
+            }
+        }
+    }
+    
+    private func removeListener(token: UUID, farmId: String) {
+        var farmMap = listeners[farmId] ?? [:]
+        farmMap.removeValue(forKey: token)
+        listeners[farmId] = farmMap
+    }
+    
+    private func addListener(token: UUID, farmId: String, onChange: @escaping (Result<[LambingSeasonGroup], Error>) -> Void) {
+        var farmMap = listeners[farmId] ?? [:]
+        farmMap[token] = onChange
+        listeners[farmId] = farmMap
     }
     
     func fetchAll(userId: String, farmId: String) async throws -> [LambingSeasonGroup] {
@@ -49,6 +73,7 @@ actor InMemoryLambingSeasonGroupStore: LambingSeasonGroupStore {
         print("🔵 [MEM-LSG-CREATE] Creating group: \(group.displayName)")
         groups[group.id] = group
         print("✅ [MEM-LSG-CREATE] Group created successfully")
+        notifyListeners(userId: group.userId, farmId: group.farmId)
     }
     
     func update(_ group: LambingSeasonGroup) async throws {
@@ -79,6 +104,7 @@ actor InMemoryLambingSeasonGroupStore: LambingSeasonGroupStore {
         
         groups[group.id] = updatedGroup
         print("✅ [MEM-LSG-UPDATE] Group updated successfully")
+        notifyListeners(userId: updatedGroup.userId, farmId: updatedGroup.farmId)
     }
     
     func delete(userId: String, farmId: String, groupId: String) async throws {
@@ -88,11 +114,29 @@ actor InMemoryLambingSeasonGroupStore: LambingSeasonGroupStore {
         if let group = groups[groupId], group.userId == userId && group.farmId == farmId {
             groups.removeValue(forKey: groupId)
             print("✅ [MEM-LSG-DELETE] Group deleted successfully")
+            notifyListeners(userId: userId, farmId: farmId)
         } else {
             print("❌ [MEM-LSG-DELETE] Group not found or access denied")
             throw NSError(domain: "InMemoryStore", code: 404, userInfo: [
                 NSLocalizedDescriptionKey: "Group not found"
             ])
+        }
+    }
+    
+    nonisolated func listenAll(userId: String, farmId: String, onChange: @escaping (Result<[LambingSeasonGroup], Error>) -> Void) -> AnyCancellable {
+        let token = UUID()
+        // Register listener and emit initial snapshot on the actor
+        Task { [weak self] in
+            guard let self else { return }
+            await self.addListener(token: token, farmId: farmId, onChange: onChange)
+            await self.notifyListeners(userId: userId, farmId: farmId)
+        }
+        // Return cancellable that removes the listener on the actor
+        return AnyCancellable { [weak self] in
+            Task { [weak self] in
+                guard let self else { return }
+                await self.removeListener(token: token, farmId: farmId)
+            }
         }
     }
 }

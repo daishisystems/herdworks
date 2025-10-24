@@ -22,6 +22,8 @@ final class AllLambingSeasonsViewModel: ObservableObject {
     private let farmStore: FarmStore
     private let userId: String
     private var farmNameCache: [String: String] = [:]
+    private var farmListeners: [String: AnyCancellable] = [:]
+    private var groupsByFarm: [String: [LambingSeasonGroup]] = [:]
 
     init(lambingStore: LambingSeasonGroupStore, farmStore: FarmStore, userId: String) {
         self.lambingStore = lambingStore
@@ -42,9 +44,7 @@ final class AllLambingSeasonsViewModel: ObservableObject {
             updateFarmNameCache()
             print("✅ [ALL-SEASONS-VM] Loaded farms: \(farms.count)")
 
-            let loadedGroups = try await loadAllGroups()
-            groups = loadedGroups.sorted { $0.matingStart > $1.matingStart }
-            print("✅ [ALL-SEASONS-VM] Loaded groups: \(groups.count)")
+            attachListeners()
         } catch {
             print("❌ [ALL-SEASONS-VM] loadData failed: \(error)")
             errorMessage = String(format: "error.failed_to_load".localized(), error.localizedDescription)
@@ -69,25 +69,37 @@ final class AllLambingSeasonsViewModel: ObservableObject {
         }
     }
 
-    private func loadAllGroups() async throws -> [LambingSeasonGroup] {
-        var allGroups: [LambingSeasonGroup] = []
+    private func attachListeners() {
+        // Cancel existing listeners
+        farmListeners.values.forEach { $0.cancel() }
+        farmListeners.removeAll()
+        groupsByFarm.removeAll()
 
         for farm in farms {
-            do {
-                let farmGroups = try await lambingStore.fetchAll(userId: userId, farmId: farm.id)
-                allGroups.append(contentsOf: farmGroups)
-                print("📊 [ALL-SEASONS-VM] Farm \(farm.name) groups: \(farmGroups.count)")
-            } catch {
-                print("⚠️ [ALL-SEASONS-VM] Failed to load farm \(farm.name): \(error)")
+            let cancellable = lambingStore.listenAll(userId: userId, farmId: farm.id) { [weak self] result in
+                Task { @MainActor in
+                    guard let self else { return }
+                    switch result {
+                    case .failure(let error):
+                        print("⚠️ [ALL-SEASONS-VM] Listener error for farm \(farm.name): \(error)")
+                    case .success(let farmGroups):
+                        self.groupsByFarm[farm.id] = farmGroups
+                        let all = self.groupsByFarm.values.flatMap { $0 }
+                        self.groups = all.sorted { $0.matingStart > $1.matingStart }
+                        print("📡 [ALL-SEASONS-VM] Live update: total groups = \(self.groups.count)")
+                    }
+                }
             }
+            farmListeners[farm.id] = cancellable
         }
-
-        return allGroups
     }
 
     private func updateFarmNameCache() {
         farmNameCache = Dictionary(uniqueKeysWithValues: farms.map { ($0.id, $0.name) })
         print("🔵 [ALL-SEASONS-VM] Farm name cache entries: \(farmNameCache.count)")
     }
-}
 
+    deinit {
+        farmListeners.values.forEach { $0.cancel() }
+    }
+}
