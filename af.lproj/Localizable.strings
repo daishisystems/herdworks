@@ -231,3 +231,98 @@
 "farm.view_on_map_subtitle" = "Sien plaasligging";
 "form.fix_highlighted_fields_to_save" = "Maak die gemerkte velde reg om te stoor";
 "form.end_date_must_be_after_start" = "Einddatum moet ná begindatum wees";
+
+# List View
+"breeding.list_title" = "Teelgebeurtenisse";
+"breeding.add_event" = "Voeg Teelgebeurtenis By";
+"breeding.empty_title" = "Geen Teelgebeurtenisse";
+"breeding.empty_subtitle" = "Volg KI en natuurlike paringsgebeurtenisse vir hierdie lamseisoen";
+"breeding.add_first_event" = "Voeg Eerste Teelgebeurtenis By";
+
+# Form Titles
+"breeding.edit_event" = "Wysig Teelgebeurtenis";
+"breeding.event_details" = "Gebeurtenisbesonderhede";
+
+# Breeding Method Section
+"breeding.breeding_method" = "Teelmetode";
+"breeding.method_ai" = "KI";
+"breeding.method_natural" = "Natuurlik";
+"breeding.method_none" = "Nie gespesifiseer";
+"breeding.method_required_footer" = "Ten minste een teelmetode (KI of Natuurlike Paring) is vereis.";
+
+# AI Breeding Section
+"breeding.ai_section" = "KI Teling";
+"breeding.ai_date" = "KI Datum";
+"breeding.ai_footer" = "Teken die datum van kunsmatige inseminasie aan indien gebruik.";
+"breeding.use_ai" = "Gebruik KI Teling";
+
+# Natural Mating Section
+"breeding.natural_section" = "Natuurlike Paring";
+"breeding.natural_start" = "Paring Begin";
+"breeding.natural_end" = "Paring Einde";
+"breeding.natural_days" = "Paringstydperk";
+"breeding.natural_footer" = "Teken die natuurlike paringsperiode aan indien gebruik.";
+"breeding.use_natural" = "Gebruik Natuurlike Paring";
+
+# Follow-Up Rams Section
+"breeding.followup_section" = "Opvolgramme";
+"breeding.use_followup" = "Het U Opvolgramme Gebruik?";
+"breeding.rams_in" = "Ramme Ingebring";
+"breeding.rams_out" = "Ramme Verwyder";
+"breeding.followup_days" = "Dae Met Opvolgramme";
+"breeding.followup_footer" = "Teken opvolgram gebruik aan indien van toepassing.";
+
+# Calculated Info Section
+"breeding.summary_section" = "Opsomming";
+"breeding.year" = "Jaar";
+"breeding.calculation_date" = "Verwysingsdatum";
+"breeding.calculated_info_footer" = "Jaar word bereken vanaf KI datum of natuurlike paring begin datum.";
+
+# All Breeding Events
+"breeding.all_events_title" = "Alle Teelgebeurtenisse";
+"breeding.all_events_subtitle" = "Bekyk alle teling oor plase en seisoene";
+"breeding.select_farm_group" = "Kies Plaas & Lamseisoen";
+"breeding.no_events" = "Geen teelgebeurtenisse";
+"breeding.no_events_subtitle" = "Begin om teelgebeurtenisse oor u plase te volg";
+
+# Farm & Group Selection
+"breeding.farm_selection" = "Plaas & Lamseisoen";
+"breeding.select_farm" = "Kies Plaas";
+"breeding.choose_farm" = "Kies 'n plaas...";
+"breeding.select_group" = "Kies Lamseisoen";
+"breeding.choose_group" = "Kies 'n lamseisoen...";
+"breeding.farm_selection_required" = "Kies asseblief 'n plaas voor stoor.";
+"breeding.group_selection_required" = "Kies asseblief 'n lamseisoen voor stoor.";
+"breeding.no_groups_available" = "Geen lamseisoene beskikbaar vir hierdie plaas nie";
+"breeding.no_groups_title" = "Geen Lamseisoene";
+"breeding.no_groups_message" = "Skep asseblief eers 'n lamseisoengroep voor u teelgebeurtenisse byvoeg.";
+
+# Validation Messages
+"breeding.error.no_breeding_method" = "Verskaf asseblief óf KI datum óf natuurlike paring begin datum";
+"breeding.error.invalid_mating_dates" = "Paring einde datum moet op of na paring begin datum wees";
+"breeding.error.invalid_followup_dates" = "Ramme uit datum moet op of na ramme in datum wees";
+"breeding.error.followup_dates_required" = "Beide ramme in en uit datums is vereis wanneer opvolgramme gebruik word";
+"breeding.error.followup_dates_not_allowed" = "Maak opvolgram datums skoon wanneer nie opvolgramme gebruik word nie";
+
+# Delete Confirmation
+"breeding.delete_title" = "Skrap Teelgebeurtenis";
+"breeding.delete_message" = "Is u seker u wil hierdie teelgebeurtenis van %@ skrap?";
+"breeding.delete_confirmation" = "Hierdie teelgebeurtenis sal permanent geskrap word.";
+
+# Display Text
+"breeding.events_count" = "%d gebeurtenis(se)";
+"breeding.year_display" = "Jaar: %d";
+
+# Empty States
+"breeding.no_active_events" = "Geen Aktiewe Teelgebeurtenisse";
+"breeding.no_events_for_season" = "Nog geen teelgebeurtenisse vir hierdie seisoen nie";
+
+# Filter Options
+"breeding.show_all_years" = "Alle Jare";
+"breeding.filter_by_year" = "Filter volgens Jaar";
+"breeding.filter_by_method" = "Filter volgens Metode";
+
+# Row Display
+"breeding.farm_label" = "Plaas";
+"breeding.season_label" = "Seisoen";
+"breeding.both_methods" = "KI + Natuurlik";
