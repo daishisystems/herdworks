@@ -187,7 +187,7 @@
 "lambing.active" = "Aktief";
 
 // Mating Period
-"lambing.mating_period" = "Partyd";
+"lambing.mating_period" = "Paringsperiode";
 "lambing.mating_period_footer" = "Wanneer ramme by ooie is vir teling";
 "lambing.mating_short" = "Par";
 "lambing.start_date" = "Begin Datum";
@@ -199,7 +199,7 @@
 "lambing.lambing_period" = "Lamtyd";
 "lambing.lambing_period_footer" = "Verwagte lamdatums gebaseer op dragtigheidsperiode";
 "lambing.lambing_short" = "Lam";
-"lambing.auto_calculate" = "Outo-bereken vanaf pardatums";
+"lambing.auto_calculate" = "Outo-bereken vanaf paringsdatums";
 
 // Calculated Info
 "lambing.calculated_info" = "Berekende Inligting";
