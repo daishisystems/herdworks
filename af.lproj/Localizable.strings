@@ -229,3 +229,5 @@
 "farm.production_stats_subtitle" = "Bekyk prestasie maatstawwe";
 "farm.view_on_map" = "Bekyk op Kaart";
 "farm.view_on_map_subtitle" = "Sien plaasligging";
+"form.fix_highlighted_fields_to_save" = "Maak die gemerkte velde reg om te stoor";
+"form.end_date_must_be_after_start" = "Einddatum moet ná begindatum wees";

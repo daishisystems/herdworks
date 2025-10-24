@@ -230,3 +230,5 @@
 "farm.production_stats_subtitle" = "View performance metrics";
 "farm.view_on_map" = "View on Map";
 "farm.view_on_map_subtitle" = "See farm location";
+"form.fix_highlighted_fields_to_save" = "Fix the highlighted fields to save";
+"form.end_date_must_be_after_start" = "End date must be after start date";

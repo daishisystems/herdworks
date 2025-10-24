@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 final class AllLambingSeasonsViewModel: ObservableObject {
+    
     @Published var groups: [LambingSeasonGroup] = []
     @Published var farms: [Farm] = []
     @Published var isLoading = false
@@ -88,3 +90,4 @@ final class AllLambingSeasonsViewModel: ObservableObject {
         print("🔵 [ALL-SEASONS-VM] Farm name cache entries: \(farmNameCache.count)")
     }
 }
+

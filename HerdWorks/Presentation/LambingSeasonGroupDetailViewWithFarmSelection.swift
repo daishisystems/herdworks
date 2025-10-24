@@ -49,6 +49,18 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
             .navigationTitle("lambing.add_group".localized())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    VStack(spacing: 2) {
+                        Text("lambing.add_group".localized())
+                            .font(.headline)
+                        if !canSave && !viewModel.isSaving {
+                            Text("form.fix_highlighted_fields_to_save".localized())
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .transition(.opacity)
+                        }
+                    }
+                }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("common.cancel".localized()) {
                         dismiss()
@@ -64,6 +76,7 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
                         }
                     }
                     .disabled(!canSave || viewModel.isSaving)
+                    .opacity(!canSave || viewModel.isSaving ? 0.4 : 1.0)
                 }
             }
             .alert("common.error".localized(), isPresented: $viewModel.showError) {
@@ -90,16 +103,16 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
             footer: Group {
                 if selectedFarmId.isEmpty && !farms.isEmpty {
                     Text("lambing.farm_selection_required".localized())
-                        .foregroundStyle(.red)
+                        .foregroundColor(.red)
                 } else if farms.isEmpty {
                     Text("lambing.no_farms_available".localized())
-                        .foregroundStyle(.orange)
+                        .foregroundColor(.orange)
                 }
             }
         ) {
             if farms.isEmpty {
                 Text("lambing.no_farms_available".localized())
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
             } else {
                 Picker("lambing.select_farm".localized(), selection: $selectedFarmId) {
                     Text("lambing.choose_farm".localized())
@@ -118,7 +131,7 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
             header: Text("lambing.basic_info".localized()),
             footer: Text("lambing.basic_info_footer".localized())
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.secondary)
         ) {
             TextField("lambing.code".localized(), text: $viewModel.code)
                 .textInputAutocapitalization(.characters)
@@ -133,9 +146,17 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
     private var matingPeriodSection: some View {
         Section(
             header: Text("lambing.mating_period".localized()),
-            footer: Text("lambing.mating_period_footer".localized())
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            footer: VStack(spacing: 4) {
+                Text("lambing.mating_period_footer".localized())
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                if viewModel.matingEnd < viewModel.matingStart {
+                    Text("form.end_date_must_be_after_start".localized())
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+            }
         ) {
             DatePicker(
                 "lambing.start_date".localized(),
@@ -143,6 +164,9 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
                 displayedComponents: [.date]
             )
             .datePickerStyle(.wheel)
+            .onChange(of: viewModel.matingStart) { newStart in
+                if viewModel.matingEnd < newStart { viewModel.matingEnd = newStart }
+            }
 
             DatePicker(
                 "lambing.end_date".localized(),
@@ -153,10 +177,10 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
 
             HStack {
                 Text("lambing.duration".localized())
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
                 Spacer()
                 Text("\(viewModel.matingDurationDays) \("lambing.days".localized())")
-                    .foregroundStyle(viewModel.matingDurationDays > 0 ? .primary : .red)
+                    .foregroundColor(viewModel.matingDurationDays > 0 ? .primary : .red)
             }
         }
     }
@@ -167,7 +191,7 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
             footer: VStack(alignment: .leading, spacing: 8) {
                 Text("lambing.lambing_period_footer".localized())
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
 
                 Button {
                     viewModel.calculateLambingDatesFromMating()
@@ -178,7 +202,13 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
                         Text("lambing.auto_calculate".localized())
                             .font(.caption)
                     }
-                    .foregroundStyle(.blue)
+                    .foregroundColor(.blue)
+                }
+
+                if viewModel.lambingEnd < viewModel.lambingStart {
+                    Text("form.end_date_must_be_after_start".localized())
+                        .font(.caption)
+                        .foregroundColor(.red)
                 }
             }
         ) {
@@ -188,6 +218,9 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
                 displayedComponents: [.date]
             )
             .datePickerStyle(.wheel)
+            .onChange(of: viewModel.lambingStart) { newStart in
+                if viewModel.lambingEnd < newStart { viewModel.lambingEnd = newStart }
+            }
 
             DatePicker(
                 "lambing.end_date".localized(),
@@ -198,10 +231,10 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
 
             HStack {
                 Text("lambing.duration".localized())
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
                 Spacer()
                 Text("\(viewModel.lambingDurationDays) \("lambing.days".localized())")
-                    .foregroundStyle(viewModel.lambingDurationDays > 0 ? .primary : .red)
+                    .foregroundColor(viewModel.lambingDurationDays > 0 ? .primary : .red)
             }
         }
     }
@@ -211,14 +244,14 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
             header: Text("lambing.calculated_info".localized()),
             footer: Text("lambing.calculated_info_footer".localized())
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.secondary)
         ) {
             HStack {
                 Text("lambing.gestation_period".localized())
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
                 Spacer()
                 Text("\(viewModel.gestationDays) \("lambing.days".localized())")
-                    .foregroundStyle(
+                    .foregroundColor(
                         viewModel.gestationDays >= 140 && viewModel.gestationDays <= 160 ? .primary : .orange
                     )
                     .fontWeight(
@@ -233,10 +266,10 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
             Label {
                 Text(warning)
                     .font(.caption)
-                    .foregroundStyle(.orange)
+                    .foregroundColor(.orange)
             } icon: {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundStyle(.orange)
+                    .foregroundColor(.orange)
             }
         }
     }
@@ -307,3 +340,4 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
     )
     .environmentObject(LanguageManager.shared)
 }
+

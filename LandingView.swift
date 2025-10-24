@@ -419,5 +419,4 @@ private struct SettingsRow: View {
 #Preview {
     LandingView()
         .environmentObject(LanguageManager.shared)
-        .environmentObject(ProfileGate())
 }
