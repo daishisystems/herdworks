@@ -14,6 +14,7 @@ struct AllLambingSeasonsView: View {
     @State private var showingAddGroup = false
     @State private var selectedGroup: LambingSeasonGroup?
     @State private var showActiveOnly = true
+    @Environment(\.dismiss) private var dismiss
 
     private let lambingStore: LambingSeasonGroupStore
     private let farmStore: FarmStore
@@ -46,6 +47,12 @@ struct AllLambingSeasonsView: View {
             .navigationTitle("lambing.all_seasons_title".localized())
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("common.done".localized()) {
+                        dismiss()
+                    }
+                }
+                
                 ToolbarItem(placement: .navigationBarLeading) {
                     filterToggle
                 }
@@ -327,3 +334,4 @@ private struct ProgressBar: View {
     )
     .environmentObject(LanguageManager.shared)
 }
+
