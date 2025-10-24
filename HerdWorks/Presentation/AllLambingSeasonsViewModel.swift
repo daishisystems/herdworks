@@ -24,6 +24,7 @@ final class AllLambingSeasonsViewModel: ObservableObject {
     private var farmNameCache: [String: String] = [:]
     private var farmListeners: [String: AnyCancellable] = [:]
     private var groupsByFarm: [String: [LambingSeasonGroup]] = [:]
+    private var groupsDebounceTask: Task<Void, Never>?
 
     init(lambingStore: LambingSeasonGroupStore, farmStore: FarmStore, userId: String) {
         self.lambingStore = lambingStore
@@ -84,9 +85,18 @@ final class AllLambingSeasonsViewModel: ObservableObject {
                         print("⚠️ [ALL-SEASONS-VM] Listener error for farm \(farm.name): \(error)")
                     case .success(let farmGroups):
                         self.groupsByFarm[farm.id] = farmGroups
-                        let all = self.groupsByFarm.values.flatMap { $0 }
-                        self.groups = all.sorted { $0.matingStart > $1.matingStart }
-                        print("📡 [ALL-SEASONS-VM] Live update: total groups = \(self.groups.count)")
+
+                        // Debounce/coalesce rapid updates from multiple farm listeners
+                        self.groupsDebounceTask?.cancel()
+                        self.groupsDebounceTask = Task { [weak self] in
+                            // Small debounce window (~120ms)
+                            try? await Task.sleep(nanoseconds: 120_000_000)
+                            guard let self = self else { return }
+                            let all = self.groupsByFarm.values.flatMap { $0 }
+                            let sorted = all.sorted { $0.matingStart > $1.matingStart }
+                            self.groups = sorted
+                            print("📡 [ALL-SEASONS-VM] Live update: total groups = \(sorted.count)")
+                        }
                     }
                 }
             }
@@ -101,5 +111,7 @@ final class AllLambingSeasonsViewModel: ObservableObject {
 
     deinit {
         farmListeners.values.forEach { $0.cancel() }
+        groupsDebounceTask?.cancel()
     }
 }
+

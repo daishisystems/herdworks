@@ -29,16 +29,41 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         FirebaseApp.configure(options: options)
         
-        // ✅ MODERN API: Enable offline persistence for field users
+        // ✅ MODERN API: Enable offline persistence for field users with bounded cache (Info.plist configurable)
         let settings = FirestoreSettings()
-        settings.cacheSettings = PersistentCacheSettings(sizeBytes: NSNumber(value: FirestoreCacheSizeUnlimited))
-        
+
+        // Firestore cache size configuration (Info.plist-driven)
+        // - Keys:
+        //   - FIRESTORE_CACHE_MB_DEV  (Number or String): Cache size in MB for Debug builds. Default = 48.
+        //   - FIRESTORE_CACHE_MB_PROD (Number or String): Cache size in MB for Release builds. Default = 192.
+        // - Rationale:
+        //   Field-first app with offline usage needs a bounded cache for predictability and responsiveness.
+        //   Values are read from Info.plist; if missing or invalid, sensible defaults are used.
+        // - Notes:
+        //   - Minimum enforced is 1 MB to avoid accidental zero/negative.
+        //   - Adjust these values per your offline data footprint and validate with Instruments.
+
+        // Read cache size (MB) from Info.plist with sensible defaults
+        let devCacheMB = (Bundle.main.object(forInfoDictionaryKey: "FIRESTORE_CACHE_MB_DEV") as? NSNumber)?.intValue
+            ?? Int((Bundle.main.object(forInfoDictionaryKey: "FIRESTORE_CACHE_MB_DEV") as? String) ?? "") ?? 48
+        let prodCacheMB = (Bundle.main.object(forInfoDictionaryKey: "FIRESTORE_CACHE_MB_PROD") as? NSNumber)?.intValue
+            ?? Int((Bundle.main.object(forInfoDictionaryKey: "FIRESTORE_CACHE_MB_PROD") as? String) ?? "") ?? 192
+
+        #if DEBUG
+        let selectedCacheMB = max(1, devCacheMB)
+        #else
+        let selectedCacheMB = max(1, prodCacheMB)
+        #endif
+        let cacheBytes = selectedCacheMB * 1024 * 1024
+
+        settings.cacheSettings = PersistentCacheSettings(sizeBytes: NSNumber(value: cacheBytes))
+
         let db = Firestore.firestore()
         db.settings = settings
 
         #if DEBUG
         print("✅ Firebase initialized for \(plistName)")
-        print("✅ Firestore offline persistence enabled with unlimited cache")
+        print("✅ Firestore offline persistence enabled with bounded cache: \(selectedCacheMB) MB (from Info.plist)")
         #endif
     }
 }

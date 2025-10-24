@@ -13,6 +13,12 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
     @EnvironmentObject private var languageManager: LanguageManager
     @Environment(\.dismiss) private var dismiss
 
+    @FocusState private var focusedField: Field?
+    private enum Field: Hashable {
+        case code
+        case name
+    }
+
     @State private var selectedFarmId: String = ""
 
     private let lambingStore: LambingSeasonGroupStore
@@ -70,6 +76,8 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("common.save".localized()) {
                         Task {
+                            await MainActor.run { focusedField = nil }
+                            try? await Task.sleep(nanoseconds: 150_000_000)
                             if await saveWithSelectedFarm() {
                                 dismiss()
                             }
@@ -135,9 +143,11 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
         ) {
             TextField("lambing.code".localized(), text: $viewModel.code)
                 .textInputAutocapitalization(.characters)
+                .focused($focusedField, equals: .code)
 
             TextField("lambing.name".localized(), text: $viewModel.name)
                 .textInputAutocapitalization(.words)
+                .focused($focusedField, equals: .name)
 
             Toggle("lambing.active".localized(), isOn: $viewModel.isActive)
         }
@@ -280,8 +290,10 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
 
     private func saveWithSelectedFarm() async -> Bool {
         guard canSave else {
-            viewModel.errorMessage = "lambing.farm_selection_required".localized()
-            viewModel.showError = true
+            await MainActor.run {
+                viewModel.errorMessage = "lambing.farm_selection_required".localized()
+                viewModel.showError = true
+            }
             return false
         }
 
@@ -297,8 +309,8 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
             isActive: viewModel.isActive
         )
 
-        viewModel.isSaving = true
-        defer { viewModel.isSaving = false }
+        await MainActor.run { viewModel.isSaving = true }
+        defer { Task { await MainActor.run { viewModel.isSaving = false } } }
 
         do {
             print("🔵 [FARM-SELECT] Creating group for farm: \(selectedFarmId)")
@@ -307,8 +319,10 @@ struct LambingSeasonGroupDetailViewWithFarmSelection: View {
             return true
         } catch {
             print("❌ [FARM-SELECT] Failed to create group: \(error)")
-            viewModel.errorMessage = String(format: "error.failed_to_save".localized(), error.localizedDescription)
-            viewModel.showError = true
+            await MainActor.run {
+                viewModel.errorMessage = String(format: "error.failed_to_save".localized(), error.localizedDescription)
+                viewModel.showError = true
+            }
             return false
         }
     }
