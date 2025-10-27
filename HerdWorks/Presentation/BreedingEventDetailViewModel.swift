@@ -11,7 +11,8 @@ import Combine
 
 @MainActor
 final class BreedingEventDetailViewModel: ObservableObject {
-    var objectWillChange: ObservableObjectPublisher = ObservableObjectPublisher()
+    // ❌ REMOVED THIS LINE - it was breaking SwiftUI's change tracking:
+    // var objectWillChange: ObservableObjectPublisher = ObservableObjectPublisher()
     
     // MARK: - Published Properties (Form Fields)
     
@@ -206,4 +207,3 @@ final class BreedingEventDetailViewModel: ObservableObject {
         }
     }
 }
-

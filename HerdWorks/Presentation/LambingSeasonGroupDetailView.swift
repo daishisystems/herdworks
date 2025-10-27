@@ -13,8 +13,21 @@ struct LambingSeasonGroupDetailView: View {
     @EnvironmentObject private var languageManager: LanguageManager
     @Environment(\.dismiss) private var dismiss
     
+    // NEW: Add these properties for breeding events
+    @State private var breedingEventsCount: Int = 0
+    private let breedingStore = FirestoreBreedingEventStore()
+    
+    // Store these from init parameters
+    private let userId: String
+    private let farmId: String
+    private let existingGroup: LambingSeasonGroup?
+    
     init(store: LambingSeasonGroupStore, farmId: String, group: LambingSeasonGroup? = nil) {
         let uid = Auth.auth().currentUser?.uid ?? ""
+        self.userId = uid
+        self.farmId = farmId
+        self.existingGroup = group
+        
         _viewModel = StateObject(wrappedValue: LambingSeasonGroupDetailViewModel(
             store: store,
             userId: uid,
@@ -30,6 +43,11 @@ struct LambingSeasonGroupDetailView: View {
                 matingPeriodSection
                 lambingPeriodSection
                 calculatedInfoSection
+                
+                // NEW: Add breeding events section (only show when editing, not creating)
+                if existingGroup != nil {
+                    breedingEventsSection
+                }
                 
                 if let warning = viewModel.gestationWarning {
                     warningSection(warning)
@@ -70,8 +88,16 @@ struct LambingSeasonGroupDetailView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
             }
+            // NEW: Load breeding events count when view appears
+            .task {
+                if existingGroup != nil {
+                    await loadBreedingEventsCount()
+                }
+            }
         }
     }
+    
+    // MARK: - Existing Sections
     
     private var basicInfoSection: some View {
         Section(header: Text("lambing.basic_info".localized()),
@@ -182,6 +208,43 @@ struct LambingSeasonGroupDetailView: View {
         }
     }
     
+    // NEW: Breeding Events Section
+    private var breedingEventsSection: some View {
+        Section(header: Text("lambing.related_data".localized())) {
+            NavigationLink {
+                BreedingEventListView(
+                    store: breedingStore,
+                    userId: userId,
+                    farmId: farmId,
+                    groupId: existingGroup?.id ?? "",
+                    groupName: existingGroup?.displayName ?? ""
+                )
+            } label: {
+                HStack {
+                    Label("breeding.list_title".localized(), systemImage: "heart.circle.fill")
+                        .foregroundStyle(.green)
+                    
+                    Spacer()
+                    
+                    // Count badge
+                    if breedingEventsCount > 0 {
+                        Text("\(breedingEventsCount)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.secondary.opacity(0.2))
+                            .clipShape(Capsule())
+                    }
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+    }
+    
     private func warningSection(_ warning: String) -> some View {
         Section {
             Label {
@@ -192,6 +255,27 @@ struct LambingSeasonGroupDetailView: View {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .foregroundStyle(Color.orange)
             }
+        }
+    }
+    
+    // MARK: - NEW: Helper Methods
+    
+    private func loadBreedingEventsCount() async {
+        guard let group = existingGroup else {
+            print("⚠️ [LAMBING-DETAIL] No group available to load breeding events")
+            return
+        }
+        
+        do {
+            let events = try await breedingStore.fetchAll(
+                userId: userId,
+                farmId: farmId,
+                groupId: group.id
+            )
+            breedingEventsCount = events.count
+            print("✅ [LAMBING-DETAIL] Loaded \(events.count) breeding events")
+        } catch {
+            print("⚠️ [LAMBING-DETAIL] Failed to load breeding events count: \(error)")
         }
     }
 }

@@ -2,7 +2,7 @@
 //  AllBreedingEventsViewModel.swift
 //  HerdWorks
 //
-//  Created by Paul Mooney on 2025/10/24.
+//  Created by Claude on 2025/10/24.
 //
 
 import Foundation
