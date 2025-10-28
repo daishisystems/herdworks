@@ -2,7 +2,7 @@
 //  BreedingEventListView.swift
 //  HerdWorks
 //
-//  Created by Claude on 2025/10/24.
+//  Updated: Phase 4 - Fixed icons and number formatting
 //
 
 import SwiftUI
@@ -101,7 +101,9 @@ struct BreedingEventListView: View {
                 }
             }
         } message: { event in
-            Text(String(format: "breeding.delete_message".localized(), "\(groupName) - \(event.year)"))
+            // FIXED: Force non-localized integer formatting
+            let yearString = String(format: "%d", event.year)
+            Text(String(format: "breeding.delete_message".localized(), "\(groupName) - \(yearString)"))
         }
     }
     
@@ -195,7 +197,7 @@ private struct BreedingEventRow: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            // Icon
+            // Icon based on mating type
             Circle()
                 .fill(Color.green.gradient)
                 .frame(width: 56, height: 56)
@@ -207,8 +209,9 @@ private struct BreedingEventRow: View {
             
             // Content
             VStack(alignment: .leading, spacing: 4) {
-                // Year
-                Text("\("breeding.year".localized()): \(String(event.year))")
+                // FIXED: Force non-localized integer formatting
+                let yearString = String(format: "%d", event.year)
+                Text("\("breeding.year".localized()): \(yearString)")
                     .font(.headline)
                 
                 // Breeding method
@@ -222,6 +225,12 @@ private struct BreedingEventRow: View {
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
+                
+                // Number of ewes
+                let ewesString = String(format: "%d", event.numberOfEwesMated)
+                Text("\("breeding.number_of_ewes".localized()): \(ewesString)")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
             }
             
             Spacer()
@@ -230,7 +239,8 @@ private struct BreedingEventRow: View {
             VStack(alignment: .trailing, spacing: 4) {
                 // Natural mating duration
                 if let days = event.naturalMatingDays {
-                    Label("\(days)d", systemImage: "heart")
+                    let daysString = String(format: "%d", days)
+                    Label("\(daysString)d", systemImage: "heart")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -250,13 +260,13 @@ private struct BreedingEventRow: View {
         .padding(.vertical, 8)
     }
     
+    // FIXED: Always return valid SF Symbol name based on mating type
     private var iconName: String {
-        if event.aiDate != nil && event.naturalMatingStart != nil {
-            return "heart.circle.fill" // Both methods
-        } else if event.aiDate != nil {
-            return "syringe.fill" // AI only
-        } else {
-            return "heart.fill" // Natural only
+        switch event.matingType {
+        case .cervicalAI, .laparoscopicAI:
+            return "syringe.fill"
+        case .naturalMating:
+            return "heart.fill"
         }
     }
 }

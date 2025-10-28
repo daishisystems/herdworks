@@ -328,3 +328,40 @@
 "breeding.farm_label" = "Farm";
 "breeding.season_label" = "Season";
 "breeding.both_methods" = "AI + Natural";
+
+/* Breeding Events - Updated */
+"breeding.mating_type" = "Mating Type";
+"breeding.mating_type_footer" = "Select the type of mating used for this breeding event";
+"breeding.mating_type_natural" = "Natural Mating";
+"breeding.mating_type_cervical" = "Cervical AI";
+"breeding.mating_type_laparoscopic" = "Laparoscopic AI";
+"breeding.number_of_ewes" = "Number of Ewes Mated";
+"breeding.number_of_ewes_placeholder" = "Enter number";
+"breeding.number_of_ewes_footer" = "Total number of ewes mated in this event";
+"breeding.ewes_required" = "Number of ewes is required";
+"breeding.ewes_must_be_positive" = "Number of ewes must be greater than zero";
+
+/* Natural Mating */
+"breeding.natural_days" = "Days";
+"breeding.natural_section_footer" = "Enter the number of days for natural mating. The end date will be calculated automatically.";
+"breeding.days_required" = "Number of days is required";
+"breeding.days_must_be_positive" = "Number of days must be greater than zero";
+
+/* Follow-up Rams */
+"breeding.rams_out_must_be_after_in" = "Rams out date must be after rams in date";
+
+/* General */
+"breeding.year" = "Year";
+"form.fix_highlighted_fields_to_save" = "Fix highlighted fields to save";
+
+// MARK: - Farm Selection
+"farm.select_farm" = "Select Farm";
+"farm.select_farm_placeholder" = "Choose a farm...";
+
+// MARK: - Lambing Group Selection
+"lambing.select_group" = "Select Lambing Group";
+"lambing.select_group_placeholder" = "Choose a group...";
+
+// MARK: - Breeding Event Selection
+"breeding.select_farm_and_group" = "Select Farm and Lambing Group";
+"breeding.select_farm_and_group_footer" = "Please select a farm and lambing group to record breeding events.";

@@ -2,199 +2,165 @@
 //  BreedingEvent.swift
 //  HerdWorks
 //
-//  Created by Paul Mooney on 2025/10/24.
+//  Updated: Phase 4 - Corrected data model with proper spelling
 //
 
 import Foundation
 
-/// Represents a breeding event for a specific lambing season group
-/// Tracks AI and/or natural mating, plus follow-up ram usage
+// MARK: - Mating Type Enum
+
+enum MatingType: String, Codable, CaseIterable {
+    case naturalMating = "Natural Mating"
+    case cervicalAI = "Cervical AI"
+    case laparoscopicAI = "Laparoscopic AI"
+    
+    var displayName: String {
+        return rawValue
+    }
+    
+    // Localized display name for UI
+    var localizedName: String {
+        switch self {
+        case .naturalMating:
+            return "breeding.mating_type_natural".localized()
+        case .cervicalAI:
+            return "breeding.mating_type_cervical".localized()
+        case .laparoscopicAI:
+            return "breeding.mating_type_laparoscopic".localized()
+        }
+    }
+}
+
+// MARK: - Breeding Event Model
+
 struct BreedingEvent: Identifiable, Codable {
-    // MARK: - Identity
-    let id: String // UUID
+    let id: String
     let userId: String
     let farmId: String
     let lambingSeasonGroupId: String
     
-    // MARK: - Breeding Methods
-    /// Artificial insemination date (optional)
+    // REQUIRED FIELDS
+    var matingType: MatingType
+    var numberOfEwesMated: Int
+    
+    // NATURAL MATING FIELDS (only if matingType == .naturalMating)
+    var naturalMatingStart: Date?
+    var naturalMatingDays: Int?  // User enters manually
+    
+    // AI FIELDS (only if matingType == .cervicalAI or .laparoscopicAI)
     var aiDate: Date?
     
-    /// Natural mating start date (optional)
-    var naturalMatingStart: Date?
-    
-    /// Natural mating end date (optional)
-    var naturalMatingEnd: Date?
-    
-    // MARK: - Follow-Up Rams
-    /// Whether follow-up rams were used
+    // FOLLOW-UP RAMS (only for AI types)
     var usedFollowUpRams: Bool
-    
-    /// Date follow-up rams were introduced (required if usedFollowUpRams is true)
     var followUpRamsIn: Date?
-    
-    /// Date follow-up rams were removed (required if usedFollowUpRams is true)
     var followUpRamsOut: Date?
     
-    // MARK: - Timestamps
     let createdAt: Date
     var updatedAt: Date
     
-    // MARK: - Computed Properties
-    
-    /// Duration of natural mating period in days
-    var naturalMatingDays: Int? {
-        guard let start = naturalMatingStart,
-              let end = naturalMatingEnd else {
-            return nil
-        }
-        let days = Calendar.current.dateComponents([.day], from: start, to: end).day ?? 0
-        return max(0, days) // Ensure non-negative
-    }
-    
-    /// Duration of follow-up ram period in days
-    var followUpDays: Int? {
-        guard let ramsIn = followUpRamsIn,
-              let ramsOut = followUpRamsOut else {
-            return nil
-        }
-        let days = Calendar.current.dateComponents([.day], from: ramsIn, to: ramsOut).day ?? 0
-        return max(0, days) // Ensure non-negative
-    }
-    
-    /// The reference date used for year calculation
-    /// Uses AI date if available, otherwise natural mating start
-    var calculationDate: Date? {
-        aiDate ?? naturalMatingStart
-    }
-    
-    /// The year of the breeding event (calculated from the reference date)
-    var year: Int {
-        guard let date = calculationDate else {
-            return Calendar.current.component(.year, from: Date())
-        }
-        return Calendar.current.component(.year, from: date)
-    }
-    
-    /// Whether this event has valid breeding data (at least one method specified)
-    var hasBreedingData: Bool {
-        aiDate != nil || naturalMatingStart != nil
-    }
-    
-    /// Display date for sorting and UI (uses calculation date)
-    var displayDate: Date? {
-        calculationDate
-    }
-    
-    /// Display text for breeding method
-    var breedingMethodDescription: String {
-        var methods: [String] = []
-        
-        if aiDate != nil {
-            methods.append("breeding.method_ai".localized())
-        }
-        
-        if naturalMatingStart != nil {
-            methods.append("breeding.method_natural".localized())
-        }
-        
-        if methods.isEmpty {
-            return "breeding.method_none".localized()
-        }
-        
-        return methods.joined(separator: ", ")
-    }
-    
-    // MARK: - Initialization
+    // MARK: - Initializer
     
     init(
         id: String = UUID().uuidString,
         userId: String,
         farmId: String,
         lambingSeasonGroupId: String,
-        aiDate: Date? = nil,
+        matingType: MatingType,
+        numberOfEwesMated: Int,
         naturalMatingStart: Date? = nil,
-        naturalMatingEnd: Date? = nil,
+        naturalMatingDays: Int? = nil,
+        aiDate: Date? = nil,
         usedFollowUpRams: Bool = false,
         followUpRamsIn: Date? = nil,
-        followUpRamsOut: Date? = nil,
-        createdAt: Date = Date(),
-        updatedAt: Date = Date()
+        followUpRamsOut: Date? = nil
     ) {
         self.id = id
         self.userId = userId
         self.farmId = farmId
         self.lambingSeasonGroupId = lambingSeasonGroupId
-        self.aiDate = aiDate
+        self.matingType = matingType
+        self.numberOfEwesMated = numberOfEwesMated
         self.naturalMatingStart = naturalMatingStart
-        self.naturalMatingEnd = naturalMatingEnd
+        self.naturalMatingDays = naturalMatingDays
+        self.aiDate = aiDate
         self.usedFollowUpRams = usedFollowUpRams
         self.followUpRamsIn = followUpRamsIn
         self.followUpRamsOut = followUpRamsOut
-        self.createdAt = createdAt
-        self.updatedAt = updatedAt
-    }
-}
-
-// MARK: - Validation Helpers
-
-extension BreedingEvent {
-    /// Validates that at least one breeding method is specified
-    var hasValidBreedingMethod: Bool {
-        hasBreedingData
+        self.createdAt = Date()
+        self.updatedAt = Date()
     }
     
-    /// Validates that natural mating dates are in correct order
-    var hasValidNaturalMatingDates: Bool {
+    // MARK: - Computed Properties
+    
+    /// Auto-calculated Natural Mating End date
+    var naturalMatingEnd: Date? {
         guard let start = naturalMatingStart,
-              let end = naturalMatingEnd else {
-            // If one is nil, the other should be nil too for validity
-            return naturalMatingStart == nil && naturalMatingEnd == nil
-        }
-        return end >= start
+              let days = naturalMatingDays,
+              days > 0 else { return nil }
+        return Calendar.current.date(byAdding: .day, value: days, to: start)
     }
     
-    /// Validates that follow-up ram dates are in correct order
-    var hasValidFollowUpDates: Bool {
-        // If not using follow-up rams, dates should be nil
-        guard usedFollowUpRams else {
-            return followUpRamsIn == nil && followUpRamsOut == nil
-        }
+    /// Inclusive follow-up rams duration (today to tomorrow = 1 day)
+    var followUpDaysIn: Int? {
+        guard usedFollowUpRams,
+              let inDate = followUpRamsIn,
+              let outDate = followUpRamsOut else { return nil }
         
-        // If using follow-up rams, both dates must be provided
-        guard let ramsIn = followUpRamsIn,
-              let ramsOut = followUpRamsOut else {
-            return false
-        }
-        
-        return ramsOut >= ramsIn
+        let components = Calendar.current.dateComponents([.day], from: inDate, to: outDate)
+        let days = components.day ?? 0
+        return days + 1  // Inclusive calculation
     }
     
-    /// Overall validation status
-    var isValid: Bool {
-        hasValidBreedingMethod &&
-        hasValidNaturalMatingDates &&
-        hasValidFollowUpDates
+    /// Display date for list rows
+    var displayDate: Date? {
+        if matingType == .naturalMating {
+            return naturalMatingStart
+        } else {
+            return aiDate
+        }
+    }
+    
+    /// Breeding method description for display (localized)
+    var breedingMethodDescription: String {
+        return matingType.localizedName
+    }
+    
+    /// Year for grouping (derived from relevant date)
+    var year: Int {
+        let calendar = Calendar.current
+        if let date = displayDate {
+            return calendar.component(.year, from: date)
+        }
+        return calendar.component(.year, from: createdAt)
     }
 }
 
-// MARK: - Display Formatting
+// MARK: - Preview Helpers
 
 extension BreedingEvent {
-    /// Formatted year string for display
-    var yearString: String {
-        String(year)
+    static var preview: BreedingEvent {
+        BreedingEvent(
+            userId: "preview-user",
+            farmId: "preview-farm",
+            lambingSeasonGroupId: "preview-group",
+            matingType: .naturalMating,
+            numberOfEwesMated: 300,
+            naturalMatingStart: Date(),
+            naturalMatingDays: 2
+        )
     }
     
-    /// Formatted natural mating duration for display
-    var naturalMatingDaysString: String? {
-        guard let days = naturalMatingDays else { return nil }
-        return "\(days) \("lambing.days".localized())"
-    }
-    
-    /// Formatted follow-up ram duration for display
-    var followUpDaysString: String? {
-        guard let days = followUpDays else { return nil }
-        return "\(days) \("lambing.days".localized())"
+    static var previewAI: BreedingEvent {
+        BreedingEvent(
+            userId: "preview-user",
+            farmId: "preview-farm",
+            lambingSeasonGroupId: "preview-group",
+            matingType: .cervicalAI,
+            numberOfEwesMated: 500,
+            aiDate: Date(),
+            usedFollowUpRams: true,
+            followUpRamsIn: Date(),
+            followUpRamsOut: Calendar.current.date(byAdding: .day, value: 2, to: Date())
+        )
     }
 }

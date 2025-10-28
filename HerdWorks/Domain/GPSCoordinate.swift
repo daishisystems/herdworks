@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GPSCoordinate: Codable, Equatable, Sendable {
+struct GPSCoordinate: Codable, Equatable, Sendable, Hashable {
     let latitude: Double
     let longitude: Double
     

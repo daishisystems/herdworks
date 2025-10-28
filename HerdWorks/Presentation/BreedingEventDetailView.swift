@@ -2,7 +2,7 @@
 //  BreedingEventDetailView.swift
 //  HerdWorks
 //
-//  Created by Claude on 2025/10/24.
+//  Updated: Phase 4 - Conditional fields based on MatingType
 //
 
 import SwiftUI
@@ -15,7 +15,8 @@ struct BreedingEventDetailView: View {
     
     @FocusState private var focusedField: Field?
     private enum Field: Hashable {
-        case none
+        case numberOfEwes
+        case naturalDays
     }
     
     private let store: BreedingEventStore
@@ -45,27 +46,17 @@ struct BreedingEventDetailView: View {
     var body: some View {
         NavigationStack {
             Form {
-                breedingMethodSection
+                matingTypeSection
+                numberOfEwesSection
                 
-                // AI Section - with explicit animation
-                if viewModel.useAI {
-                    aiBreedingSection
-                        .transition(.opacity)
-                }
-                
-                // Natural Mating Section - with explicit animation
-                if viewModel.useNaturalMating {
+                // Conditional sections based on mating type
+                if viewModel.matingType == .naturalMating {
                     naturalMatingSection
-                        .transition(.opacity)
+                } else {
+                    aiSection
+                    followUpRamsSection
                 }
-                
-                followUpRamsSection
-                
-                calculatedInfoSection
             }
-            .animation(.easeInOut(duration: 0.2), value: viewModel.useAI)
-            .animation(.easeInOut(duration: 0.2), value: viewModel.useNaturalMating)
-            .animation(.easeInOut(duration: 0.2), value: viewModel.usedFollowUpRams)
             .navigationTitle(isEditing ? "breeding.edit_event".localized() : "breeding.add_event".localized())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -122,28 +113,87 @@ struct BreedingEventDetailView: View {
     
     // MARK: - Form Sections
     
-    private var breedingMethodSection: some View {
+    private var matingTypeSection: some View {
         Section(
-            header: Text("breeding.breeding_method".localized()),
+            header: Text("breeding.mating_type".localized()),
+            footer: Text("breeding.mating_type_footer".localized())
+                .font(.caption)
+                .foregroundColor(.secondary)
+        ) {
+            Picker("breeding.mating_type".localized(), selection: $viewModel.matingType) {
+                ForEach(MatingType.allCases, id: \.self) { type in
+                    Text(type.localizedName).tag(type)
+                }
+            }
+            .pickerStyle(.menu)
+        }
+    }
+    
+    private var numberOfEwesSection: some View {
+        Section(
+            header: Text("breeding.number_of_ewes".localized()),
             footer: VStack(alignment: .leading, spacing: 4) {
-                Text("breeding.method_required_footer".localized())
+                Text("breeding.number_of_ewes_footer".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                if !viewModel.hasBreedingMethod {
-                    Text(viewModel.breedingMethodError ?? "")
+                if let error = viewModel.numberOfEwesMatedError {
+                    Text(error)
                         .font(.caption)
                         .foregroundColor(.red)
                 }
             }
         ) {
-            Toggle("breeding.use_ai".localized(), isOn: $viewModel.useAI)
-            
-            Toggle("breeding.use_natural".localized(), isOn: $viewModel.useNaturalMating)
+            TextField("breeding.number_of_ewes_placeholder".localized(), text: $viewModel.numberOfEwesMated)
+                .keyboardType(.numberPad)
+                .focused($focusedField, equals: .numberOfEwes)
         }
     }
     
-    private var aiBreedingSection: some View {
+    // MARK: - Natural Mating Section
+    
+    private var naturalMatingSection: some View {
+        Section(
+            header: Text("breeding.natural_section".localized()),
+            footer: VStack(alignment: .leading, spacing: 8) {
+                Text("breeding.natural_section_footer".localized())
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                if let error = viewModel.naturalMatingDaysError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+            }
+        ) {
+            DatePicker(
+                "breeding.natural_start".localized(),
+                selection: $viewModel.naturalMatingStart,
+                displayedComponents: [.date]
+            )
+            .datePickerStyle(.wheel)
+            
+            TextField("breeding.natural_days".localized(), text: $viewModel.naturalMatingDays)
+                .keyboardType(.numberPad)
+                .focused($focusedField, equals: .naturalDays)
+            
+            // Auto-calculated end date (read-only)
+            if let endDate = viewModel.naturalMatingEnd {
+                HStack {
+                    Text("breeding.natural_end".localized())
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text(endDate, style: .date)
+                        .foregroundColor(.primary)
+                }
+            }
+        }
+    }
+    
+    // MARK: - AI Section
+    
+    private var aiSection: some View {
         Section(
             header: Text("breeding.ai_section".localized()),
             footer: Text("breeding.ai_footer".localized())
@@ -155,56 +205,11 @@ struct BreedingEventDetailView: View {
                 selection: $viewModel.aiDate,
                 displayedComponents: [.date]
             )
-            .datePickerStyle(.graphical)
+            .datePickerStyle(.wheel)
         }
     }
     
-    private var naturalMatingSection: some View {
-        Section(
-            header: Text("breeding.natural_section".localized()),
-            footer: VStack(alignment: .leading, spacing: 8) {
-                Text("breeding.natural_footer".localized())
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                if !viewModel.naturalMatingDatesValid {
-                    Text(viewModel.naturalMatingDatesError ?? "")
-                        .font(.caption)
-                        .foregroundColor(.red)
-                }
-            }
-        ) {
-            DatePicker(
-                "breeding.natural_start".localized(),
-                selection: $viewModel.naturalMatingStart,
-                displayedComponents: [.date]
-            )
-            .datePickerStyle(.graphical)
-            .onChange(of: viewModel.naturalMatingStart) { _, _ in
-                viewModel.correctNaturalMatingDates()
-            }
-            
-            DatePicker(
-                "breeding.natural_end".localized(),
-                selection: $viewModel.naturalMatingEnd,
-                displayedComponents: [.date]
-            )
-            .datePickerStyle(.graphical)
-            .onChange(of: viewModel.naturalMatingEnd) { _, _ in
-                viewModel.correctNaturalMatingDates()
-            }
-            
-            if let days = viewModel.naturalMatingDays {
-                HStack {
-                    Text("breeding.natural_days".localized())
-                        .foregroundColor(.secondary)
-                    Spacer()
-                    Text("\(days) \("lambing.days".localized())")
-                        .foregroundColor(days > 0 ? .primary : .red)
-                }
-            }
-        }
-    }
+    // MARK: - Follow-up Rams Section
     
     private var followUpRamsSection: some View {
         Section(
@@ -229,57 +234,31 @@ struct BreedingEventDetailView: View {
                     selection: $viewModel.followUpRamsIn,
                     displayedComponents: [.date]
                 )
-                .datePickerStyle(.graphical)
+                .datePickerStyle(.wheel)
                 .onChange(of: viewModel.followUpRamsIn) { _, _ in
                     viewModel.correctFollowUpDates()
                 }
-                .transition(.opacity)
                 
                 DatePicker(
                     "breeding.rams_out".localized(),
                     selection: $viewModel.followUpRamsOut,
                     displayedComponents: [.date]
                 )
-                .datePickerStyle(.graphical)
+                .datePickerStyle(.wheel)
                 .onChange(of: viewModel.followUpRamsOut) { _, _ in
                     viewModel.correctFollowUpDates()
                 }
-                .transition(.opacity)
                 
-                if let days = viewModel.followUpDays {
+                // Auto-calculated days in (read-only, inclusive)
+                if let days = viewModel.followUpDaysInCalculated {
                     HStack {
                         Text("breeding.followup_days".localized())
                             .foregroundColor(.secondary)
                         Spacer()
-                        Text("\(days) \("lambing.days".localized())")
+                        // FIXED: Use String() to prevent comma formatting
+                        Text("\(String(days)) \("lambing.days".localized())")
                             .foregroundColor(days > 0 ? .primary : .red)
                     }
-                }
-            }
-        }
-    }
-    
-    private var calculatedInfoSection: some View {
-        Section(
-            header: Text("breeding.summary_section".localized()),
-            footer: Text("breeding.calculated_info_footer".localized())
-                .font(.caption)
-                .foregroundColor(.secondary)
-        ) {
-            HStack {
-                Text("breeding.year".localized())
-                    .foregroundColor(.secondary)
-                Spacer()
-                Text(viewModel.year, format: .number.grouping(.never))  // ✅ FIXED - No comma!
-                    .fontWeight(.semibold)
-            }
-            
-            if let date = viewModel.calculationDate {
-                HStack {
-                    Text("breeding.calculation_date".localized())
-                        .foregroundColor(.secondary)
-                    Spacer()
-                    Text(date, style: .date)
                 }
             }
         }
@@ -288,7 +267,7 @@ struct BreedingEventDetailView: View {
 
 // MARK: - Previews
 
-#Preview("Create New") {
+#Preview("Create New - Natural") {
     BreedingEventDetailView(
         store: InMemoryBreedingEventStore(),
         userId: "preview-user",
@@ -299,21 +278,13 @@ struct BreedingEventDetailView: View {
     .environmentObject(LanguageManager.shared)
 }
 
-#Preview("Edit Existing") {
-    let event = BreedingEvent(
-        userId: "preview-user",
-        farmId: "preview-farm",
-        lambingSeasonGroupId: "preview-group",
-        aiDate: Date(),
-        usedFollowUpRams: false
-    )
-    
-    return BreedingEventDetailView(
+#Preview("Edit Existing - AI") {
+    BreedingEventDetailView(
         store: InMemoryBreedingEventStore(),
         userId: "preview-user",
         farmId: "preview-farm",
         groupId: "preview-group",
-        event: event
+        event: BreedingEvent.previewAI
     )
     .environmentObject(LanguageManager.shared)
 }

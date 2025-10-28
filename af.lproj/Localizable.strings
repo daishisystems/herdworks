@@ -327,3 +327,45 @@
 "breeding.farm_label" = "Plaas";
 "breeding.season_label" = "Seisoen";
 "breeding.both_methods" = "KI + Natuurlik";
+
+/* Fase 4: Teelgebeurtenisse Navigasie Integrasie */
+"lambing.related_data" = "Verwante Data";
+"breeding.all_events_title" = "Alle Teelgebeurtenisse";
+"breeding.all_events_subtitle" = "Bekyk en bestuur teling oor alle plase";
+
+/* Breeding Events - Updated */
+"breeding.mating_type" = "Paringstipe";
+"breeding.mating_type_footer" = "Kies die tipe paring wat gebruik is vir hierdie paringsgebeurtenis";
+"breeding.mating_type_natural" = "Natuurlike Paring";
+"breeding.mating_type_cervical" = "Servikale KI";
+"breeding.mating_type_laparoscopic" = "Laparoskopiese KI";
+"breeding.number_of_ewes" = "Aantal Ooie Gepaar";
+"breeding.number_of_ewes_placeholder" = "Voer nommer in";
+"breeding.number_of_ewes_footer" = "Totale aantal ooie gepaar in hierdie gebeurtenis";
+"breeding.ewes_required" = "Aantal ooie is vereis";
+"breeding.ewes_must_be_positive" = "Aantal ooie moet groter as nul wees";
+
+/* Natural Mating */
+"breeding.natural_days" = "Dae";
+"breeding.natural_section_footer" = "Voer die aantal dae vir natuurlike paring in. Die einddatum sal outomaties bereken word.";
+"breeding.days_required" = "Aantal dae is vereis";
+"breeding.days_must_be_positive" = "Aantal dae moet groter as nul wees";
+
+/* Follow-up Rams */
+"breeding.rams_out_must_be_after_in" = "Ramme uit datum moet na ramme in datum wees";
+
+/* General */
+"breeding.year" = "Jaar";
+"form.fix_highlighted_fields_to_save" = "Regmaak uitgeligte velde om te stoor";
+
+// MARK: - Plaaskeuse
+"farm.select_farm" = "Kies Plaas";
+"farm.select_farm_placeholder" = "Kies 'n plaas...";
+
+// MARK: - Lamseisoen Keuse
+"lambing.select_group" = "Kies Lamseisoen";
+"lambing.select_group_placeholder" = "Kies 'n groep...";
+
+// MARK: - Teelgebeurtenis Keuse
+"breeding.select_farm_and_group" = "Kies Plaas en Lamseisoen";
+"breeding.select_farm_and_group_footer" = "Kies asseblief 'n plaas en lamseisoen om teelgebeurtenisse aan te teken.";

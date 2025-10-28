@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Farm: Codable, Equatable, Sendable, Identifiable {
+struct Farm: Codable, Equatable, Sendable, Identifiable, Hashable {
     let id: String
     let userId: String
     

@@ -3,6 +3,7 @@
 //  HerdWorks
 //
 //  Created by Paul Mooney on 2025/10/15.
+//  Updated: Phase 4 - Added "All Breeding Events" integration
 //
 
 import SwiftUI
@@ -14,6 +15,7 @@ struct LandingView: View {
     @State private var selectedTab: Tab = .home
     @State private var showingFarmManagement = false
     @State private var showingAllLambingSeasons = false
+    @State private var showingAllBreeding = false  // NEW: For All Breeding Events modal
     
     enum Tab: String, CaseIterable {
         case home = "Home"
@@ -48,6 +50,9 @@ struct LandingView: View {
                 },
                 onAllLambingSeasonsTapped: {
                     showingAllLambingSeasons = true
+                },
+                onAllBreedingTapped: {  // NEW: Callback for All Breeding Events
+                    showingAllBreeding = true
                 }
             )
                 .tabItem {
@@ -86,6 +91,14 @@ struct LandingView: View {
                 farmStore: FirestoreFarmStore()
             )
         }
+        // NEW: Sheet for All Breeding Events
+        .sheet(isPresented: $showingAllBreeding) {
+            AllBreedingEventsView(
+                eventStore: FirestoreBreedingEventStore(),
+                groupStore: FirestoreLambingSeasonGroupStore(),
+                farmStore: FirestoreFarmStore()
+            )
+        }
     }
 }
 
@@ -95,6 +108,7 @@ private struct HomeTab: View {
     @EnvironmentObject private var languageManager: LanguageManager
     let onFarmManagementTapped: () -> Void
     let onAllLambingSeasonsTapped: () -> Void
+    let onAllBreedingTapped: () -> Void  // NEW: Callback parameter
     
     private var currentUserEmail: String {
         Auth.auth().currentUser?.email ?? "Guest"
@@ -155,6 +169,15 @@ private struct HomeTab: View {
                                 systemImage: "calendar.badge.clock",
                                 color: .orange,
                                 action: onAllLambingSeasonsTapped
+                            )
+
+                            // NEW: All Breeding Events Card
+                            QuickActionCard(
+                                title: "breeding.all_events_title".localized(),
+                                subtitle: "breeding.all_events_subtitle".localized(),
+                                systemImage: "heart.circle.fill",
+                                color: .green,
+                                action: onAllBreedingTapped
                             )
 
                             QuickActionCard(

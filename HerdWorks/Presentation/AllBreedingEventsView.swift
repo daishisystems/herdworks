@@ -2,15 +2,7 @@
 //  AllBreedingEventsView.swift
 //  HerdWorks
 //
-//  Created by Paul Mooney on 2025/10/27.
-//
-
-
-//
-//  AllBreedingEventsView.swift
-//  HerdWorks
-//
-//  Created by Claude on 2025/10/24.
+//  Updated: Phase 4 - Fixed number formatting
 //
 
 import SwiftUI
@@ -237,8 +229,10 @@ struct AllBreedingEventsView: View {
                     Button {
                         filterYear = year
                     } label: {
+                        // FIXED: Force non-localized formatting
+                        let yearString = String(format: "%d", year)
                         Label(
-                            String(year),
+                            yearString,
                             systemImage: filterYear == year ? "checkmark" : ""
                         )
                     }
@@ -269,7 +263,9 @@ private struct AllBreedingEventRow: View {
             // Header
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\("breeding.year".localized()): \(String(event.year))")
+                    // FIXED: Force non-localized integer formatting
+                    let yearString = String(format: "%d", event.year)
+                    Text("\("breeding.year".localized()): \(yearString)")
                         .font(.headline)
                     
                     HStack(spacing: 8) {
@@ -303,23 +299,38 @@ private struct AllBreedingEventRow: View {
                         .fontWeight(.medium)
                 }
                 
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("breeding.number_of_ewes".localized())
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    // FIXED: Force non-localized integer formatting
+                    let ewesString = String(format: "%d", event.numberOfEwesMated)
+                    Text(ewesString)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                }
+                
                 if let days = event.naturalMatingDays {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("breeding.natural_days".localized())
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Text("\(days) \("lambing.days".localized())")
+                        // FIXED: Force non-localized integer formatting
+                        let daysString = String(format: "%d", days)
+                        Text("\(daysString) \("lambing.days".localized())")
                             .font(.caption)
                             .fontWeight(.medium)
                     }
                 }
                 
-                if event.usedFollowUpRams, let days = event.followUpDays {
+                if event.usedFollowUpRams, let days = event.followUpDaysIn {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("breeding.followup_days".localized())
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Text("\(days) \("lambing.days".localized())")
+                        // FIXED: Force non-localized integer formatting
+                        let daysString = String(format: "%d", days)
+                        Text("\(daysString) \("lambing.days".localized())")
                             .font(.caption)
                             .fontWeight(.medium)
                     }

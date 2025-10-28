@@ -2,151 +2,182 @@
 //  BreedingEventDetailViewModel.swift
 //  HerdWorks
 //
-//  Created by Paul Mooney on 2025/10/24.
+//  Updated: Phase 4 - Corrected validation and auto-calculations
 //
 
+import Foundation
 import SwiftUI
-import FirebaseAuth
 import Combine
 
 @MainActor
 final class BreedingEventDetailViewModel: ObservableObject {
-    // ❌ REMOVED THIS LINE - it was breaking SwiftUI's change tracking:
-    // var objectWillChange: ObservableObjectPublisher = ObservableObjectPublisher()
+    // MARK: - Published Properties
     
-    // MARK: - Published Properties (Form Fields)
+    @Published var matingType: MatingType = .naturalMating
+    @Published var numberOfEwesMated: String = ""
     
-    // AI Breeding
-    @Published var useAI: Bool = false
+    // Natural Mating fields
+    @Published var naturalMatingStart: Date = Date()
+    @Published var naturalMatingDays: String = ""
+    
+    // AI fields
     @Published var aiDate: Date = Date()
     
-    // Natural Mating
-    @Published var useNaturalMating: Bool = false
-    @Published var naturalMatingStart: Date = Date()
-    @Published var naturalMatingEnd: Date = Date()
-    
-    // Follow-Up Rams
+    // Follow-up rams (AI only)
     @Published var usedFollowUpRams: Bool = false
     @Published var followUpRamsIn: Date = Date()
     @Published var followUpRamsOut: Date = Date()
     
-    // State
+    // UI State
     @Published var isSaving: Bool = false
     @Published var showError: Bool = false
     @Published var errorMessage: String?
     
     // MARK: - Private Properties
+    
     private let store: BreedingEventStore
     private let userId: String
     private let farmId: String
     private let groupId: String
-    private let event: BreedingEvent? // nil for create, populated for edit
+    private let existingEvent: BreedingEvent?
     
-    // MARK: - Computed Properties - Validation
+    // MARK: - Computed Properties
     
-    var hasBreedingMethod: Bool {
-        useAI || useNaturalMating
+    var isEditing: Bool {
+        existingEvent != nil
     }
     
-    var naturalMatingDatesValid: Bool {
-        guard useNaturalMating else { return true } // Valid if not used
-        return naturalMatingEnd >= naturalMatingStart
+    var navigationTitle: String {
+        isEditing ? "breeding.edit_event".localized() : "breeding.add_event".localized()
     }
     
-    var followUpDatesValid: Bool {
-        guard usedFollowUpRams else { return true } // Valid if not used
-        return followUpRamsOut >= followUpRamsIn
+    // Auto-calculated Natural Mating End
+    var naturalMatingEnd: Date? {
+        guard let days = Int(naturalMatingDays), days > 0 else { return nil }
+        return Calendar.current.date(byAdding: .day, value: days, to: naturalMatingStart)
     }
+    
+    // Auto-calculated Follow-up Days In (inclusive)
+    var followUpDaysInCalculated: Int? {
+        guard usedFollowUpRams else { return nil }
+        let components = Calendar.current.dateComponents([.day], from: followUpRamsIn, to: followUpRamsOut)
+        let days = components.day ?? 0
+        return days + 1  // Inclusive calculation
+    }
+    
+    // MARK: - Validation
     
     var isValid: Bool {
-        hasBreedingMethod &&
-        naturalMatingDatesValid &&
-        followUpDatesValid
+        // Base validation
+        guard let ewes = Int(numberOfEwesMated), ewes > 0 else { return false }
+        
+        // Type-specific validation
+        switch matingType {
+        case .naturalMating:
+            // Natural mating requires: start date and days
+            guard let days = Int(naturalMatingDays), days > 0 else { return false }
+            return true
+            
+        case .cervicalAI, .laparoscopicAI:
+            // AI types require: AI date
+            // If follow-up rams used, validate those dates too
+            if usedFollowUpRams {
+                // Follow-up dates must be valid and out > in
+                return followUpRamsOut > followUpRamsIn
+            }
+            return true
+        }
     }
     
-    // MARK: - Computed Properties - Calculations
-    
-    var naturalMatingDays: Int? {
-        guard useNaturalMating else { return nil }
-        let days = Calendar.current.dateComponents([.day], from: naturalMatingStart, to: naturalMatingEnd).day ?? 0
-        return max(0, days)
-    }
-    
-    var followUpDays: Int? {
-        guard usedFollowUpRams else { return nil }
-        let days = Calendar.current.dateComponents([.day], from: followUpRamsIn, to: followUpRamsOut).day ?? 0
-        return max(0, days)
-    }
-    
-    var calculationDate: Date? {
-        if useAI {
-            return aiDate
-        } else if useNaturalMating {
-            return naturalMatingStart
+    var numberOfEwesMatedError: String? {
+        guard !numberOfEwesMated.isEmpty else {
+            return "breeding.ewes_required".localized()
+        }
+        guard let ewes = Int(numberOfEwesMated), ewes > 0 else {
+            return "breeding.ewes_must_be_positive".localized()
         }
         return nil
     }
     
-    var year: Int {
-        guard let date = calculationDate else {
-            return Calendar.current.component(.year, from: Date())
+    var naturalMatingDaysError: String? {
+        guard matingType == .naturalMating else { return nil }
+        guard !naturalMatingDays.isEmpty else {
+            return "breeding.days_required".localized()
         }
-        return Calendar.current.component(.year, from: date)
+        guard let days = Int(naturalMatingDays), days > 0 else {
+            return "breeding.days_must_be_positive".localized()
+        }
+        return nil
     }
     
-    // MARK: - Computed Properties - Validation Messages
-    
-    var breedingMethodError: String? {
-        guard !hasBreedingMethod else { return nil }
-        return "breeding.error.no_breeding_method".localized()
-    }
-    
-    var naturalMatingDatesError: String? {
-        guard useNaturalMating && !naturalMatingDatesValid else { return nil }
-        return "breeding.error.invalid_mating_dates".localized()
+    var followUpDatesValid: Bool {
+        guard usedFollowUpRams else { return true }
+        return followUpRamsOut > followUpRamsIn
     }
     
     var followUpDatesError: String? {
-        guard usedFollowUpRams && !followUpDatesValid else { return nil }
-        return "breeding.error.invalid_followup_dates".localized()
+        guard usedFollowUpRams else { return nil }
+        guard followUpRamsOut > followUpRamsIn else {
+            return "breeding.rams_out_must_be_after_in".localized()
+        }
+        return nil
     }
     
-    // MARK: - Initialization
+    // MARK: - Initializer
     
-    init(store: BreedingEventStore, userId: String, farmId: String, groupId: String, event: BreedingEvent? = nil) {
+    init(
+        store: BreedingEventStore,
+        userId: String,
+        farmId: String,
+        groupId: String,
+        event: BreedingEvent? = nil
+    ) {
         self.store = store
         self.userId = userId
         self.farmId = farmId
         self.groupId = groupId
-        self.event = event
+        self.existingEvent = event
         
-        // Populate fields if editing
         if let event = event {
-            self.useAI = event.aiDate != nil
-            self.aiDate = event.aiDate ?? Date()
-            
-            self.useNaturalMating = event.naturalMatingStart != nil
-            self.naturalMatingStart = event.naturalMatingStart ?? Date()
-            self.naturalMatingEnd = event.naturalMatingEnd ?? Date()
-            
-            self.usedFollowUpRams = event.usedFollowUpRams
-            self.followUpRamsIn = event.followUpRamsIn ?? Date()
-            self.followUpRamsOut = event.followUpRamsOut ?? Date()
-            
-            print("🔵 [BREEDING-DETAIL] Editing event: Year \(event.year)")
-        } else {
-            print("🔵 [BREEDING-DETAIL] Creating new event")
+            loadExistingEvent(event)
         }
     }
     
-    // MARK: - Public Methods
+    // MARK: - Methods
+    
+    private func loadExistingEvent(_ event: BreedingEvent) {
+        matingType = event.matingType
+        numberOfEwesMated = String(event.numberOfEwesMated)
+        
+        if let start = event.naturalMatingStart {
+            naturalMatingStart = start
+        }
+        if let days = event.naturalMatingDays {
+            naturalMatingDays = String(days)
+        }
+        if let ai = event.aiDate {
+            aiDate = ai
+        }
+        
+        usedFollowUpRams = event.usedFollowUpRams
+        if let ramsIn = event.followUpRamsIn {
+            followUpRamsIn = ramsIn
+        }
+        if let ramsOut = event.followUpRamsOut {
+            followUpRamsOut = ramsOut
+        }
+    }
+    
+    func correctFollowUpDates() {
+        guard usedFollowUpRams else { return }
+        if followUpRamsOut <= followUpRamsIn {
+            followUpRamsOut = Calendar.current.date(byAdding: .day, value: 1, to: followUpRamsIn) ?? followUpRamsIn
+        }
+    }
     
     func save() async -> Bool {
-        print("🔵 [BREEDING-DETAIL] save() called")
-        
         guard isValid else {
-            print("⚠️ [BREEDING-DETAIL] Validation failed")
-            errorMessage = breedingMethodError ?? naturalMatingDatesError ?? followUpDatesError
+            errorMessage = "error.fill_required_fields".localized()
             showError = true
             return false
         }
@@ -155,55 +186,38 @@ final class BreedingEventDetailViewModel: ObservableObject {
         defer { isSaving = false }
         
         do {
-            let breedingEvent = BreedingEvent(
-                id: event?.id ?? UUID().uuidString,
+            let ewes = Int(numberOfEwesMated) ?? 0
+            
+            let event = BreedingEvent(
+                id: existingEvent?.id ?? UUID().uuidString,
                 userId: userId,
                 farmId: farmId,
                 lambingSeasonGroupId: groupId,
-                aiDate: useAI ? aiDate : nil,
-                naturalMatingStart: useNaturalMating ? naturalMatingStart : nil,
-                naturalMatingEnd: useNaturalMating ? naturalMatingEnd : nil,
-                usedFollowUpRams: usedFollowUpRams,
-                followUpRamsIn: usedFollowUpRams ? followUpRamsIn : nil,
-                followUpRamsOut: usedFollowUpRams ? followUpRamsOut : nil,
-                createdAt: event?.createdAt ?? Date(),
-                updatedAt: Date()
+                matingType: matingType,
+                numberOfEwesMated: ewes,
+                naturalMatingStart: matingType == .naturalMating ? naturalMatingStart : nil,
+                naturalMatingDays: matingType == .naturalMating ? Int(naturalMatingDays) : nil,
+                aiDate: matingType != .naturalMating ? aiDate : nil,
+                usedFollowUpRams: matingType != .naturalMating ? usedFollowUpRams : false,
+                followUpRamsIn: (matingType != .naturalMating && usedFollowUpRams) ? followUpRamsIn : nil,
+                followUpRamsOut: (matingType != .naturalMating && usedFollowUpRams) ? followUpRamsOut : nil
             )
             
-            if event != nil {
-                // Update existing
-                print("🔵 [BREEDING-DETAIL] Updating event: \(breedingEvent.id)")
-                try await store.update(breedingEvent)
+            if isEditing {
+                try await store.update(event)
                 print("✅ [BREEDING-DETAIL] Event updated successfully")
             } else {
-                // Create new
-                print("🔵 [BREEDING-DETAIL] Creating new event: \(breedingEvent.id)")
-                try await store.create(breedingEvent)
+                try await store.create(event)
                 print("✅ [BREEDING-DETAIL] Event created successfully")
             }
             
             return true
+            
         } catch {
-            print("❌ [BREEDING-DETAIL] Save failed: \(error.localizedDescription)")
+            print("❌ [BREEDING-DETAIL] Save error: \(error)")
             errorMessage = String(format: "error.failed_to_save".localized(), error.localizedDescription)
             showError = true
             return false
-        }
-    }
-    
-    // MARK: - Helper Methods
-    
-    func correctNaturalMatingDates() {
-        if useNaturalMating && naturalMatingEnd < naturalMatingStart {
-            naturalMatingEnd = Calendar.current.date(byAdding: .day, value: 1, to: naturalMatingStart) ?? naturalMatingStart
-            print("🔵 [BREEDING-DETAIL] Auto-corrected natural mating end date")
-        }
-    }
-    
-    func correctFollowUpDates() {
-        if usedFollowUpRams && followUpRamsOut < followUpRamsIn {
-            followUpRamsOut = Calendar.current.date(byAdding: .day, value: 1, to: followUpRamsIn) ?? followUpRamsIn
-            print("🔵 [BREEDING-DETAIL] Auto-corrected follow-up rams out date")
         }
     }
 }

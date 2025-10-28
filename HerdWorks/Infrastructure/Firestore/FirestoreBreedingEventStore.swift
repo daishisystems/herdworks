@@ -2,7 +2,7 @@
 //  FirestoreBreedingEventStore.swift
 //  HerdWorks
 //
-//  Created by Paul Mooney on 2025/10/24.
+//  Updated: Phase 4 - Works with new BreedingEvent model
 //
 
 import Foundation
@@ -51,7 +51,7 @@ final class FirestoreBreedingEventStore: BreedingEventStore {
                 print("🔵 [BREEDING-FETCH] Processing document: \(doc.documentID)")
                 do {
                     let event = try doc.data(as: BreedingEvent.self)
-                    print("✅ [BREEDING-FETCH] Successfully mapped event: Year \(event.year)")
+                    print("✅ [BREEDING-FETCH] Successfully mapped event: \(event.matingType.displayName) - Year \(event.year)")
                     return event
                 } catch {
                     print("⚠️ [BREEDING-FETCH] Failed to decode document \(doc.documentID): \(error)")
@@ -90,7 +90,7 @@ final class FirestoreBreedingEventStore: BreedingEventStore {
             }
             
             let event = try snapshot.data(as: BreedingEvent.self)
-            print("✅ [BREEDING-FETCH-ID] Successfully fetched event: Year \(event.year)")
+            print("✅ [BREEDING-FETCH-ID] Successfully fetched event: \(event.matingType.displayName) - Year \(event.year)")
             return event
         } catch {
             print("❌ [BREEDING-FETCH-ID] Error: \(error.localizedDescription)")
@@ -106,6 +106,8 @@ final class FirestoreBreedingEventStore: BreedingEventStore {
         print("🔵 [BREEDING-CREATE] User ID: \(event.userId)")
         print("🔵 [BREEDING-CREATE] Farm ID: \(event.farmId)")
         print("🔵 [BREEDING-CREATE] Group ID: \(event.lambingSeasonGroupId)")
+        print("🔵 [BREEDING-CREATE] Mating Type: \(event.matingType.displayName)")
+        print("🔵 [BREEDING-CREATE] Number of Ewes: \(event.numberOfEwesMated)")
         print("🔵 [BREEDING-CREATE] Year: \(event.year)")
         
         let docRef = documentPath(
@@ -131,23 +133,24 @@ final class FirestoreBreedingEventStore: BreedingEventStore {
         print("🔵 [BREEDING-UPDATE] User ID: \(event.userId)")
         print("🔵 [BREEDING-UPDATE] Farm ID: \(event.farmId)")
         print("🔵 [BREEDING-UPDATE] Group ID: \(event.lambingSeasonGroupId)")
+        print("🔵 [BREEDING-UPDATE] Mating Type: \(event.matingType.displayName)")
+        print("🔵 [BREEDING-UPDATE] Number of Ewes: \(event.numberOfEwesMated)")
         print("🔵 [BREEDING-UPDATE] Year: \(event.year)")
         
         // Create updated event with new timestamp
-        var updatedEvent = event
-        updatedEvent = BreedingEvent(
+        let updatedEvent = BreedingEvent(
             id: event.id,
             userId: event.userId,
             farmId: event.farmId,
             lambingSeasonGroupId: event.lambingSeasonGroupId,
-            aiDate: event.aiDate,
+            matingType: event.matingType,
+            numberOfEwesMated: event.numberOfEwesMated,
             naturalMatingStart: event.naturalMatingStart,
-            naturalMatingEnd: event.naturalMatingEnd,
+            naturalMatingDays: event.naturalMatingDays,
+            aiDate: event.aiDate,
             usedFollowUpRams: event.usedFollowUpRams,
             followUpRamsIn: event.followUpRamsIn,
-            followUpRamsOut: event.followUpRamsOut,
-            createdAt: event.createdAt,
-            updatedAt: Date()
+            followUpRamsOut: event.followUpRamsOut
         )
         
         let docRef = documentPath(
