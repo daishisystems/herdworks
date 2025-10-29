@@ -13,6 +13,7 @@ struct FarmListView: View {
     @EnvironmentObject private var languageManager: LanguageManager
     @State private var showingAddFarm = false
     @State private var selectedFarm: Farm?
+    @State private var hasAppeared = false
     @Environment(\.dismiss) private var dismiss
     
     private let store: FarmStore
@@ -42,6 +43,14 @@ struct FarmListView: View {
             }
             .onChange(of: showingAddFarm) { _, newValue in
                 if !newValue { Task { await viewModel.loadFarms() } }
+            }
+            .onAppear {
+                // Refresh data when returning from navigation (not on first load)
+                if hasAppeared {
+                    Task { await viewModel.loadFarms() }
+                } else {
+                    hasAppeared = true
+                }
             }
             .modifier(AlertsModifier(viewModel: viewModel))
             .task { await viewModel.loadFarms() }

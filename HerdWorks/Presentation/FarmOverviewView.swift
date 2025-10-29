@@ -9,12 +9,17 @@ import SwiftUI
 import FirebaseAuth
 
 struct FarmOverviewView: View {
-    let farm: Farm
     let store: FarmStore
     @EnvironmentObject private var languageManager: LanguageManager
     @Environment(\.dismiss) private var dismiss
     @State private var showingEdit = false
     @State private var showingLambingSeasons = false
+    @State private var currentFarm: Farm
+    
+    init(farm: Farm, store: FarmStore) {
+        self.store = store
+        _currentFarm = State(initialValue: farm)
+    }
     
     var body: some View {
         ScrollView {
@@ -32,7 +37,7 @@ struct FarmOverviewView: View {
             }
             .padding()
         }
-        .navigationTitle(farm.name)
+        .navigationTitle(currentFarm.name)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -44,14 +49,32 @@ struct FarmOverviewView: View {
             }
         }
         .sheet(isPresented: $showingEdit) {
-            FarmEditView(store: store, farm: farm)
+            // Refresh farm data when edit sheet closes
+            Task { await refreshFarm() }
+        } content: {
+            FarmEditView(store: store, farm: currentFarm)
         }
         .sheet(isPresented: $showingLambingSeasons) {
             LambingSeasonGroupListView(
                 store: FirestoreLambingSeasonGroupStore(),
-                farmId: farm.id,
-                farmName: farm.name
+                farmId: currentFarm.id,
+                farmName: currentFarm.name
             )
+        }
+    }
+    
+    // MARK: - Methods
+    
+    private func refreshFarm() async {
+        print("🔄 [OVERVIEW] Refreshing farm data")
+        do {
+            let farms = try await store.fetchAll(userId: currentFarm.userId)
+            if let updatedFarm = farms.first(where: { $0.id == currentFarm.id }) {
+                currentFarm = updatedFarm
+                print("✅ [OVERVIEW] Farm refreshed: \(updatedFarm.name)")
+            }
+        } catch {
+            print("❌ [OVERVIEW] Failed to refresh: \(error)")
         }
     }
     
@@ -70,19 +93,19 @@ struct FarmOverviewView: View {
                     }
                 
                 VStack(alignment: .leading, spacing: 6) {
-                    if let companyName = farm.companyName {
+                    if let companyName = currentFarm.companyName {
                         Text(companyName)
                             .font(.headline)
                             .foregroundStyle(.secondary)
                     }
                     
-                    Text(farm.breed.displayName)
+                    Text(currentFarm.breed.displayName)
                         .font(.title3)
                         .fontWeight(.semibold)
                     
                     HStack(spacing: 4) {
                         Image(systemName: "chart.bar.fill")  // ✅ Or any valid SF Symbol
-                        Text("\(farm.totalProductionEwes.formatted()) \("farm.ewes".localized())")
+                        Text("\(currentFarm.totalProductionEwes.formatted()) \("farm.ewes".localized())")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -98,9 +121,9 @@ struct FarmOverviewView: View {
                 Image(systemName: "location.fill")
                     .foregroundStyle(.blue)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(farm.city)
+                    Text(currentFarm.city)
                         .font(.subheadline)
-                    Text(farm.province.displayName)
+                    Text(currentFarm.province.displayName)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -160,7 +183,7 @@ struct FarmOverviewView: View {
                 .padding(.horizontal, 4)
             
             VStack(spacing: 0) {
-                if let size = farm.sizeHectares {
+                if let size = currentFarm.sizeHectares {
                     DetailRow(
                         label: "farm.farm_size_hectares".localized(),
                         value: "\(size.formatted()) ha"
@@ -168,7 +191,7 @@ struct FarmOverviewView: View {
                     Divider()
                 }
                 
-                if let system = farm.productionSystem {
+                if let system = currentFarm.productionSystem {
                     DetailRow(
                         label: "farm.production_system".localized(),
                         value: system.displayName
@@ -176,7 +199,7 @@ struct FarmOverviewView: View {
                     Divider()
                 }
                 
-                if let agent = farm.preferredAgent {
+                if let agent = currentFarm.preferredAgent {
                     DetailRow(
                         label: "farm.preferred_agent".localized(),
                         value: agent.displayName
@@ -184,7 +207,7 @@ struct FarmOverviewView: View {
                     Divider()
                 }
                 
-                if let abattoir = farm.preferredAbattoir, !abattoir.isEmpty {
+                if let abattoir = currentFarm.preferredAbattoir, !abattoir.isEmpty {
                     DetailRow(
                         label: "farm.preferred_abattoir".localized(),
                         value: abattoir
@@ -192,7 +215,7 @@ struct FarmOverviewView: View {
                     Divider()
                 }
                 
-                if let vet = farm.preferredVeterinarian, !vet.isEmpty {
+                if let vet = currentFarm.preferredVeterinarian, !vet.isEmpty {
                     DetailRow(
                         label: "farm.preferred_veterinarian".localized(),
                         value: vet
@@ -200,7 +223,7 @@ struct FarmOverviewView: View {
                     Divider()
                 }
                 
-                if let coop = farm.coOp {
+                if let coop = currentFarm.coOp {
                     DetailRow(
                         label: "farm.coop".localized(),
                         value: coop.displayName
