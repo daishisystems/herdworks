@@ -218,7 +218,7 @@ struct AllBreedingEventsView: View {
             } label: {
                 Label(
                     "breeding.show_all_years".localized(),
-                    systemImage: filterYear == nil ? "checkmark" : ""
+                    systemImage: filterYear == nil ? "checkmark" : "circle"
                 )
             }
             
@@ -233,7 +233,7 @@ struct AllBreedingEventsView: View {
                         let yearString = String(format: "%d", year)
                         Label(
                             yearString,
-                            systemImage: filterYear == year ? "checkmark" : ""
+                            systemImage: filterYear == year ? "checkmark" : "circle"
                         )
                     }
                 }
@@ -342,3 +342,4 @@ private struct AllBreedingEventRow: View {
         .padding(.vertical, 8)
     }
 }
+

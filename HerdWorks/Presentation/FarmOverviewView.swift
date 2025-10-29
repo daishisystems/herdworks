@@ -228,7 +228,7 @@ struct QuickActionButton: View {
                     .fill(color.gradient)
                     .frame(width: 56, height: 56)
                     .overlay {
-                        Image(systemName: icon)
+                        Image(systemName: icon.isEmpty ? "circle.fill" : icon)
                             .font(.title2)
                             .foregroundStyle(.white)
                     }

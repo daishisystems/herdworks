@@ -41,6 +41,14 @@ final class AllBreedingEventsViewModel: ObservableObject {
     private var groupsByFarm: [String: [LambingSeasonGroup]] = [:]
     private var eventsByGroup: [String: [BreedingEvent]] = [:]
     
+    // Change tracking to suppress redundant work/logs
+    private var lastGroupIdSet: Set<String> = []
+    private var lastEventsSignature: String = ""
+    private var lastFarmIdSet: Set<String> = []
+    private var lastFarmsSignature: String = ""
+    private var lastFarmNamesSignature: String = ""
+    private var lastGroupNamesSignature: String = ""
+    
     // MARK: - Nested Types
     struct GroupInfo {
         let name: String
@@ -79,11 +87,33 @@ final class AllBreedingEventsViewModel: ObservableObject {
             // Step 1: Load farms
             let loadedFarms = try await farmStore.fetchAll(userId: userId)
             farms = loadedFarms
-            updateFarmNameCache()
+            let newSignature = loadedFarms.map { $0.id }.sorted().joined(separator: "|")
+            let farmsChanged = newSignature != lastFarmsSignature
+            lastFarmsSignature = newSignature
+            
+            let newNamesSignature = loadedFarms
+                .sorted { $0.id < $1.id }
+                .map { "\($0.id)=\($0.name)" }
+                .joined(separator: "|")
+            let farmNamesChanged = newNamesSignature != lastFarmNamesSignature
+            if farmNamesChanged {
+                lastFarmNamesSignature = newNamesSignature
+            }
+            
+            if farmNamesChanged {
+                updateFarmNameCache()
+            } else {
+                print("🔵 [ALL-BREEDING-VM] Farm names unchanged; skipping cache update")
+            }
+            
             print("✅ [ALL-BREEDING-VM] Loaded farms: \(farms.count)")
             
-            // Step 2: Attach group listeners (one per farm)
-            attachGroupListeners()
+            // Step 2: Attach group listeners (one per farm) only if farms changed
+            if farmsChanged {
+                attachGroupListeners()
+            } else {
+                print("🔵 [ALL-BREEDING-VM] Farms unchanged; skipping re-attachment of group listeners")
+            }
             
         } catch {
             print("❌ [ALL-BREEDING-VM] loadData failed: \(error)")
@@ -123,46 +153,80 @@ final class AllBreedingEventsViewModel: ObservableObject {
     private func attachGroupListeners() {
         print("🔵 [ALL-BREEDING-VM] Attaching group listeners for \(farms.count) farms")
         
-        // Cancel existing listeners
-        groupListeners.values.forEach { $0.cancel() }
-        groupListeners.removeAll()
-        groupsByFarm.removeAll()
-        
-        for farm in farms {
+        let currentFarmIds = Set(farms.map { $0.id })
+        let removedFarmIds = lastFarmIdSet.subtracting(currentFarmIds)
+        let addedFarmIds = currentFarmIds.subtracting(lastFarmIdSet)
+
+        // Cancel listeners for farms that are no longer present
+        for farmId in removedFarmIds {
+            if let listener = groupListeners[farmId] {
+                listener.cancel()
+                groupListeners.removeValue(forKey: farmId)
+            }
+            groupsByFarm.removeValue(forKey: farmId)
+            print("🔵 [ALL-BREEDING-VM] Removing group listener for removed farm: \(farmId)")
+        }
+
+        // Attach listeners for newly added farms
+        for farm in farms where addedFarmIds.contains(farm.id) {
             let cancellable = groupStore.listenAll(userId: userId, farmId: farm.id) { [weak self] result in
                 Task { @MainActor in
                     guard let self else { return }
-                    
+
                     switch result {
                     case .failure(let error):
                         print("⚠️ [ALL-BREEDING-VM] Group listener error for farm \(farm.name): \(error)")
-                        
+
                     case .success(let farmGroups):
                         print("📡 [ALL-BREEDING-VM] Groups update for farm \(farm.name): \(farmGroups.count) groups")
                         self.groupsByFarm[farm.id] = farmGroups
-                        
+
                         // Debounce group updates
                         self.groupsDebounceTask?.cancel()
                         self.groupsDebounceTask = Task { [weak self] in
                             try? await Task.sleep(nanoseconds: 120_000_000) // 120ms
                             guard let self = self else { return }
-                            
+
                             let allGroups = self.groupsByFarm.values.flatMap { $0 }
                             let sorted = allGroups.sorted { $0.matingStart > $1.matingStart }
+
+                            let newGroupIdSet = Set(sorted.map { $0.id })
+                            guard newGroupIdSet != self.lastGroupIdSet else {
+                                // No change in group IDs; avoid redundant logs and re-attaching listeners
+                                return
+                            }
+                            self.lastGroupIdSet = newGroupIdSet
+
+                            let newGroupNamesSignature = sorted
+                                .map { "\($0.id)=\($0.code)-\($0.name)-\($0.farmId)" }
+                                .joined(separator: "|")
+                            let groupNamesChanged = newGroupNamesSignature != self.lastGroupNamesSignature
+                            if groupNamesChanged {
+                                self.lastGroupNamesSignature = newGroupNamesSignature
+                            }
+
                             self.groups = sorted
-                            self.updateGroupInfoCache()
-                            
+                            if groupNamesChanged {
+                                self.updateGroupInfoCache()
+                            } else {
+                                print("🔵 [ALL-BREEDING-VM] Group names unchanged; skipping group info cache update")
+                            }
+
                             print("📡 [ALL-BREEDING-VM] Coalesced groups update: \(sorted.count) total groups")
-                            
+
                             // Now attach event listeners for these groups
                             self.attachEventListeners(for: sorted)
                         }
                     }
                 }
             }
-            
+
             groupListeners[farm.id] = cancellable
+            print("🔵 [ALL-BREEDING-VM] Attaching group listener for new farm: \(farm.id)")
         }
+
+        // Update last farm set after attaching/removing as needed
+        lastFarmIdSet = currentFarmIds
     }
     
     private func attachEventListeners(for groups: [LambingSeasonGroup]) {
@@ -216,6 +280,14 @@ final class AllBreedingEventsViewModel: ObservableObject {
                                 }
                                 return date1 > date2
                             }
+                            
+                            let signature = sorted.map { "\($0.id):\($0.displayDate?.timeIntervalSince1970 ?? 0)" }.joined(separator: "|")
+                            guard signature != self.lastEventsSignature else {
+                                // No effective change in events ordering/content; skip log and assignment
+                                return
+                            }
+                            self.lastEventsSignature = signature
+                            
                             self.events = sorted
                             
                             print("📡 [ALL-BREEDING-VM] Coalesced events update: \(sorted.count) total events")
@@ -259,3 +331,4 @@ final class AllBreedingEventsViewModel: ObservableObject {
         eventsDebounceTask?.cancel()
     }
 }
+
