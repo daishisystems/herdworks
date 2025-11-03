@@ -242,6 +242,34 @@ struct LambingSeasonGroupDetailView: View {
                         .foregroundStyle(.tertiary)
                 }
             }
+            NavigationLink {
+                ScanningEventListView(
+                    store: FirestoreScanningEventStore(),
+                    userId: userId,  // ✅ Use the stored property
+                    farmId: farmId,  // ✅ Use the stored property
+                    groupId: existingGroup?.id ?? ""  // ✅ Use existingGroup
+                )
+            } label: {
+                HStack {
+                    Image(systemName: "waveform.path.ecg")
+                        .foregroundStyle(.blue)  // ✅ Changed from .foregroundColor
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("scanning.list_title".localized())
+                            .font(.headline)
+                        Text("scanning.empty_subtitle".localized())
+                            .font(.caption)
+                            .foregroundStyle(.secondary)  // ✅ Changed from .foregroundColor
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)  // ✅ Changed from .foregroundColor
+                }
+                .padding(.vertical, 4)
+            }
         }
     }
     

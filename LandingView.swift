@@ -4,6 +4,7 @@
 //
 //  Created by Paul Mooney on 2025/10/15.
 //  Updated: Phase 4 - Added "All Breeding Events" integration
+//  Updated: Phase 5 - Fixed "All Scanning Events" navigation (wrapped in NavigationStack)
 //
 
 import SwiftUI
@@ -16,6 +17,7 @@ struct LandingView: View {
     @State private var showingFarmManagement = false
     @State private var showingAllLambingSeasons = false
     @State private var showingAllBreeding = false  // NEW: For All Breeding Events modal
+    @State private var showingAllScanning = false  // NEW: For All Scanning Events modal
     
     enum Tab: String, CaseIterable {
         case home = "Home"
@@ -53,6 +55,9 @@ struct LandingView: View {
                 },
                 onAllBreedingTapped: {  // NEW: Callback for All Breeding Events
                     showingAllBreeding = true
+                },
+                onAllScanningTapped: {  // NEW: Callback for All Scanning Events
+                    showingAllScanning = true
                 }
             )
                 .tabItem {
@@ -99,6 +104,17 @@ struct LandingView: View {
                 farmStore: FirestoreFarmStore()
             )
         }
+        // FIXED: Sheet for All Scanning Events - Now wrapped in NavigationStack
+        .sheet(isPresented: $showingAllScanning) {
+            NavigationStack {
+                AllScanningEventsView(
+                    scanningStore: FirestoreScanningEventStore(),
+                    farmStore: FirestoreFarmStore(),
+                    groupStore: FirestoreLambingSeasonGroupStore(),
+                    userId: Auth.auth().currentUser?.uid ?? ""
+                )
+            }
+        }
     }
 }
 
@@ -109,6 +125,7 @@ private struct HomeTab: View {
     let onFarmManagementTapped: () -> Void
     let onAllLambingSeasonsTapped: () -> Void
     let onAllBreedingTapped: () -> Void  // NEW: Callback parameter
+    let onAllScanningTapped: () -> Void  // NEW: Callback parameter for scanning
     
     private var currentUserEmail: String {
         Auth.auth().currentUser?.email ?? "Guest"
@@ -180,54 +197,45 @@ private struct HomeTab: View {
                                 action: onAllBreedingTapped
                             )
 
+                            // NEW: All Scanning Events Card
+                            QuickActionCard(
+                                title: "scanning.all_events_title".localized(),
+                                subtitle: "quick_action.all_scanning_events_subtitle".localized(),
+                                systemImage: "waveform.path.ecg",
+                                color: .purple,
+                                action: onAllScanningTapped
+                            )
+
                             QuickActionCard(
                                 title: "quick_action.get_started".localized(),
                                 subtitle: "quick_action.get_started_subtitle".localized(),
                                 systemImage: "play.circle",
-                                color: .blue,
-                                action: {
-                                    // TODO: Add action for each quick action
-                                }
+                                color: .mint,
+                                action: { /* TODO: Implement onboarding */ }
                             )
-                            
+
                             QuickActionCard(
                                 title: "quick_action.learn_more".localized(),
                                 subtitle: "quick_action.learn_more_subtitle".localized(),
                                 systemImage: "book.circle",
-                                color: .green,
-                                action: {
-                                    // TODO: Add action for each quick action
-                                }
+                                color: .indigo,
+                                action: { /* TODO: Implement learning center */ }
                             )
-                            
-                            QuickActionCard(
-                                title: "quick_action.settings".localized(),
-                                subtitle: "quick_action.settings_subtitle".localized(),
-                                systemImage: "gearshape.circle",
-                                color: .orange,
-                                action: {
-                                    // TODO: Add action for each quick action
-                                }
-                            )
-                            
+
                             QuickActionCard(
                                 title: "quick_action.support".localized(),
                                 subtitle: "quick_action.support_subtitle".localized(),
                                 systemImage: "questionmark.circle",
-                                color: .purple,
-                                action: {
-                                    // TODO: Add action for each quick action
-                                }
+                                color: .teal,
+                                action: { /* TODO: Implement support system */ }
                             )
                         }
                         .padding(.horizontal)
                     }
-                    
-                    Spacer(minLength: 32)
                 }
                 .padding(.vertical)
             }
-            .navigationTitle("HerdWorks")
+            .navigationTitle("landing.home".localized())
             .navigationBarTitleDisplayMode(.large)
         }
     }

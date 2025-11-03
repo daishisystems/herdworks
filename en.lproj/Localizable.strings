@@ -365,3 +365,82 @@
 // MARK: - Breeding Event Selection
 "breeding.select_farm_and_group" = "Select Farm and Lambing Group";
 "breeding.select_farm_and_group_footer" = "Please select a farm and lambing group to record breeding events.";
+
+// MARK: - Scanning Events
+// Add these strings to your existing en.lproj/Localizable.strings file
+
+"scanning.list_title" = "Scanning Events";
+"scanning.add_event" = "Add Scanning Event";
+"scanning.edit_event" = "Edit Scanning Event";
+"scanning.empty_title" = "No Scanning Events";
+"scanning.empty_subtitle" = "Track pregnancy scanning results and fetus distribution for this lambing season";
+"scanning.empty_subtitle_all" = "You haven't recorded any scanning events yet. Start by adding scanning data for your lambing groups.";
+"scanning.add_first_event" = "Add First Scanning Event";
+"scanning.all_events_title" = "All Scanning Events";
+"scanning.unknown_farm" = "Unknown Farm";
+"scanning.unknown_group" = "Unknown Group";
+
+// Scanning Fields
+"scanning.ewes_mated" = "Ewes Mated";
+"scanning.ewes_scanned" = "Ewes Scanned";
+"scanning.ewes_pregnant" = "Ewes Pregnant";
+"scanning.ewes_not_pregnant" = "Ewes Not Pregnant";
+"scanning.ewes_singles" = "Ewes With Singles";
+"scanning.ewes_twins" = "Ewes With Twins";
+"scanning.ewes_triplets" = "Ewes With Triplets";
+
+// Calculated Fields
+"scanning.conception_ratio" = "Conception Ratio";
+"scanning.scanned_fetuses" = "Scanned Fetuses";
+"scanning.expected_lambing_pregnant" = "Expected Lambing % (of pregnant)";
+"scanning.expected_lambing_mated" = "Expected Lambing % (of mated)";
+
+// Short Labels
+"scanning.ewes_mated_short" = "mated";
+"scanning.conception_short" = "Conception";
+"scanning.fetuses_short" = "Fetuses";
+
+// Form Sections
+"scanning.section_mating" = "Mating Information";
+"scanning.section_mating_footer" = "Total number of ewes that were mated in this group.";
+"scanning.section_scanning" = "Scanning Results";
+"scanning.section_scanning_footer" = "Results from pregnancy scanning.";
+"scanning.section_fetuses" = "Fetus Distribution";
+"scanning.section_fetuses_footer" = "Number of ewes carrying single, twin, or triplet fetuses.";
+"scanning.section_calculations" = "Calculated Metrics";
+"scanning.section_calculations_footer" = "These values are automatically calculated from your input data.";
+
+// Warnings
+"scanning.warnings_header" = "Data Warnings";
+"scanning.warning_scanned_exceeds_mated" = "Ewes scanned exceeds ewes mated. Please verify your numbers.";
+"scanning.warning_pregnancy_count_mismatch" = "Pregnant + not pregnant count doesn't match scanned count.";
+"scanning.warning_fetus_distribution_mismatch" = "Fetus distribution (singles + twins + triplets) exceeds pregnant count.";
+
+// Delete Confirmation
+"scanning.delete_confirmation_message" = "This scanning event will be permanently deleted. This action cannot be undone.";
+
+// Additional form validation message if not already present
+"form.fix_highlighted_fields_to_save" = "Fix highlighted fields to save";
+
+// MARK: - Quick Actions (Add to existing section)
+"quick_action.all_scanning_events" = "All Scanning Events";
+"quick_action.all_scanning_events_subtitle" = "View scanning results across all farms";
+
+// MARK: - Scanning Events (Add to existing Scanning section)
+"scanning.all_events_subtitle" = "View pregnancy scanning results across all farms and seasons";
+"scanning.scan_date" = "Scan Date";
+"scanning.scanned" = "Scanned";
+"scanning.pregnant" = "Pregnant";
+"scanning.pregnancy_rate" = "Pregnancy Rate";
+"scanning.no_scan_date" = "No scan date recorded";
+
+// MARK: - Common (Add if not present)
+"common.farm" = "Farm";
+"common.season" = "Season";
+
+// Common
+"common.continue" = "Continue";
+
+// Scanning Events - Additional
+"scanning.no_events_for_year" = "No Scanning Events This Year";
+

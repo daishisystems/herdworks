@@ -43,6 +43,7 @@
 		EA8DC9312EA12AE70004523C /* ProfileEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditView.swift; sourceTree = "<group>"; };
 		EAAA20832E9E547C005DBB11 /* firebase.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = firebase.json; sourceTree = "<group>"; };
 		EACA32792E9FC46100C5098D /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
+		EAEAF4CC2EB63B5500164EF5 /* INTEGRATION_GUIDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = INTEGRATION_GUIDE.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -114,6 +115,7 @@
 			children = (
 				EA672C3C2EA7C9B20030D14D /* Localizable.strings */,
 				EAAA20832E9E547C005DBB11 /* firebase.json */,
+				EAEAF4CC2EB63B5500164EF5 /* INTEGRATION_GUIDE.md */,
 				EA71BDB62E993D850084FA11 /* README.md */,
 				EA71BD902E9925980084FA11 /* Config */,
 				EA71BD502E98FB500084FA11 /* HerdWorks */,

@@ -369,3 +369,81 @@
 // MARK: - Teelgebeurtenis Keuse
 "breeding.select_farm_and_group" = "Kies Plaas en Lamseisoen";
 "breeding.select_farm_and_group_footer" = "Kies asseblief 'n plaas en lamseisoen om teelgebeurtenisse aan te teken.";
+
+// MARK: - Skandeer Gebeure
+// Voeg hierdie strings by jou bestaande af.lproj/Localizable.strings lêer
+
+"scanning.list_title" = "Skandeer Gebeure";
+"scanning.add_event" = "Voeg Skandeer Gebeurtenis By";
+"scanning.edit_event" = "Redigeer Skandeer Gebeurtenis";
+"scanning.empty_title" = "Geen Skandeer Gebeure";
+"scanning.empty_subtitle" = "Volg dragtigheid skandeer resultate en fetus verspreiding vir hierdie lamseisoen";
+"scanning.empty_subtitle_all" = "Jy het nog nie enige skandeer gebeure aangeteken nie. Begin deur skandeerdata vir jou lamseisoen groepe by te voeg.";
+"scanning.add_first_event" = "Voeg Eerste Skandeer Gebeurtenis By";
+"scanning.all_events_title" = "Alle Skandeer Gebeure";
+"scanning.unknown_farm" = "Onbekende Plaas";
+"scanning.unknown_group" = "Onbekende Groep";
+
+// Skandeer Velde
+"scanning.ewes_mated" = "Ooie Gepaar";
+"scanning.ewes_scanned" = "Ooie Geskandeer";
+"scanning.ewes_pregnant" = "Ooie Dragtig";
+"scanning.ewes_not_pregnant" = "Ooie Nie Dragtig";
+"scanning.ewes_singles" = "Ooie Met Enkelinge";
+"scanning.ewes_twins" = "Ooie Met Tweelinge";
+"scanning.ewes_triplets" = "Ooie Met Drielinge";
+
+// Berekende Velde
+"scanning.conception_ratio" = "Konsepsie Verhouding";
+"scanning.scanned_fetuses" = "Geskandeerde Fetusse";
+"scanning.expected_lambing_pregnant" = "Verwagte Lam % (van dragte)";
+"scanning.expected_lambing_mated" = "Verwagte Lam % (van gepaarde)";
+
+// Kort Etikette
+"scanning.ewes_mated_short" = "gepaar";
+"scanning.conception_short" = "Konsepsie";
+"scanning.fetuses_short" = "Fetusse";
+
+// Vorm Afdelings
+"scanning.section_mating" = "Paarinligting";
+"scanning.section_mating_footer" = "Totale aantal ooie wat in hierdie groep gepaar is.";
+"scanning.section_scanning" = "Skandeer Resultate";
+"scanning.section_scanning_footer" = "Resultate van dragtigheid skandering.";
+"scanning.section_fetuses" = "Fetus Verspreiding";
+"scanning.section_fetuses_footer" = "Aantal ooie wat enkel, tweeling, of drieling fetusse dra.";
+"scanning.section_calculations" = "Berekende Syfers";
+"scanning.section_calculations_footer" = "Hierdie waardes word outomaties bereken vanaf jou invoer data.";
+
+// Waarskuwings
+"scanning.warnings_header" = "Data Waarskuwings";
+"scanning.warning_scanned_exceeds_mated" = "Ooie geskandeer oorskry ooie gepaar. Verifieer asseblief jou syfers.";
+"scanning.warning_pregnancy_count_mismatch" = "Dragtig + nie dragtig telling stem nie ooreen met geskandeerde telling nie.";
+"scanning.warning_fetus_distribution_mismatch" = "Fetus verspreiding (enkelinge + tweelinge + drielinge) oorskry dragte telling.";
+
+// Verwyder Bevestiging
+"scanning.delete_confirmation_message" = "Hierdie skandeer gebeurtenis sal permanent verwyder word. Hierdie aksie kan nie ongedaan gemaak word nie.";
+
+// Addisionele vorm validasie boodskap indien nie reeds teenwoordig
+"form.fix_highlighted_fields_to_save" = "Regmaak uitgeligde velde om te stoor";
+
+// MARK: - Vinnige Aksies (Voeg by bestaande afdeling)
+"quick_action.all_scanning_events" = "Alle Skandeer Gebeure";
+"quick_action.all_scanning_events_subtitle" = "Bekyk skandeer resultate oor alle plase";
+
+// MARK: - Skandeer Gebeure (Voeg by bestaande Skandeer afdeling)
+"scanning.all_events_subtitle" = "Bekyk dragtigheid skandeer resultate oor alle plase en seisoene";
+"scanning.scan_date" = "Skandeer Datum";
+"scanning.scanned" = "Geskandeer";
+"scanning.pregnant" = "Dragtig";
+"scanning.pregnancy_rate" = "Dragtigheid Koers";
+"scanning.no_scan_date" = "Geen skandeer datum aangeteken";
+
+// MARK: - Algemeen (Voeg by indien nie teenwoordig nie)
+"common.farm" = "Plaas";
+"common.season" = "Seisoen";
+
+// Algemeen
+"common.continue" = "Gaan Voort";
+
+// Skandeer Gebeure - Addisioneel
+"scanning.no_events_for_year" = "Geen Skandeer Gebeure Hierdie Jaar";
