@@ -444,3 +444,5 @@
 // Scanning Events - Additional
 "scanning.no_events_for_year" = "No Scanning Events This Year";
 
+"lambing.no_groups_title" = "No Lambing Seasons";
+"lambing.no_groups_message" = "Please create a lambing season group first before adding scanning events.";

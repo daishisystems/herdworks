@@ -2,119 +2,126 @@
 //  AllScanningEventsViewModel.swift
 //  HerdWorks
 //
-//  Created on October 31, 2025.
+//  Created: Phase 5 - All Scanning Events ViewModel
 //
 
 import Foundation
 import Combine
+import FirebaseAuth
 
 @MainActor
 final class AllScanningEventsViewModel: ObservableObject {
-    
-    // MARK: - Published Properties
-    
-    @Published var groupedEvents: [(group: LambingSeasonGroup, farm: Farm, events: [ScanningEvent])] = []
+    @Published var events: [ScanningEvent] = []
+    @Published var farms: [Farm] = []
+    @Published var groups: [LambingSeasonGroup] = []
     @Published var isLoading: Bool = false
     @Published var showError: Bool = false
     @Published var errorMessage: String?
-    
-    // MARK: - Private Properties
+    @Published var showNoGroupsAlert: Bool = false
     
     private let scanningStore: ScanningEventStore
-    private let farmStore: FarmStore
     private let groupStore: LambingSeasonGroupStore
-    private let userId: String
-    private var cancellables = Set<AnyCancellable>()
+    private let farmStore: FarmStore
+    let userId: String
     
-    // MARK: - Initializer
+    private var farmNameCache: [String: String] = [:]
+    private var groupNameCache: [String: String] = [:]
     
     init(
         scanningStore: ScanningEventStore,
-        farmStore: FarmStore,
         groupStore: LambingSeasonGroupStore,
+        farmStore: FarmStore,
         userId: String
     ) {
         self.scanningStore = scanningStore
-        self.farmStore = farmStore
         self.groupStore = groupStore
+        self.farmStore = farmStore
         self.userId = userId
         
-        print("🔵 [ALL-SCANNING-VM] Initialized")
+        print("🔧 [ALL-SCANNING-VM] Initialized for user: \(userId)")
     }
     
-    // MARK: - Public Methods
-    
-    /// Load all scanning events across all farms and groups
-    func loadAllEvents() async {
+    func loadData() async {
+        print("🔵 [ALL-SCANNING-VM] loadData()")
         isLoading = true
         defer { isLoading = false }
         
         do {
-            print("🔵 [ALL-SCANNING-VM] Loading all scanning events across all farms")
+            // Load farms first
+            farms = try await farmStore.fetchAll(userId: userId)
+            print("✅ [ALL-SCANNING-VM] Loaded \(farms.count) farms")
             
-            // 1. Load all farms
-            let farms = try await farmStore.fetchAll(userId: userId)
-            print("🔵 [ALL-SCANNING-VM] Loaded \(farms.count) farms")
-            
-            var allGroupedEvents: [(group: LambingSeasonGroup, farm: Farm, events: [ScanningEvent])] = []
-            
-            // 2. For each farm, load lambing groups and their scanning events
+            // Build farm name cache
             for farm in farms {
-                let groups = try await groupStore.fetchAll(userId: userId, farmId: farm.id)
-                print("🔵 [ALL-SCANNING-VM] Farm '\(farm.name)' has \(groups.count) lambing groups")
-                
-                for group in groups {
-                    let events = try await scanningStore.fetchAll(
+                farmNameCache[farm.id] = farm.name
+            }
+            
+            // Load all groups across all farms
+            var allGroups: [LambingSeasonGroup] = []
+            for farm in farms {
+                let farmGroups = try await groupStore.fetchAll(userId: userId, farmId: farm.id)
+                allGroups.append(contentsOf: farmGroups)
+            }
+            groups = allGroups
+            print("✅ [ALL-SCANNING-VM] Loaded \(groups.count) lambing groups")
+            
+            // Build group name cache
+            for group in groups {
+                groupNameCache[group.id] = group.displayName
+            }
+            
+            // Load all scanning events across all farms and groups
+            var allEvents: [ScanningEvent] = []
+            for farm in farms {
+                let farmGroups = groups.filter { $0.farmId == farm.id }
+                for group in farmGroups {
+                    let farmEvents = try await scanningStore.fetchAll(
                         userId: userId,
                         farmId: farm.id,
                         groupId: group.id
                     )
-                    
-                    if !events.isEmpty {
-                        allGroupedEvents.append((group: group, farm: farm, events: events))
-                        print("🔵 [ALL-SCANNING-VM] Group '\(group.displayName)' has \(events.count) scanning events")
-                    }
+                    allEvents.append(contentsOf: farmEvents)
                 }
             }
             
-            // Sort by most recent events first
-            allGroupedEvents.sort { tuple1, tuple2 in
-                let date1 = tuple1.events.first?.createdAt ?? Date.distantPast
-                let date2 = tuple2.events.first?.createdAt ?? Date.distantPast
-                return date1 > date2
-            }
-            
-            groupedEvents = allGroupedEvents
-            
-            let totalEvents = allGroupedEvents.reduce(0) { $0 + $1.events.count }
-            print("✅ [ALL-SCANNING-VM] Loaded \(totalEvents) total scanning events from \(allGroupedEvents.count) groups")
+            // Sort by scan date (newest first)
+            events = allEvents.sorted(by: { (event1: ScanningEvent, event2: ScanningEvent) -> Bool in
+                return event1.createdAt > event2.createdAt
+            })
+            print("✅ [ALL-SCANNING-VM] Loaded \(events.count) total scanning events")
             
         } catch {
-            print("❌ [ALL-SCANNING-VM] Error loading all scanning events: \(error.localizedDescription)")
-            errorMessage = "error.failed_to_load".localized() + ": \(error.localizedDescription)"
+            print("❌ [ALL-SCANNING-VM] Error loading data: \(error)")
+            errorMessage = String(format: "error.failed_to_load".localized(), error.localizedDescription)
             showError = true
         }
     }
     
-    /// Get farm name for a scanning event
-    func getFarmName(for event: ScanningEvent) -> String {
-        // Find in our grouped data
-        for groupData in groupedEvents {
-            if groupData.farm.id == event.farmId {
-                return groupData.farm.name
-            }
-        }
-        return "scanning.unknown_farm".localized()
+    func farmAndGroupName(for event: ScanningEvent) -> (farm: String, group: String) {
+        let farm = farmNameCache[event.farmId] ?? "scanning.unknown_farm".localized()
+        let group = groupNameCache[event.lambingSeasonGroupId] ?? "scanning.unknown_group".localized()
+        return (farm, group)
     }
     
-    /// Get lambing group display name for a scanning event
-    func getGroupName(for event: ScanningEvent) -> String {
-        // Find in our grouped data
-        for groupData in groupedEvents {
-            if groupData.group.id == event.lambingSeasonGroupId {
-                return groupData.group.displayName
-            }
+    func deleteEvent(_ event: ScanningEvent) async {
+        print("🔵 [ALL-SCANNING-VM] Deleting event: \(event.id)")
+        
+        do {
+            try await scanningStore.delete(
+                userId: userId,
+                farmId: event.farmId,
+                groupId: event.lambingSeasonGroupId,
+                eventId: event.id
+            )
+            
+            // Remove from local array
+            events.removeAll { $0.id == event.id }
+            print("✅ [ALL-SCANNING-VM] Successfully deleted event")
+            
+        } catch {
+            print("❌ [ALL-SCANNING-VM] Error deleting event: \(error)")
+            errorMessage = String(format: "error.failed_to_delete".localized(), error.localizedDescription)
+            showError = true
         }
-        return "scanning.unknown_group".localized()
     }
 }

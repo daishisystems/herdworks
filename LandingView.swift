@@ -109,9 +109,8 @@ struct LandingView: View {
             NavigationStack {
                 AllScanningEventsView(
                     scanningStore: FirestoreScanningEventStore(),
-                    farmStore: FirestoreFarmStore(),
                     groupStore: FirestoreLambingSeasonGroupStore(),
-                    userId: Auth.auth().currentUser?.uid ?? ""
+                    farmStore: FirestoreFarmStore()
                 )
             }
         }

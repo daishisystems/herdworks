@@ -447,3 +447,6 @@
 
 // Skandeer Gebeure - Addisioneel
 "scanning.no_events_for_year" = "Geen Skandeer Gebeure Hierdie Jaar";
+
+"lambing.no_groups_title" = "Geen Lamseisoene";
+"lambing.no_groups_message" = "Skep asseblief eers 'n lamseisoengroep voor u skandeergebeurtenisse byvoeg.";
