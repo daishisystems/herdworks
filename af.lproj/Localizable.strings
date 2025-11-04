@@ -450,3 +450,62 @@
 
 "lambing.no_groups_title" = "Geen Lamseisoene";
 "lambing.no_groups_message" = "Skep asseblief eers 'n lamseisoengroep voor u skandeergebeurtenisse byvoeg.";
+
+// Lambing - General
+"lambing.all_events_title" = "Alle Lamgebeurtenisse";
+"lambing.add_record" = "Voeg Lamrekord By";
+"lambing.edit_record" = "Wysig Lamrekord";
+"lambing.empty_title" = "Nog Geen Lamrekords";
+"lambing.empty_subtitle" = "Volg jou lamprestasie en vergelyk met ander plase";
+"lambing.no_groups_title" = "Geen Lamgroepe";
+"lambing.no_groups_message" = "Skep asseblief 'n lamseisoengroep voordat jy lamrekords byvoeg";
+
+// Lambing - Fields
+"lambing.ewes_lambed" = "Lamooie";
+"lambing.lambs_born" = "Totale Lammers Gebore";
+"lambing.mortality_0_30_days" = "Lamsterftes (0-30 dae)";
+"lambing.mortality_short" = "Sterftes";
+"lambing.avg_birth_weight" = "Gemiddelde Geboortegewig";
+
+// Lambing - Calculated Metrics
+"lambing.lambing_percentage" = "Lampersentasie";
+"lambing.lambing_percentage_short" = "Lam %";
+"lambing.mortality_rate" = "Sterftesyfer";
+"lambing.survival_rate" = "Oorlewingsyfer";
+"lambing.survival_short" = "Oorlewing";
+"lambing.lambs_survived" = "Lammers Oorleef";
+"lambing.ranking" = "Rangorde";
+
+// Lambing - Helper Text
+"lambing.helper_ewes_lambed" = "Aantal ooie wat gelam het";
+"lambing.helper_ewes_lambed_with_scan" = "Van skandering: %d dragtig";
+"lambing.helper_lambs_born" = "Totale lammers gebore tydens lam";
+"lambing.helper_lambs_born_with_scan" = "Verwag van skandering: %d lammers";
+"lambing.helper_mortality" = "Lammers wat in eerste 30 dae gesterf het";
+"lambing.helper_birth_weight" = "Gemiddelde gewig van lammers by geboorte (kg)";
+
+// Lambing - Warnings
+"lambing.warning_mortality_exceeds_born" = "Waarskuwing: Sterftetelling oorskry lammers gebore";
+"lambing.warning_unusually_high_lambing" = "Waarskuwing: Lampersentasie oor 200% is ongewoon";
+
+// Lambing - Sections
+"lambing.your_results" = "Jou Resultate";
+"lambing.calculated_metrics" = "Berekende Maatstawwe";
+"lambing.benchmark_comparison" = "Maatstafvergelyking";
+"lambing.scanning_comparison" = "Skanderingsvergelyking";
+"lambing.based_on_farms" = "Gebaseer op %d plase";
+
+// Lambing - Benchmark
+"lambing.you" = "Jy";
+"lambing.average" = "Gemiddeld";
+"lambing.best" = "Beste";
+"lambing.top_10_percent" = "Top 10%%";
+"lambing.above_average" = "+%.1f%% bo gemiddeld";
+"lambing.below_average" = "+%.1f%% bo gemiddeld";
+
+// Lambing - Scanning Comparison
+"lambing.expected_from_scan" = "Verwag (van skandering)";
+"lambing.actually_born" = "Werklik gebore";
+"lambing.variance" = "Variansie";
+"lambing.ewes_pregnant_scan" = "Ooie dragtig (skandering)";
+"lambing.pregnancy_loss" = "Dragtigheid verlies";

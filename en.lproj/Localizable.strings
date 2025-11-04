@@ -446,3 +446,62 @@
 
 "lambing.no_groups_title" = "No Lambing Seasons";
 "lambing.no_groups_message" = "Please create a lambing season group first before adding scanning events.";
+
+// Lambing - General
+"lambing.all_events_title" = "All Lambing Events";
+"lambing.add_record" = "Add Lambing Record";
+"lambing.edit_record" = "Edit Lambing Record";
+"lambing.empty_title" = "No Lambing Records Yet";
+"lambing.empty_subtitle" = "Track your lambing performance and compare with other farms";
+"lambing.no_groups_title" = "No Lambing Groups";
+"lambing.no_groups_message" = "Please create a lambing season group before adding lambing records";
+
+// Lambing - Fields
+"lambing.ewes_lambed" = "Lambing Ewes";
+"lambing.lambs_born" = "Total Lambs Born";
+"lambing.mortality_0_30_days" = "Lamb Mortality (0-30 days)";
+"lambing.mortality_short" = "Mortality";
+"lambing.avg_birth_weight" = "Average Birth Weight";
+
+// Lambing - Calculated Metrics
+"lambing.lambing_percentage" = "Lambing Percentage";
+"lambing.lambing_percentage_short" = "Lambing %";
+"lambing.mortality_rate" = "Mortality Rate";
+"lambing.survival_rate" = "Survival Rate";
+"lambing.survival_short" = "Survival";
+"lambing.lambs_survived" = "Lambs Survived";
+"lambing.ranking" = "Ranking";
+
+// Lambing - Helper Text
+"lambing.helper_ewes_lambed" = "Number of ewes that lambed";
+"lambing.helper_ewes_lambed_with_scan" = "From scanning: %d pregnant";
+"lambing.helper_lambs_born" = "Total lambs born during lambing";
+"lambing.helper_lambs_born_with_scan" = "Expected from scan: %d lambs";
+"lambing.helper_mortality" = "Lambs that died in first 30 days";
+"lambing.helper_birth_weight" = "Average weight of lambs at birth (kg)";
+
+// Lambing - Warnings
+"lambing.warning_mortality_exceeds_born" = "Warning: Mortality count exceeds lambs born";
+"lambing.warning_unusually_high_lambing" = "Warning: Lambing percentage over 200% is unusual";
+
+// Lambing - Sections
+"lambing.your_results" = "Your Results";
+"lambing.calculated_metrics" = "Calculated Metrics";
+"lambing.benchmark_comparison" = "Benchmark Comparison";
+"lambing.scanning_comparison" = "Scanning Comparison";
+"lambing.based_on_farms" = "Based on %d farms";
+
+// Lambing - Benchmark
+"lambing.you" = "You";
+"lambing.average" = "Average";
+"lambing.best" = "Best";
+"lambing.top_10_percent" = "Top 10%%";
+"lambing.above_average" = "+%.1f%% above average";
+"lambing.below_average" = "+%.1f%% above average";
+
+// Lambing - Scanning Comparison
+"lambing.expected_from_scan" = "Expected (from scan)";
+"lambing.actually_born" = "Actually born";
+"lambing.variance" = "Variance";
+"lambing.ewes_pregnant_scan" = "Ewes pregnant (scan)";
+"lambing.pregnancy_loss" = "Pregnancy loss";

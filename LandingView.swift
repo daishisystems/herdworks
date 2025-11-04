@@ -5,6 +5,7 @@
 //  Created by Paul Mooney on 2025/10/15.
 //  Updated: Phase 4 - Added "All Breeding Events" integration
 //  Updated: Phase 5 - Fixed "All Scanning Events" navigation (wrapped in NavigationStack)
+//  Updated: Phase 6 - Added "All Lambing Events" integration
 //
 
 import SwiftUI
@@ -16,8 +17,9 @@ struct LandingView: View {
     @State private var selectedTab: Tab = .home
     @State private var showingFarmManagement = false
     @State private var showingAllLambingSeasons = false
-    @State private var showingAllBreeding = false  // NEW: For All Breeding Events modal
-    @State private var showingAllScanning = false  // NEW: For All Scanning Events modal
+    @State private var showingAllBreeding = false
+    @State private var showingAllScanning = false
+    @State private var showingAllLambingEvents = false  // ✅ NEW: For All Lambing Events modal
     
     enum Tab: String, CaseIterable {
         case home = "Home"
@@ -53,11 +55,14 @@ struct LandingView: View {
                 onAllLambingSeasonsTapped: {
                     showingAllLambingSeasons = true
                 },
-                onAllBreedingTapped: {  // NEW: Callback for All Breeding Events
+                onAllBreedingTapped: {
                     showingAllBreeding = true
                 },
-                onAllScanningTapped: {  // NEW: Callback for All Scanning Events
+                onAllScanningTapped: {
                     showingAllScanning = true
+                },
+                onAllLambingEventsTapped: {  // ✅ NEW: Callback for All Lambing Events
+                    showingAllLambingEvents = true
                 }
             )
                 .tabItem {
@@ -96,7 +101,6 @@ struct LandingView: View {
                 farmStore: FirestoreFarmStore()
             )
         }
-        // NEW: Sheet for All Breeding Events
         .sheet(isPresented: $showingAllBreeding) {
             AllBreedingEventsView(
                 eventStore: FirestoreBreedingEventStore(),
@@ -104,7 +108,6 @@ struct LandingView: View {
                 farmStore: FirestoreFarmStore()
             )
         }
-        // FIXED: Sheet for All Scanning Events - Now wrapped in NavigationStack
         .sheet(isPresented: $showingAllScanning) {
             NavigationStack {
                 AllScanningEventsView(
@@ -113,6 +116,16 @@ struct LandingView: View {
                     farmStore: FirestoreFarmStore()
                 )
             }
+        }
+        // ✅ NEW: Sheet for All Lambing Events
+        .sheet(isPresented: $showingAllLambingEvents) {
+            AllLambingEventsView(
+                recordStore: FirestoreLambingRecordStore(),
+                groupStore: FirestoreLambingSeasonGroupStore(),
+                farmStore: FirestoreFarmStore(),
+                benchmarkStore: FirestoreBenchmarkStore(),
+                userId: Auth.auth().currentUser?.uid ?? ""
+            )
         }
     }
 }
@@ -123,8 +136,9 @@ private struct HomeTab: View {
     @EnvironmentObject private var languageManager: LanguageManager
     let onFarmManagementTapped: () -> Void
     let onAllLambingSeasonsTapped: () -> Void
-    let onAllBreedingTapped: () -> Void  // NEW: Callback parameter
-    let onAllScanningTapped: () -> Void  // NEW: Callback parameter for scanning
+    let onAllBreedingTapped: () -> Void
+    let onAllScanningTapped: () -> Void
+    let onAllLambingEventsTapped: () -> Void  // ✅ NEW: Callback parameter
     
     private var currentUserEmail: String {
         Auth.auth().currentUser?.email ?? "Guest"
@@ -187,7 +201,6 @@ private struct HomeTab: View {
                                 action: onAllLambingSeasonsTapped
                             )
 
-                            // NEW: All Breeding Events Card
                             QuickActionCard(
                                 title: "breeding.all_events_title".localized(),
                                 subtitle: "breeding.all_events_subtitle".localized(),
@@ -196,7 +209,6 @@ private struct HomeTab: View {
                                 action: onAllBreedingTapped
                             )
 
-                            // NEW: All Scanning Events Card
                             QuickActionCard(
                                 title: "scanning.all_events_title".localized(),
                                 subtitle: "quick_action.all_scanning_events_subtitle".localized(),
@@ -204,35 +216,46 @@ private struct HomeTab: View {
                                 color: .purple,
                                 action: onAllScanningTapped
                             )
-
+                            
+                            // ✅ NEW: All Lambing Events Card
+                            QuickActionCard(
+                                title: "lambing.all_events_title".localized(),
+                                subtitle: "lambing.view_performance".localized(),
+                                systemImage: "chart.bar.fill",
+                                color: .pink,
+                                action: onAllLambingEventsTapped
+                            )
+                            
                             QuickActionCard(
                                 title: "quick_action.get_started".localized(),
                                 subtitle: "quick_action.get_started_subtitle".localized(),
-                                systemImage: "play.circle",
-                                color: .mint,
-                                action: { /* TODO: Implement onboarding */ }
+                                systemImage: "play.circle.fill",
+                                color: .indigo,
+                                action: { /* TODO */ }
                             )
 
                             QuickActionCard(
                                 title: "quick_action.learn_more".localized(),
                                 subtitle: "quick_action.learn_more_subtitle".localized(),
-                                systemImage: "book.circle",
-                                color: .indigo,
-                                action: { /* TODO: Implement learning center */ }
+                                systemImage: "book.circle.fill",
+                                color: .teal,
+                                action: { /* TODO */ }
                             )
 
                             QuickActionCard(
                                 title: "quick_action.support".localized(),
                                 subtitle: "quick_action.support_subtitle".localized(),
-                                systemImage: "questionmark.circle",
-                                color: .teal,
-                                action: { /* TODO: Implement support system */ }
+                                systemImage: "questionmark.circle.fill",
+                                color: .orange,
+                                action: { /* TODO */ }
                             )
                         }
                         .padding(.horizontal)
                     }
+                    
+                    Spacer(minLength: 40)
                 }
-                .padding(.vertical)
+                .padding(.top)
             }
             .navigationTitle("landing.home".localized())
             .navigationBarTitleDisplayMode(.large)
