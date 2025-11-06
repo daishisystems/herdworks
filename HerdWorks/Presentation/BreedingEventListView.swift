@@ -139,7 +139,10 @@ struct BreedingEventListView: View {
             }
             
             Button {
-                showingAddEvent = true
+                Task { @MainActor in
+                    try? await Task.sleep(nanoseconds: 150_000_000)
+                    showingAddEvent = true
+                }
             } label: {
                 Label("breeding.add_first_event".localized(), systemImage: "plus")
                     .font(.headline)
@@ -176,7 +179,10 @@ struct BreedingEventListView: View {
     
     private var addButton: some View {
         Button {
-            showingAddEvent = true
+            Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 150_000_000)
+                showingAddEvent = true
+            }
         } label: {
             Image(systemName: "plus")
         }
@@ -298,3 +304,4 @@ private struct BreedingEventRow: View {
     }
     .environmentObject(LanguageManager.shared)
 }
+

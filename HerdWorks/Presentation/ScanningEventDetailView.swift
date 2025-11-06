@@ -103,6 +103,9 @@ struct ScanningEventDetailView: View {
                     Text(message)
                 }
             }
+            .task {
+                await MainActor.run { focusedField = .ewesMated }
+            }
         }
     }
     
@@ -322,3 +325,4 @@ struct ScanningEventDetailView: View {
         .environmentObject(LanguageManager.shared)
     }
 }
+

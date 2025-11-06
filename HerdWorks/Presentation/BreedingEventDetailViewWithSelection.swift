@@ -107,6 +107,7 @@ struct BreedingEventDetailViewWithSelection: View {
                 }
             }
         }
+        .task { await MainActor.run { focusedField = .numberOfEwes } }
     }
     
     // MARK: - Computed Properties
@@ -354,3 +355,4 @@ struct BreedingEventDetailViewWithSelection: View {
         return success
     }
 }
+

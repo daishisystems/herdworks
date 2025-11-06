@@ -109,6 +109,9 @@ struct BreedingEventDetailView: View {
                 }
             }
         }
+        .task {
+            await MainActor.run { focusedField = .numberOfEwes }
+        }
     }
     
     // MARK: - Form Sections
@@ -306,3 +309,4 @@ struct BreedingEventDetailView: View {
     )
     .environmentObject(LanguageManager.shared)
 }
+

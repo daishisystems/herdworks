@@ -112,6 +112,7 @@ struct LambingRecordDetailViewWithSelection: View {
             } message: {
                 Text(errorMessage)
             }
+            .task { await MainActor.run { focusedField = .ewesLambed } }
         }
     }
     
@@ -155,4 +156,3 @@ struct LambingRecordDetailViewWithSelection: View {
         }
     }
 }
-

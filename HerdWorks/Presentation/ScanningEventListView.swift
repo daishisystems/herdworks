@@ -56,7 +56,10 @@ struct ScanningEventListView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    showingAddSheet = true
+                    Task { @MainActor in
+                        try? await Task.sleep(nanoseconds: 150_000_000)
+                        showingAddSheet = true
+                    }
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -272,3 +275,4 @@ struct ScanningEventRow: View {
         .environmentObject(LanguageManager.shared)
     }
 }
+

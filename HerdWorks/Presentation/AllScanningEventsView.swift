@@ -210,7 +210,10 @@ struct AllScanningEventsView: View {
             if viewModel.groups.isEmpty {
                 viewModel.showNoGroupsAlert = true
             } else {
-                showingAddEvent = true
+                Task { @MainActor in
+                    try? await Task.sleep(nanoseconds: 150_000_000)
+                    showingAddEvent = true
+                }
             }
         } label: {
             Image(systemName: "plus")
@@ -353,3 +356,4 @@ private struct StatColumn: View {
     )
     .environmentObject(LanguageManager.shared)
 }
+

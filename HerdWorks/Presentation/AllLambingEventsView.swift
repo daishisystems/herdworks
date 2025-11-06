@@ -52,7 +52,14 @@ struct AllLambingEventsView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        showingAddSheet = true
+                        if viewModel.groups.isEmpty {
+                            // preserve disabled state; no action needed
+                        } else {
+                            Task { @MainActor in
+                                try? await Task.sleep(nanoseconds: 150_000_000)
+                                showingAddSheet = true
+                            }
+                        }
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -285,3 +292,4 @@ struct LambingRecordRow: View {
     )
     .environmentObject(LanguageManager.shared)
 }
+
