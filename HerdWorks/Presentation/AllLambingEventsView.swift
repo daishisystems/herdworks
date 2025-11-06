@@ -10,6 +10,7 @@ import SwiftUI
 struct AllLambingEventsView: View {
     @StateObject private var viewModel: AllLambingEventsViewModel
     @EnvironmentObject private var languageManager: LanguageManager
+    @Environment(\.dismiss) private var dismiss  // ✅ ADDED: Environment dismiss
     @State private var showingAddSheet = false
     @State private var selectedRecord: LambingRecord?
     
@@ -45,7 +46,7 @@ struct AllLambingEventsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("common.done".localized()) {
-                        // Dismiss
+                        dismiss()  // ✅ FIXED: Now actually dismisses the view
                     }
                 }
                 

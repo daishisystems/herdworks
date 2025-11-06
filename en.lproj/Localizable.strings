@@ -505,3 +505,4 @@
 "lambing.variance" = "Variance";
 "lambing.ewes_pregnant_scan" = "Ewes pregnant (scan)";
 "lambing.pregnancy_loss" = "Pregnancy loss";
+"lambing.view_performance" = "View lambing performance";
