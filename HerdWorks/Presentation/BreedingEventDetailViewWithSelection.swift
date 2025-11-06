@@ -185,7 +185,12 @@ struct BreedingEventDetailViewWithSelection: View {
         ) {
             TextField("breeding.number_of_ewes_placeholder".localized(), text: $viewModel.numberOfEwesMated)
                 .keyboardType(.numberPad)
+                .textContentType(.oneTimeCode)
+                .submitLabel(.next)
+                .onSubmit { focusedField = .naturalDays }
                 .focused($focusedField, equals: .numberOfEwes)
+                .contentShape(Rectangle())
+                .onTapGesture { focusedField = .numberOfEwes }
         }
     }
     
@@ -215,7 +220,12 @@ struct BreedingEventDetailViewWithSelection: View {
             
             TextField("breeding.natural_days".localized(), text: $viewModel.naturalMatingDays)
                 .keyboardType(.numberPad)
+                .textContentType(.oneTimeCode)
+                .submitLabel(.done)
+                .onSubmit { focusedField = nil }
                 .focused($focusedField, equals: .naturalDays)
+                .contentShape(Rectangle())
+                .onTapGesture { focusedField = .naturalDays }
             
             // Auto-calculated end date (read-only)
             if let endDate = viewModel.naturalMatingEnd {

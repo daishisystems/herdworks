@@ -116,10 +116,15 @@ struct ScanningEventDetailView: View {
                 Spacer()
                 TextField("0", text: $viewModel.ewesMated)
                     .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .ewesScanned }
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .ewesMated)
             }
+            .contentShape(Rectangle())
+            .onTapGesture { focusedField = .ewesMated }
         } header: {
             Text("scanning.section_mating".localized())
         } footer: {
@@ -134,30 +139,45 @@ struct ScanningEventDetailView: View {
                 Spacer()
                 TextField("0", text: $viewModel.ewesScanned)
                     .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .ewesPregnant }
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .ewesScanned)
             }
+            .contentShape(Rectangle())
+            .onTapGesture { focusedField = .ewesScanned }
             
             HStack {
                 Text("scanning.ewes_pregnant".localized())
                 Spacer()
                 TextField("0", text: $viewModel.ewesPregnant)
                     .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .ewesNotPregnant }
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .ewesPregnant)
             }
+            .contentShape(Rectangle())
+            .onTapGesture { focusedField = .ewesPregnant }
             
             HStack {
                 Text("scanning.ewes_not_pregnant".localized())
                 Spacer()
                 TextField("0", text: $viewModel.ewesNotPregnant)
                     .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .singles }
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .ewesNotPregnant)
             }
+            .contentShape(Rectangle())
+            .onTapGesture { focusedField = .ewesNotPregnant }
         } header: {
             Text("scanning.section_scanning".localized())
         } footer: {
@@ -172,30 +192,45 @@ struct ScanningEventDetailView: View {
                 Spacer()
                 TextField("0", text: $viewModel.ewesWithSingles)
                     .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .twins }
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .singles)
             }
+            .contentShape(Rectangle())
+            .onTapGesture { focusedField = .singles }
             
             HStack {
                 Text("scanning.ewes_twins".localized())
                 Spacer()
                 TextField("0", text: $viewModel.ewesWithTwins)
                     .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .triplets }
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .twins)
             }
+            .contentShape(Rectangle())
+            .onTapGesture { focusedField = .twins }
             
             HStack {
                 Text("scanning.ewes_triplets".localized())
                 Spacer()
                 TextField("0", text: $viewModel.ewesWithTriplets)
                     .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .submitLabel(.done)
+                    .onSubmit { focusedField = nil }
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .triplets)
             }
+            .contentShape(Rectangle())
+            .onTapGesture { focusedField = .triplets }
         } header: {
             Text("scanning.section_fetuses".localized())
         } footer: {

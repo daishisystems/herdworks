@@ -23,6 +23,9 @@ struct LambingRecordDetailViewWithSelection: View {
     @State private var showError = false
     @State private var errorMessage = ""
     
+    @FocusState private var focusedField: Field?
+    private enum Field: Hashable { case ewesLambed, lambsBorn, mortality, birthWeight }
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -46,17 +49,44 @@ struct LambingRecordDetailViewWithSelection: View {
                 Section("Lambing Data") {
                     TextField("Lambing Ewes", text: $ewesLambed)
                         .keyboardType(.numberPad)
+                        .textContentType(.oneTimeCode)
+                        .multilineTextAlignment(.trailing)
+                        .focused($focusedField, equals: .ewesLambed)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .lambsBorn }
+                        .contentShape(Rectangle())
+                        .onTapGesture { focusedField = .ewesLambed }
                     
                     TextField("Lambs Born", text: $lambsBorn)
                         .keyboardType(.numberPad)
+                        .textContentType(.oneTimeCode)
+                        .multilineTextAlignment(.trailing)
+                        .focused($focusedField, equals: .lambsBorn)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .mortality }
+                        .contentShape(Rectangle())
+                        .onTapGesture { focusedField = .lambsBorn }
                     
                     TextField("Mortality (0-30 days)", text: $mortality)
                         .keyboardType(.numberPad)
+                        .textContentType(.oneTimeCode)
+                        .multilineTextAlignment(.trailing)
+                        .focused($focusedField, equals: .mortality)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .birthWeight }
+                        .contentShape(Rectangle())
+                        .onTapGesture { focusedField = .mortality }
                 }
                 
                 Section("Optional") {
                     TextField("Average Birth Weight (kg)", text: $birthWeight)
                         .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .focused($focusedField, equals: .birthWeight)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
+                        .contentShape(Rectangle())
+                        .onTapGesture { focusedField = .birthWeight }
                 }
             }
             .navigationTitle("Add Lambing Record")
@@ -125,3 +155,4 @@ struct LambingRecordDetailViewWithSelection: View {
         }
     }
 }
+
