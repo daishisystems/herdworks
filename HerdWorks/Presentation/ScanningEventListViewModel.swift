@@ -20,12 +20,11 @@ final class ScanningEventListViewModel: ObservableObject {
     @Published var eventToDelete: ScanningEvent?
     
     // MARK: - Private Properties
-    
+
     private let store: ScanningEventStore
     private let userId: String
     private let farmId: String
     private let groupId: String
-    private var cancellables = Set<AnyCancellable>()
     private var listenerCancellable: AnyCancellable?
     
     // MARK: - Initializer

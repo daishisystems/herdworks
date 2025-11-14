@@ -136,23 +136,7 @@ final class FirestoreBreedingEventStore: BreedingEventStore {
         print("🔵 [BREEDING-UPDATE] Mating Type: \(event.matingType.displayName)")
         print("🔵 [BREEDING-UPDATE] Number of Ewes: \(event.numberOfEwesMated)")
         print("🔵 [BREEDING-UPDATE] Year: \(event.year)")
-        
-        // Create updated event with new timestamp
-        let updatedEvent = BreedingEvent(
-            id: event.id,
-            userId: event.userId,
-            farmId: event.farmId,
-            lambingSeasonGroupId: event.lambingSeasonGroupId,
-            matingType: event.matingType,
-            numberOfEwesMated: event.numberOfEwesMated,
-            naturalMatingStart: event.naturalMatingStart,
-            naturalMatingDays: event.naturalMatingDays,
-            aiDate: event.aiDate,
-            usedFollowUpRams: event.usedFollowUpRams,
-            followUpRamsIn: event.followUpRamsIn,
-            followUpRamsOut: event.followUpRamsOut
-        )
-        
+
         let docRef = documentPath(
             userId: event.userId,
             farmId: event.farmId,
@@ -160,9 +144,13 @@ final class FirestoreBreedingEventStore: BreedingEventStore {
             eventId: event.id
         )
         print("🔵 [BREEDING-UPDATE] Path: users/\(event.userId)/farms/\(event.farmId)/lambingSeasonGroups/\(event.lambingSeasonGroupId)/breedingEvents/\(event.id)")
-        
+
         do {
-            try docRef.setData(from: updatedEvent)
+            var data = try Firestore.Encoder().encode(event)
+            // Use server timestamp for updatedAt to avoid clock skew issues
+            data["updatedAt"] = FieldValue.serverTimestamp()
+
+            try await docRef.setData(data, merge: true)
             print("✅ [BREEDING-UPDATE] Event updated successfully")
         } catch {
             print("❌ [BREEDING-UPDATE] Error: \(error.localizedDescription)")

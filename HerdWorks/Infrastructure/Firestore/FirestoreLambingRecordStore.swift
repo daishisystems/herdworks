@@ -118,19 +118,20 @@ final class FirestoreLambingRecordStore: LambingRecordStore {
     
     func update(_ record: LambingRecord) async throws {
         print("🔵 [LAMBING-UPDATE] Updating record: \(record.id)")
-        
-        var updatedRecord = record
-        updatedRecord.updatedAt = Date()
-        
+
         let docRef = documentPath(
             userId: record.userId,
             farmId: record.farmId,
             groupId: record.lambingSeasonGroupId,
             recordId: record.id
         )
-        
+
         do {
-            try docRef.setData(from: updatedRecord)
+            var data = try Firestore.Encoder().encode(record)
+            // Use server timestamp for updatedAt to avoid clock skew issues
+            data["updatedAt"] = FieldValue.serverTimestamp()
+
+            try await docRef.setData(data, merge: true)
             print("✅ [LAMBING-UPDATE] Successfully updated record")
         } catch {
             print("❌ [LAMBING-UPDATE] Error: \(error.localizedDescription)")

@@ -212,7 +212,12 @@ final class BenchmarkComparisonViewModel: ObservableObject {
         self.farmId = farmId
         self.groupId = groupId
     }
-    
+
+    deinit {
+        print("🔵 [BENCHMARK-VM] Deallocating - cancelling listeners")
+        benchmarkCancellable?.cancel()
+    }
+
     // MARK: - Public Methods
     
     /// Start listening to benchmark data and load farm performance
@@ -243,10 +248,14 @@ final class BenchmarkComparisonViewModel: ObservableObject {
     // MARK: - Private Methods - Benchmark Listening
     
     private func listenToBenchmark(breed: SheepBreed, province: SouthAfricanProvince, year: Int) {
+        // Cancel existing listener first to prevent memory leaks
+        benchmarkCancellable?.cancel()
+        benchmarkCancellable = nil
+
         isLoadingBenchmark = true
-        
+
         print("📊 [BENCHMARK-VM] Starting listener for: \(breed.rawValue)_\(province.rawValue)_\(year)")
-        
+
         benchmarkCancellable = benchmarkStore.listen(breed: breed, province: province, year: year)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in

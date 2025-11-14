@@ -45,6 +45,7 @@ final class FarmDetailViewModel: ObservableObject {
     private let store: FarmStore
     private let userId: String
     private let existingFarm: Farm?
+    private var geocodingTask: Task<GPSCoordinate?, Never>?
     
     // MARK: - Computed Properties
     var isValid: Bool {
@@ -86,7 +87,12 @@ final class FarmDetailViewModel: ObservableObject {
             loadFarm(farm)
         }
     }
-    
+
+    deinit {
+        print("🔵 [VIEWMODEL] FarmDetailViewModel deallocating - cancelling geocoding task")
+        geocodingTask?.cancel()
+    }
+
     // MARK: - Private Methods
     private func loadFarm(_ farm: Farm) {
         print("🔵 [VIEWMODEL] Loading existing farm: \(farm.name)")
@@ -218,7 +224,10 @@ final class FarmDetailViewModel: ObservableObject {
             } else {
                 // Auto-geocode from address
                 print("🔵 [VIEWMODEL] Starting geocoding...")
-                gpsLocation = await geocodeAddress()
+                geocodingTask = Task {
+                    await geocodeAddress()
+                }
+                gpsLocation = await geocodingTask?.value
                 if let gps = gpsLocation {
                     print("✅ [VIEWMODEL] Geocoded: \(gps.latitude), \(gps.longitude)")
                 } else {

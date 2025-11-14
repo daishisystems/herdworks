@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "lambingSeasonGroups",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "isActive",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "matingStart",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

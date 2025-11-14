@@ -116,22 +116,23 @@ final class FirestoreScanningEventStore: ScanningEventStore {
     }
     
     // MARK: - Update Operation
-    
+
     func update(_ event: ScanningEvent) async throws {
         print("🔵 [SCANNING-UPDATE] Updating scanning event: \(event.id)")
-        
-        var updatedEvent = event
-        updatedEvent.updatedAt = Date()
-        
+
         let docRef = documentPath(
             userId: event.userId,
             farmId: event.farmId,
             groupId: event.lambingSeasonGroupId,
             eventId: event.id
         )
-        
+
         do {
-            try docRef.setData(from: updatedEvent)
+            var data = try Firestore.Encoder().encode(event)
+            // Use server timestamp for updatedAt to avoid clock skew issues
+            data["updatedAt"] = FieldValue.serverTimestamp()
+
+            try await docRef.setData(data, merge: true)
             print("✅ [SCANNING-UPDATE] Successfully updated scanning event: \(event.id)")
         } catch {
             print("❌ [SCANNING-UPDATE] Error: \(error.localizedDescription)")

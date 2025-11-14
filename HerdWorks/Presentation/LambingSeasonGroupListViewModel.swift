@@ -22,7 +22,7 @@ final class LambingSeasonGroupListViewModel: ObservableObject {
     private let store: LambingSeasonGroupStore
     private let userId: String
     private let farmId: String
-    var groupToDelete: LambingSeasonGroup?
+    @Published var groupToDelete: LambingSeasonGroup?
     
     // MARK: - Computed Properties
     var displayedGroups: [LambingSeasonGroup] {

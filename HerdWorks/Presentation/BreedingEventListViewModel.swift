@@ -23,7 +23,7 @@ final class BreedingEventListViewModel: ObservableObject {
     private let farmId: String
     private let groupId: String
     private var eventListener: AnyCancellable?
-    var eventToDelete: BreedingEvent?
+    @Published var eventToDelete: BreedingEvent?
     
     // MARK: - Computed Properties
     var hasEvents: Bool {
