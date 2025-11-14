@@ -35,7 +35,7 @@ final class FirestoreBenchmarkStore: BenchmarkStore {
             }
             
             let benchmark = try snapshot.data(as: BenchmarkData.self)
-            print("✅ [BENCHMARK-FETCH] Found benchmark with \(benchmark.sampleSize) farms")
+            print("✅ [BENCHMARK-FETCH] Found benchmark with \(benchmark.totalFarms) farms, \(benchmark.totalRecords) records")
             return benchmark
         } catch {
             print("❌ [BENCHMARK-FETCH] Error: \(error.localizedDescription)")

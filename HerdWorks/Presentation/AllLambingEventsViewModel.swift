@@ -3,6 +3,7 @@
 //  HerdWorks
 //
 //  Created by Paul Mooney on 2025/11/04.
+//  FIXED: Updated to use fetch(breed:province:year:) instead of fetchById
 //
 
 import Foundation
@@ -156,6 +157,7 @@ final class AllLambingEventsViewModel: ObservableObject {
         }
     }
     
+    // ✅ FIXED: Use fetch(breed:province:year:) instead of fetchById
     func ranking(for record: LambingRecord) async -> String? {
         guard let groupInfo = groupInfoCache[record.lambingSeasonGroupId] else {
             return nil
@@ -166,15 +168,19 @@ final class AllLambingEventsViewModel: ObservableObject {
         
         // Check cache first
         if let cached = benchmarkCache[benchmarkId] {
-            let percentile = cached.lambingPercentileRank(for: record.lambingPercentage)
+            let percentile = cached.lambingPercentageLambed.percentileRank(for: record.lambingPercentage, lowerIsBetter: false)
             return "Top \(percentile)%"
         }
         
-        // Fetch benchmark
+        // Fetch benchmark using breed, province, and year
         do {
-            if let benchmark = try await benchmarkStore.fetchById(id: benchmarkId) {
+            if let benchmark = try await benchmarkStore.fetch(
+                breed: groupInfo.farmBreed,
+                province: groupInfo.farmProvince,
+                year: record.year
+            ) {
                 benchmarkCache[benchmarkId] = benchmark
-                let percentile = benchmark.lambingPercentileRank(for: record.lambingPercentage)
+                let percentile = benchmark.lambingPercentageLambed.percentileRank(for: record.lambingPercentage, lowerIsBetter: false)
                 return "Top \(percentile)%"
             }
         } catch {
@@ -365,4 +371,3 @@ final class AllLambingEventsViewModel: ObservableObject {
         recordsDebounceTask?.cancel()
     }
 }
-

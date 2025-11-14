@@ -510,3 +510,75 @@
 "lambing.ewes_pregnant_scan" = "Ooie dragtig (skandering)";
 "lambing.pregnancy_loss" = "Dragtigheid verlies";
 "lambing.view_performance" = "Bekyk lamprestasie";
+
+// MARK: - Benchmark Tiers
+"benchmark.tier.excellent" = "Uitstekend";
+"benchmark.tier.good" = "Goed";
+"benchmark.tier.needs_improvement" = "Benodig Verbetering";
+
+// MARK: - Benchmark Errors
+"benchmark.error.failed_to_load" = "Kon nie maatstaf data laai nie";
+"benchmark.error.failed_to_load_performance" = "Kon nie plaasprestasie data laai nie";
+
+// MARK: - Benchmark Metrics - Scanning
+"benchmark.metric.conception_rate" = "Verwekking Tempo";
+"benchmark.metric.scanning_rate" = "Skandeer Tempo";
+"benchmark.metric.expected_lambs_pregnant" = "Verwagte Lammers per Dragtige Ooi";
+"benchmark.metric.expected_lambs_mated" = "Verwagte Lammers per Gepaar Ooi";
+
+// MARK: - Benchmark Metrics - Lambing
+"benchmark.metric.lambing_percentage_mated" = "Lam % (van Gepaar)";
+"benchmark.metric.lambing_percentage_lambed" = "Lam % (van Gelam)";
+"benchmark.metric.born_alive_percentage" = "Gebore Lewendig %";
+"benchmark.metric.mortality_percentage" = "Mortaliteit %";
+"benchmark.metric.dry_ewes_percentage" = "Droë Ooie %";
+"benchmark.metric.mortality_per_ewe_lambed" = "Mortaliteit per Ooi Gelam";
+
+// MARK: - Benchmark UI
+"benchmark.title" = "Prestasie Maatstawwe";
+"benchmark.section.scanning" = "Skandeer Prestasie";
+"benchmark.section.lambing" = "Lam Prestasie";
+"benchmark.your_farm" = "Jou Plaas";
+"benchmark.industry_average" = "Bedryfsgemiddeld";
+"benchmark.top_10_percent" = "Top 10%";
+"benchmark.median" = "Mediaan";
+"benchmark.percentile" = "Jy is in die top %d%%";
+"benchmark.no_data" = "Geen maatstaf data beskikbaar nie";
+"benchmark.no_data_subtitle" = "Voltooi jou teel, skandeer en lam rekords om vergelykings te sien";
+"benchmark.loading" = "Laai maatstawwe...";
+
+// MARK: - Benchmark Tiers
+"benchmark.tier.excellent" = "Excellent";
+"benchmark.tier.good" = "Good";
+"benchmark.tier.needs_improvement" = "Needs Improvement";
+
+// MARK: - Benchmark Errors
+"benchmark.error.failed_to_load" = "Failed to load benchmark data";
+"benchmark.error.failed_to_load_performance" = "Failed to load farm performance data";
+
+// MARK: - Benchmark Metrics - Scanning
+"benchmark.metric.conception_rate" = "Conception Rate";
+"benchmark.metric.scanning_rate" = "Scanning Rate";
+"benchmark.metric.expected_lambs_pregnant" = "Expected Lambs per Ewe Pregnant";
+"benchmark.metric.expected_lambs_mated" = "Expected Lambs per Ewe Mated";
+
+// MARK: - Benchmark Metrics - Lambing
+"benchmark.metric.lambing_percentage_mated" = "Lambing % (of Mated)";
+"benchmark.metric.lambing_percentage_lambed" = "Lambing % (of Lambed)";
+"benchmark.metric.born_alive_percentage" = "Born Alive %";
+"benchmark.metric.mortality_percentage" = "Mortality %";
+"benchmark.metric.dry_ewes_percentage" = "Dry Ewes %";
+"benchmark.metric.mortality_per_ewe_lambed" = "Mortality per Ewe Lambed";
+
+// MARK: - Benchmark UI
+"benchmark.title" = "Performance Benchmarks";
+"benchmark.section.scanning" = "Scanning Performance";
+"benchmark.section.lambing" = "Lambing Performance";
+"benchmark.your_farm" = "Your Farm";
+"benchmark.industry_average" = "Industry Average";
+"benchmark.top_10_percent" = "Top 10%";
+"benchmark.median" = "Median";
+"benchmark.percentile" = "You're in the top %d%%";
+"benchmark.no_data" = "No benchmark data available";
+"benchmark.no_data_subtitle" = "Complete your breeding, scanning, and lambing records to see comparisons";
+"benchmark.loading" = "Loading benchmarks...";
