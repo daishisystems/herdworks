@@ -126,3 +126,29 @@ struct Farm: Codable, Equatable, Sendable, Identifiable, Hashable {
         !city.isEmpty
     }
 }
+
+// MARK: - Preview Helpers
+
+extension Farm {
+    static var preview: Farm {
+        Farm(
+            id: "preview-farm",
+            userId: "preview-user",
+            name: "Preview Farm",
+            breed: .dohneMerino,
+            totalProductionEwes: 810,
+            city: "Saldanha",
+            province: .westernCape,
+            companyName: "Preview Farms Ltd",
+            sizeHectares: 500.0,
+            streetAddress: "123 Farm Road",
+            postalCode: "7395",
+            gpsLocation: GPSCoordinate(latitude: -33.0, longitude: 18.0),
+            productionSystem: .livestock70Crops30,
+            preferredAgent: .bkb,
+            preferredAbattoir: "Local Abattoir",
+            preferredVeterinarian: "Dr. Smith",
+            coOp: .kaapAgri
+        )
+    }
+}

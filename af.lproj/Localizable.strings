@@ -582,3 +582,203 @@
 "benchmark.no_data" = "No benchmark data available";
 "benchmark.no_data_subtitle" = "Complete your breeding, scanning, and lambing records to see comparisons";
 "benchmark.loading" = "Loading benchmarks...";
+
+// MARK: - Benchmark Comparison Feature (Phase 2B)
+// Afrikaans Localization Strings
+
+// MARK: - Benchmark List View
+"benchmark.title" = "Standaarde";
+"benchmark.empty_title" = "Geen Standaarde Beskikbaar";
+"benchmark.empty_subtitle" = "Standaard data sal verskyn nadat jy jou eerste lamseisoen voltooi het";
+"benchmark.loading" = "Laai standaarde...";
+"benchmark.error_loading" = "Kon nie standaarde laai nie";
+"benchmark.retry" = "Probeer Weer";
+
+// MARK: - Benchmark Card Headers
+"benchmark.your_performance" = "Jou Prestasie";
+"benchmark.industry_benchmark" = "Bedryfsstandaard";
+"benchmark.comparison" = "Vergelyking";
+"benchmark.vs_industry" = "vs Bedryf";
+
+// MARK: - Performance Status
+"benchmark.status.excellent" = "Uitstekend";
+"benchmark.status.above_average" = "Bo Gemiddeld";
+"benchmark.status.average" = "Gemiddeld";
+"benchmark.status.below_average" = "Onder Gemiddeld";
+"benchmark.status.needs_improvement" = "Benodig Verbetering";
+
+// MARK: - Percentile Rank
+"benchmark.percentile_rank" = "Jy is in die top %d%% van boere";
+"benchmark.percentile_value" = "Top %d%%";
+"benchmark.rank_explanation" = "Gebaseer op %d plase in jou streek";
+
+// MARK: - Statistical Labels
+"benchmark.your_value" = "Jou Waarde";
+"benchmark.industry_average" = "Bedryfsgemiddelde";
+"benchmark.industry_median" = "Bedryfs Mediaan";
+"benchmark.top_10_percent" = "Top 10%%";
+"benchmark.range" = "Reeks";
+"benchmark.sample_size" = "Steekproefgrootte";
+"benchmark.farms_contributing" = "%d plase dra by";
+
+// MARK: - Metric Names (Scanning)
+"benchmark.metric.conception_rate" = "Konsepsiekoers";
+"benchmark.metric.scanning_rate" = "Skandeerkoers";
+"benchmark.metric.expected_lambs_per_ewe_pregnant" = "Lammers/Dragtige Ooi";
+"benchmark.metric.expected_lambs_per_ewe_mated" = "Lammers/Gepaar Ooi";
+
+// MARK: - Metric Names (Lambing)
+"benchmark.metric.lambing_percentage_mated" = "Lam % (Gepaar)";
+"benchmark.metric.lambing_percentage_lambed" = "Lam % (Gelam)";
+"benchmark.metric.born_alive_percentage" = "Lewend Gebore %";
+"benchmark.metric.mortality_percentage" = "Sterfte %";
+"benchmark.metric.dry_ewes_percentage" = "Droë Ooie %";
+"benchmark.metric.mortality_per_ewe_lambed" = "Sterfte/Ooi Gelam";
+
+// MARK: - Metric Descriptions
+"benchmark.desc.conception_rate" = "Persentasie van geskandeerde ooie wat dragtig was";
+"benchmark.desc.scanning_rate" = "Persentasie van gepaarde ooie wat geskandeer is";
+"benchmark.desc.expected_lambs_per_ewe_pregnant" = "Verwagte lammers per dragtige ooi volgens skandering";
+"benchmark.desc.expected_lambs_per_ewe_mated" = "Verwagte lammers per gepaarde ooi volgens skandering";
+"benchmark.desc.lambing_percentage_mated" = "Persentasie van gepaarde ooie wat gelam het";
+"benchmark.desc.lambing_percentage_lambed" = "Aantal lammers gebore per ooi wat gelam het";
+"benchmark.desc.born_alive_percentage" = "Persentasie lammers lewend gebore";
+"benchmark.desc.mortality_percentage" = "Persentasie lammers wat dood is (0-30 dae)";
+"benchmark.desc.dry_ewes_percentage" = "Persentasie gepaarde ooie wat nie gelam het nie";
+"benchmark.desc.mortality_per_ewe_lambed" = "Sterftekoers per ooi wat gelam het";
+
+// MARK: - Category Headers
+"benchmark.category.scanning" = "Skandeer Maatstawwe";
+"benchmark.category.lambing" = "Lam Maatstawwe";
+"benchmark.category.overview" = "Oorsig";
+"benchmark.category.detailed" = "Gedetailleerde Vergelyking";
+
+// MARK: - Comparison Values
+"benchmark.difference.above" = "+%.1f%% bo gemiddeld";
+"benchmark.difference.below" = "%.1f%% onder gemiddeld";
+"benchmark.difference.points_above" = "+%.2f bo gemiddeld";
+"benchmark.difference.points_below" = "%.2f onder gemiddeld";
+
+// MARK: - Filters & Sorting
+"benchmark.filter.all" = "Alle Maatstawwe";
+"benchmark.filter.scanning" = "Slegs Skandeer";
+"benchmark.filter.lambing" = "Slegs Lam";
+"benchmark.filter.needs_attention" = "Benodig Aandag";
+"benchmark.sort.performance" = "Volgens Prestasie";
+"benchmark.sort.name" = "Volgens Naam";
+"benchmark.sort.difference" = "Volgens Verskil";
+
+// MARK: - Empty States
+"benchmark.no_data.title" = "Geen Data Beskikbaar";
+"benchmark.no_data.scanning" = "Voltooi 'n dragtigheid skandering om skandeer standaarde te sien";
+"benchmark.no_data.lambing" = "Voltooi 'n lamseisoen om lam standaarde te sien";
+"benchmark.no_data.farm" = "Geen standaard data beskikbaar vir hierdie plaas";
+
+// MARK: - Actions
+"benchmark.view_details" = "Sien Besonderhede";
+"benchmark.compare_seasons" = "Vergelyk Seisoene";
+"benchmark.share_results" = "Deel Resultate";
+"benchmark.export_report" = "Voer Verslag Uit";
+"benchmark.learn_more" = "Leer Meer";
+
+// MARK: - Insights & Recommendations
+"benchmark.insight.title" = "Insigte";
+"benchmark.recommendation.title" = "Aanbevelings";
+"benchmark.strength.title" = "Sterkpunte";
+"benchmark.opportunity.title" = "Geleenthede";
+
+// MARK: - Units
+"benchmark.unit.percentage" = "%";
+"benchmark.unit.ratio" = "";
+"benchmark.unit.count" = "";
+
+// MARK: - Navigation
+"benchmark.nav.back_to_list" = "Terug na Standaarde";
+"benchmark.nav.next_metric" = "Volgende Maatstaf";
+"benchmark.nav.previous_metric" = "Vorige Maatstaf";
+
+// MARK: - Errors
+"benchmark.error.no_breeding_data" = "Geen teel data gevind";
+"benchmark.error.no_scanning_data" = "Geen skandeer data gevind";
+"benchmark.error.no_lambing_data" = "Geen lam data gevind";
+"benchmark.error.incomplete_data" = "Onvolledige data vir standaard berekening";
+"benchmark.error.calculation_failed" = "Kon nie standaarde bereken nie";
+
+// MARK: - Info & Help
+"benchmark.info.how_calculated" = "Hoe word standaarde bereken?";
+"benchmark.info.what_is_p90" = "Wat beteken 'Top 10%%'?";
+"benchmark.info.sample_size_explanation" = "Waarom maak steekproefgrootte saak?";
+"benchmark.help.improve_performance" = "Hoe kan ek verbeter?";
+
+// MARK: - Tooltips
+"benchmark.tooltip.conception_rate" = "Hoër is beter. Bedryfsgemiddelde: 85-90%%";
+"benchmark.tooltip.scanning_rate" = "Hoër is beter. Teiken: >95%%";
+"benchmark.tooltip.lambing_percentage" = "Hoër is beter. Teiken: 120-150%%";
+"benchmark.tooltip.mortality" = "Laer is beter. Teiken: <5%%";
+
+// MARK: - Time Periods
+"benchmark.period.current_season" = "Huidige Seisoen";
+"benchmark.period.last_season" = "Laaste Seisoen";
+"benchmark.period.year_to_date" = "Jaar tot Datum";
+"benchmark.period.all_time" = "Alle Tyd";
+
+// MARK: - Accessibility
+"benchmark.accessibility.chart" = "Prestasie vergelykings grafiek";
+"benchmark.accessibility.gauge" = "Prestasie meter wys %@ by %.1f%%";
+"benchmark.accessibility.rank" = "Jy rangskik in die top %d persent";
+"benchmark.accessibility.above_average" = "Bo bedryfsgemiddelde met %.1f%%";
+"benchmark.accessibility.below_average" = "Onder bedryfsgemiddelde met %.1f%%";
+
+"benchmark.dashboard_title" = "Prestasie Dashboard";
+"benchmark.dashboard_subtitle" = "Vergelyk jou prestasie teen bedryfstandaarde";
+
+// Afrikaans (Localizable.strings)
+"common.close" = "Sluit";
+"common.refresh" = "Verfris";
+
+"benchmark.comparison_title" = "Prestasie Vergelyking";
+"benchmark.export" = "Uitvoer";
+"benchmark.no_data_title" = "Geen Standaard Data";
+"benchmark.no_data_message" = "Voltooi teel-, skandeer- en lamrekords om jou prestasie vergelyking te sien";
+"benchmark.error.failed_to_load" = "Kon nie standaarde laai nie. Probeer asseblief weer.";
+
+// Benchmark - Overall Performance
+"benchmark.overall_performance" = "Algehele Prestasie";
+"benchmark.excellent_count" = "Uitstekend";
+"benchmark.good_count" = "Goed";
+"benchmark.needs_work_count" = "Moet Verbeter";
+
+// Benchmark - Sections
+"benchmark.section.scanning_metrics" = "Skandeer Maatstawwe";
+"benchmark.section.lambing_metrics" = "Lam Maatstawwe";
+
+// Benchmark - Metrics
+"benchmark.metric.conception_rate" = "Bevrugting Koers";
+"benchmark.metric.scanning_rate" = "Skandeer Koers";
+"benchmark.metric.expected_lambs_pregnant" = "Verwagte Lammers/Dragtige Ooi";
+"benchmark.metric.expected_lambs_mated" = "Verwagte Lammers/Gedekte Ooi";
+"benchmark.metric.lambing_percentage_mated" = "Lam % (Gedek)";
+"benchmark.metric.lambing_percentage_lambed" = "Lam % (Gelam)";
+"benchmark.metric.born_alive_percentage" = "Lewendgebore %";
+"benchmark.metric.mortality_percentage" = "Mortaliteit %";
+"benchmark.metric.dry_ewes_percentage" = "Droë Ooie %";
+"benchmark.metric.mortality_per_ewe_lambed" = "Mortaliteit/Ooi Gelam";
+
+// Benchmark - Performance Tiers
+"benchmark.tier.excellent" = "Uitstekend";
+"benchmark.tier.good" = "Goed";
+"benchmark.tier.needs_improvement" = "Moet Verbeter";
+
+// Benchmark - Info
+"benchmark.info_title" = "Standaard Inligting";
+"benchmark.total_farms" = "Totale Plase";
+"benchmark.total_records" = "Totale Rekords";
+"benchmark.last_updated" = "Laaste Opdatering";
+"benchmark.limited_data_warning" = "Beperkte data beskikbaar. Meer plase nodig vir betroubare standaarde.";
+
+// Benchmark - Statistics
+"benchmark.percentile_rank" = "Persentiel Rang";
+"benchmark.percentile_value" = "%d%% persentiel";
+"benchmark.industry_average" = "Bedryfsgemiddelde";
+"benchmark.industry_median" = "Bedryf Mediaan";
+"benchmark.top_10_percent" = "Top 10%";

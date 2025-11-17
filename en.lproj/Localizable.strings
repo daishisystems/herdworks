@@ -506,3 +506,203 @@
 "lambing.ewes_pregnant_scan" = "Ewes pregnant (scan)";
 "lambing.pregnancy_loss" = "Pregnancy loss";
 "lambing.view_performance" = "View lambing performance";
+
+// MARK: - Benchmark Comparison Feature (Phase 2B)
+// English Localization Strings
+
+// MARK: - Benchmark List View
+"benchmark.title" = "Benchmarks";
+"benchmark.empty_title" = "No Benchmarks Available";
+"benchmark.empty_subtitle" = "Benchmark data will appear after you complete your first lambing season";
+"benchmark.loading" = "Loading benchmarks...";
+"benchmark.error_loading" = "Failed to load benchmarks";
+"benchmark.retry" = "Retry";
+
+// MARK: - Benchmark Card Headers
+"benchmark.your_performance" = "Your Performance";
+"benchmark.industry_benchmark" = "Industry Benchmark";
+"benchmark.comparison" = "Comparison";
+"benchmark.vs_industry" = "vs Industry";
+
+// MARK: - Performance Status
+"benchmark.status.excellent" = "Excellent";
+"benchmark.status.above_average" = "Above Average";
+"benchmark.status.average" = "Average";
+"benchmark.status.below_average" = "Below Average";
+"benchmark.status.needs_improvement" = "Needs Improvement";
+
+// MARK: - Percentile Rank
+"benchmark.percentile_rank" = "You're in the top %d%% of farmers";
+"benchmark.percentile_value" = "Top %d%%";
+"benchmark.rank_explanation" = "Based on %d farms in your region";
+
+// MARK: - Statistical Labels
+"benchmark.your_value" = "Your Value";
+"benchmark.industry_average" = "Industry Average";
+"benchmark.industry_median" = "Industry Median";
+"benchmark.top_10_percent" = "Top 10%%";
+"benchmark.range" = "Range";
+"benchmark.sample_size" = "Sample Size";
+"benchmark.farms_contributing" = "%d farms contributing";
+
+// MARK: - Metric Names (Scanning)
+"benchmark.metric.conception_rate" = "Conception Rate";
+"benchmark.metric.scanning_rate" = "Scanning Rate";
+"benchmark.metric.expected_lambs_per_ewe_pregnant" = "Lambs/Ewe Pregnant";
+"benchmark.metric.expected_lambs_per_ewe_mated" = "Lambs/Ewe Mated";
+
+// MARK: - Metric Names (Lambing)
+"benchmark.metric.lambing_percentage_mated" = "Lambing % (Mated)";
+"benchmark.metric.lambing_percentage_lambed" = "Lambing % (Lambed)";
+"benchmark.metric.born_alive_percentage" = "Born Alive %";
+"benchmark.metric.mortality_percentage" = "Mortality %";
+"benchmark.metric.dry_ewes_percentage" = "Dry Ewes %";
+"benchmark.metric.mortality_per_ewe_lambed" = "Mortality/Ewe Lambed";
+
+// MARK: - Metric Descriptions
+"benchmark.desc.conception_rate" = "Percentage of scanned ewes that were pregnant";
+"benchmark.desc.scanning_rate" = "Percentage of mated ewes that were scanned";
+"benchmark.desc.expected_lambs_per_ewe_pregnant" = "Expected lambs per pregnant ewe based on scanning";
+"benchmark.desc.expected_lambs_per_ewe_mated" = "Expected lambs per mated ewe based on scanning";
+"benchmark.desc.lambing_percentage_mated" = "Percentage of mated ewes that lambed";
+"benchmark.desc.lambing_percentage_lambed" = "Number of lambs born per ewe that lambed";
+"benchmark.desc.born_alive_percentage" = "Percentage of lambs born alive";
+"benchmark.desc.mortality_percentage" = "Percentage of lambs that died (0-30 days)";
+"benchmark.desc.dry_ewes_percentage" = "Percentage of mated ewes that didn't lamb";
+"benchmark.desc.mortality_per_ewe_lambed" = "Mortality rate per ewe that lambed";
+
+// MARK: - Category Headers
+"benchmark.category.scanning" = "Scanning Metrics";
+"benchmark.category.lambing" = "Lambing Metrics";
+"benchmark.category.overview" = "Overview";
+"benchmark.category.detailed" = "Detailed Comparison";
+
+// MARK: - Comparison Values
+"benchmark.difference.above" = "+%.1f%% above average";
+"benchmark.difference.below" = "%.1f%% below average";
+"benchmark.difference.points_above" = "+%.2f above average";
+"benchmark.difference.points_below" = "%.2f below average";
+
+// MARK: - Filters & Sorting
+"benchmark.filter.all" = "All Metrics";
+"benchmark.filter.scanning" = "Scanning Only";
+"benchmark.filter.lambing" = "Lambing Only";
+"benchmark.filter.needs_attention" = "Needs Attention";
+"benchmark.sort.performance" = "By Performance";
+"benchmark.sort.name" = "By Name";
+"benchmark.sort.difference" = "By Difference";
+
+// MARK: - Empty States
+"benchmark.no_data.title" = "No Data Available";
+"benchmark.no_data.scanning" = "Complete a pregnancy scanning to see scanning benchmarks";
+"benchmark.no_data.lambing" = "Complete a lambing season to see lambing benchmarks";
+"benchmark.no_data.farm" = "No benchmark data available for this farm";
+
+// MARK: - Actions
+"benchmark.view_details" = "View Details";
+"benchmark.compare_seasons" = "Compare Seasons";
+"benchmark.share_results" = "Share Results";
+"benchmark.export_report" = "Export Report";
+"benchmark.learn_more" = "Learn More";
+
+// MARK: - Insights & Recommendations
+"benchmark.insight.title" = "Insights";
+"benchmark.recommendation.title" = "Recommendations";
+"benchmark.strength.title" = "Strengths";
+"benchmark.opportunity.title" = "Opportunities";
+
+// MARK: - Units
+"benchmark.unit.percentage" = "%";
+"benchmark.unit.ratio" = "";
+"benchmark.unit.count" = "";
+
+// MARK: - Navigation
+"benchmark.nav.back_to_list" = "Back to Benchmarks";
+"benchmark.nav.next_metric" = "Next Metric";
+"benchmark.nav.previous_metric" = "Previous Metric";
+
+// MARK: - Errors
+"benchmark.error.no_breeding_data" = "No breeding data found";
+"benchmark.error.no_scanning_data" = "No scanning data found";
+"benchmark.error.no_lambing_data" = "No lambing data found";
+"benchmark.error.incomplete_data" = "Incomplete data for benchmark calculation";
+"benchmark.error.calculation_failed" = "Failed to calculate benchmarks";
+
+// MARK: - Info & Help
+"benchmark.info.how_calculated" = "How are benchmarks calculated?";
+"benchmark.info.what_is_p90" = "What does 'Top 10%%' mean?";
+"benchmark.info.sample_size_explanation" = "Why does sample size matter?";
+"benchmark.help.improve_performance" = "How can I improve?";
+
+// MARK: - Tooltips
+"benchmark.tooltip.conception_rate" = "Higher is better. Industry average: 85-90%%";
+"benchmark.tooltip.scanning_rate" = "Higher is better. Target: >95%%";
+"benchmark.tooltip.lambing_percentage" = "Higher is better. Target: 120-150%%";
+"benchmark.tooltip.mortality" = "Lower is better. Target: <5%%";
+
+// MARK: - Time Periods
+"benchmark.period.current_season" = "Current Season";
+"benchmark.period.last_season" = "Last Season";
+"benchmark.period.year_to_date" = "Year to Date";
+"benchmark.period.all_time" = "All Time";
+
+// MARK: - Accessibility
+"benchmark.accessibility.chart" = "Performance comparison chart";
+"benchmark.accessibility.gauge" = "Performance gauge showing %@ at %.1f%%";
+"benchmark.accessibility.rank" = "You rank in the top %d percent";
+"benchmark.accessibility.above_average" = "Above industry average by %.1f%%";
+"benchmark.accessibility.below_average" = "Below industry average by %.1f%%";
+
+"benchmark.dashboard_title" = "Performance Dashboard";
+"benchmark.dashboard_subtitle" = "Compare your performance against industry benchmarks";
+
+// English (Localizable.strings)
+"common.close" = "Close";
+"common.refresh" = "Refresh";
+
+"benchmark.comparison_title" = "Performance Comparison";
+"benchmark.export" = "Export";
+"benchmark.no_data_title" = "No Benchmark Data";
+"benchmark.no_data_message" = "Complete breeding, scanning, and lambing records to see your performance comparison";
+"benchmark.error.failed_to_load" = "Failed to load benchmarks. Please try again.";
+
+// Benchmark - Overall Performance
+"benchmark.overall_performance" = "Overall Performance";
+"benchmark.excellent_count" = "Excellent";
+"benchmark.good_count" = "Good";
+"benchmark.needs_work_count" = "Needs Work";
+
+// Benchmark - Sections
+"benchmark.section.scanning_metrics" = "Scanning Metrics";
+"benchmark.section.lambing_metrics" = "Lambing Metrics";
+
+// Benchmark - Metrics
+"benchmark.metric.conception_rate" = "Conception Rate";
+"benchmark.metric.scanning_rate" = "Scanning Rate";
+"benchmark.metric.expected_lambs_pregnant" = "Expected Lambs/Ewe Pregnant";
+"benchmark.metric.expected_lambs_mated" = "Expected Lambs/Ewe Mated";
+"benchmark.metric.lambing_percentage_mated" = "Lambing % (Mated)";
+"benchmark.metric.lambing_percentage_lambed" = "Lambing % (Lambed)";
+"benchmark.metric.born_alive_percentage" = "Born Alive %";
+"benchmark.metric.mortality_percentage" = "Mortality %";
+"benchmark.metric.dry_ewes_percentage" = "Dry Ewes %";
+"benchmark.metric.mortality_per_ewe_lambed" = "Mortality/Ewe Lambed";
+
+// Benchmark - Performance Tiers
+"benchmark.tier.excellent" = "Excellent";
+"benchmark.tier.good" = "Good";
+"benchmark.tier.needs_improvement" = "Needs Improvement";
+
+// Benchmark - Info
+"benchmark.info_title" = "Benchmark Information";
+"benchmark.total_farms" = "Total Farms";
+"benchmark.total_records" = "Total Records";
+"benchmark.last_updated" = "Last Updated";
+"benchmark.limited_data_warning" = "Limited data available. More farms needed for reliable benchmarks.";
+
+// Benchmark - Statistics
+"benchmark.percentile_rank" = "Percentile Rank";
+"benchmark.percentile_value" = "%d%% percentile";
+"benchmark.industry_average" = "Industry Average";
+"benchmark.industry_median" = "Industry Median";
+"benchmark.top_10_percent" = "Top 10%";

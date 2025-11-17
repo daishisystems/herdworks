@@ -6,10 +6,12 @@
 //  Updated: Phase 4 - Added "All Breeding Events" integration
 //  Updated: Phase 5 - Fixed "All Scanning Events" navigation (wrapped in NavigationStack)
 //  Updated: Phase 6 - Added "All Lambing Events" integration
+//  Updated: Phase 2B - Added "Performance Dashboard" navigation to existing benchmark views
 //
 
 import SwiftUI
 import FirebaseAuth
+import Combine
 
 struct LandingView: View {
     @EnvironmentObject private var profileGate: ProfileGate
@@ -19,7 +21,8 @@ struct LandingView: View {
     @State private var showingAllLambingSeasons = false
     @State private var showingAllBreeding = false
     @State private var showingAllScanning = false
-    @State private var showingAllLambingEvents = false  // ✅ NEW: For All Lambing Events modal
+    @State private var showingAllLambingEvents = false
+    @State private var showingBenchmarkDashboard = false  // ✅ PHASE 2B: Performance Dashboard
     
     enum Tab: String, CaseIterable {
         case home = "Home"
@@ -61,8 +64,11 @@ struct LandingView: View {
                 onAllScanningTapped: {
                     showingAllScanning = true
                 },
-                onAllLambingEventsTapped: {  // ✅ NEW: Callback for All Lambing Events
+                onAllLambingEventsTapped: {
                     showingAllLambingEvents = true
+                },
+                onBenchmarkDashboardTapped: {  // ✅ PHASE 2B: New callback
+                    showingBenchmarkDashboard = true
                 }
             )
                 .tabItem {
@@ -117,7 +123,6 @@ struct LandingView: View {
                 )
             }
         }
-        // ✅ NEW: Sheet for All Lambing Events
         .sheet(isPresented: $showingAllLambingEvents) {
             AllLambingEventsView(
                 recordStore: FirestoreLambingRecordStore(),
@@ -126,6 +131,195 @@ struct LandingView: View {
                 benchmarkStore: FirestoreBenchmarkStore(),
                 userId: Auth.auth().currentUser?.uid ?? ""
             )
+        }
+        // ✅ PHASE 2B: Sheet for Performance Dashboard
+        .sheet(isPresented: $showingBenchmarkDashboard) {
+            PerformanceDashboardNavigationView()
+        }
+    }
+}
+
+// MARK: - Performance Dashboard Navigation View
+// ✅ PHASE 2B: Lists farms and allows navigation to benchmark comparison
+private struct PerformanceDashboardNavigationView: View {
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var languageManager: LanguageManager
+    @StateObject private var viewModel: PerformanceDashboardListViewModel
+    
+    init() {
+        let userId = Auth.auth().currentUser?.uid ?? ""
+        _viewModel = StateObject(wrappedValue: PerformanceDashboardListViewModel(
+            farmStore: FirestoreFarmStore(),
+            groupStore: FirestoreLambingSeasonGroupStore(),
+            userId: userId
+        ))
+    }
+    
+    var body: some View {
+        NavigationStack {
+            Group {
+                if viewModel.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if viewModel.farmsWithGroups.isEmpty {
+                    emptyStateView
+                } else {
+                    farmsList
+                }
+            }
+            .navigationTitle("benchmark.dashboard_title".localized())
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("common.close".localized()) {
+                        dismiss()
+                    }
+                }
+            }
+            .task {
+                await viewModel.loadFarmsAndGroups()
+            }
+        }
+    }
+    
+    private var emptyStateView: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "chart.bar.xaxis")
+                .font(.system(size: 64))
+                .foregroundStyle(.secondary)
+            
+            Text("benchmark.empty_title".localized())
+                .font(.title2)
+                .fontWeight(.semibold)
+            
+            Text("benchmark.empty_subtitle".localized())
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    private var farmsList: some View {
+        List {
+            ForEach(viewModel.farmsWithGroups) { farmData in
+                Section {
+                    ForEach(farmData.groups) { group in
+                        NavigationLink {
+                            BenchmarkComparisonView(
+                                farm: farmData.farm,
+                                group: group,
+                                benchmarkStore: FirestoreBenchmarkStore(),
+                                breedingStore: FirestoreBreedingEventStore(),
+                                scanningStore: FirestoreScanningEventStore(),
+                                lambingStore: FirestoreLambingRecordStore(),
+                                userId: viewModel.userId
+                            )
+                        } label: {
+                            BenchmarkGroupRow(farm: farmData.farm, group: group)
+                        }
+                    }
+                } header: {
+                    Text(farmData.farm.name)
+                        .font(.headline)
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+    }
+}
+
+// MARK: - Benchmark Group Row
+private struct BenchmarkGroupRow: View {
+    let farm: Farm
+    let group: LambingSeasonGroup
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            Circle()
+                .fill(Color.blue.gradient)
+                .frame(width: 56, height: 56)
+                .overlay {
+                    Image(systemName: "chart.bar.fill")
+                        .font(.title3)
+                        .foregroundStyle(.white)
+                }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(group.displayName)
+                    .font(.headline)
+                
+                HStack(spacing: 4) {
+                    Text(farm.breed.displayName)
+                    Text("•")
+                        .foregroundStyle(.tertiary)
+                    Text(yearString(from: group.lambingStart))
+                }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, 8)
+    }
+    
+    private func yearString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy"
+        return formatter.string(from: date)
+    }
+}
+
+// MARK: - Performance Dashboard List ViewModel
+@MainActor
+final class PerformanceDashboardListViewModel: ObservableObject {
+    @Published var farmsWithGroups: [FarmWithGroups] = []
+    @Published var isLoading = false
+    
+    let farmStore: FarmStore
+    let groupStore: LambingSeasonGroupStore
+    let userId: String
+    
+    struct FarmWithGroups: Identifiable {
+        let id: String
+        let farm: Farm
+        let groups: [LambingSeasonGroup]
+        
+        init(farm: Farm, groups: [LambingSeasonGroup]) {
+            self.id = farm.id
+            self.farm = farm
+            self.groups = groups
+        }
+    }
+    
+    init(farmStore: FarmStore, groupStore: LambingSeasonGroupStore, userId: String) {
+        self.farmStore = farmStore
+        self.groupStore = groupStore
+        self.userId = userId
+    }
+    
+    func loadFarmsAndGroups() async {
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            let farms = try await farmStore.fetchAll(userId: userId)
+            
+            var result: [FarmWithGroups] = []
+            for farm in farms {
+                let groups = try await groupStore.fetchAll(userId: userId, farmId: farm.id)
+                // Only include farms that have lambing season groups
+                if !groups.isEmpty {
+                    result.append(FarmWithGroups(farm: farm, groups: groups))
+                }
+            }
+            
+            farmsWithGroups = result
+            print("📊 [BENCHMARK-DASHBOARD] Loaded \(result.count) farms with groups")
+        } catch {
+            print("❌ [BENCHMARK-DASHBOARD] Error: \(error)")
         }
     }
 }
@@ -138,7 +332,8 @@ private struct HomeTab: View {
     let onAllLambingSeasonsTapped: () -> Void
     let onAllBreedingTapped: () -> Void
     let onAllScanningTapped: () -> Void
-    let onAllLambingEventsTapped: () -> Void  // ✅ NEW: Callback parameter
+    let onAllLambingEventsTapped: () -> Void
+    let onBenchmarkDashboardTapped: () -> Void  // ✅ PHASE 2B: New callback
     
     private var currentUserEmail: String {
         Auth.auth().currentUser?.email ?? "Guest"
@@ -217,13 +412,21 @@ private struct HomeTab: View {
                                 action: onAllScanningTapped
                             )
                             
-                            // ✅ NEW: All Lambing Events Card
                             QuickActionCard(
                                 title: "lambing.all_events_title".localized(),
                                 subtitle: "lambing.view_performance".localized(),
-                                systemImage: "chart.bar.fill",
+                                systemImage: "chart.line.uptrend.xyaxis",
                                 color: .pink,
                                 action: onAllLambingEventsTapped
+                            )
+                            
+                            // ✅ PHASE 2B: Performance Dashboard Card
+                            QuickActionCard(
+                                title: "benchmark.dashboard_title".localized(),
+                                subtitle: "benchmark.dashboard_subtitle".localized(),
+                                systemImage: "chart.bar.fill",
+                                color: .blue,
+                                action: onBenchmarkDashboardTapped
                             )
                             
                             QuickActionCard(
