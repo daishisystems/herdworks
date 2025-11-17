@@ -47,20 +47,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EA71BDB12E9931A70084FA11 /* Exceptions for "HerdWorks" folder in "HerdWorks" target */ = {
+		EA82DB3F2ECB60630084C703 /* Exceptions for "HerdWorks" folder in "HerdWorks" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-			);
-			target = EA71BD4D2E98FB500084FA11 /* HerdWorks */;
-		};
-		EA8374DB2EBDD5AE0087FA0E /* Exceptions for "Config" folder in "HerdWorks" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Base.xcconfig,
-				Dev.xcconfig,
-				Prod.xcconfig,
-				Test.xcconfig,
 			);
 			target = EA71BD4D2E98FB500084FA11 /* HerdWorks */;
 		};
@@ -70,7 +60,7 @@
 		EA71BD502E98FB500084FA11 /* HerdWorks */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				EA71BDB12E9931A70084FA11 /* Exceptions for "HerdWorks" folder in "HerdWorks" target */,
+				EA82DB3F2ECB60630084C703 /* Exceptions for "HerdWorks" folder in "HerdWorks" target */,
 			);
 			path = HerdWorks;
 			sourceTree = "<group>";
@@ -87,9 +77,6 @@
 		};
 		EA71BD902E9925980084FA11 /* Config */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				EA8374DB2EBDD5AE0087FA0E /* Exceptions for "Config" folder in "HerdWorks" target */,
-			);
 			path = Config;
 			sourceTree = "<group>";
 		};
