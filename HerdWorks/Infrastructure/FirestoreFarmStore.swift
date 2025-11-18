@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 #if canImport(FirebaseFirestore)
 import FirebaseFirestore
 
-actor FirestoreFarmStore: FarmStore {
+@MainActor
+final class FirestoreFarmStore: FarmStore, ObservableObject {
     private let db: Firestore
     
     init(db: Firestore = .firestore()) {
@@ -141,7 +143,8 @@ actor FirestoreFarmStore: FarmStore {
 
 #else
 
-actor FirestoreFarmStore: FarmStore {
+@MainActor
+final class FirestoreFarmStore: FarmStore, ObservableObject {
     init() {}
     
     func create(_ farm: Farm) async throws {

@@ -13,9 +13,12 @@ struct LambingSeasonGroupDetailView: View {
     @EnvironmentObject private var languageManager: LanguageManager
     @Environment(\.dismiss) private var dismiss
     
+    // ✅ FIXED: Inject stores from environment instead of creating new ones
+    @EnvironmentObject private var breedingStore: FirestoreBreedingEventStore
+    @EnvironmentObject private var scanningStore: FirestoreScanningEventStore
+    
     // NEW: Add these properties for breeding events
     @State private var breedingEventsCount: Int = 0
-    private let breedingStore = FirestoreBreedingEventStore()
     
     // Store these from init parameters
     private let userId: String
@@ -244,10 +247,10 @@ struct LambingSeasonGroupDetailView: View {
             }
             NavigationLink {
                 ScanningEventListView(
-                    store: FirestoreScanningEventStore(),
-                    userId: userId,  // ✅ Use the stored property
-                    farmId: farmId,  // ✅ Use the stored property
-                    groupId: existingGroup?.id ?? ""  // ✅ Use existingGroup
+                    store: scanningStore,  // ✅ Use injected store
+                    userId: userId,
+                    farmId: farmId,
+                    groupId: existingGroup?.id ?? ""
                 )
             } label: {
                 HStack {

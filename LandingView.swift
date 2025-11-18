@@ -190,13 +190,12 @@ private struct PerformanceDashboardNavigationView: View {
     @StateObject private var viewModel: PerformanceDashboardListViewModel
 
     init() {
-        let userId = Auth.auth().currentUser?.uid ?? ""
-        // Note: ViewModel still creates stores temporarily - ideally would inject these too
-        // But the critical fix is preventing store creation in the ForEach loop below
+        // ⚠️ TEMP: Still creating stores here - will be replaced with proper injection
+        // This is a temporary workaround until we can inject environment objects into init
         _viewModel = StateObject(wrappedValue: PerformanceDashboardListViewModel(
-            farmStore: FirestoreFarmStore(),
-            groupStore: FirestoreLambingSeasonGroupStore(),
-            userId: userId
+            farmStore: nil,
+            groupStore: nil,
+            userId: Auth.auth().currentUser?.uid ?? ""
         ))
     }
 
@@ -222,6 +221,8 @@ private struct PerformanceDashboardNavigationView: View {
                 }
             }
             .task {
+                // ✅ Inject environment stores into view model on appear
+                viewModel.setStores(farmStore: farmStore, groupStore: groupStore)
                 await viewModel.loadFarmsAndGroups()
             }
         }
@@ -254,11 +255,17 @@ private struct PerformanceDashboardNavigationView: View {
                     ForEach(farmData.groups) { group in
                         // ✅ FIXED: Store only navigation value, not view
                         // This prevents creating 4 stores × 16 groups = 64 store instances
-                        NavigationLink(value: BenchmarkDestination(
-                            farm: farmData.farm,
-                            group: group,
-                            userId: viewModel.userId
-                        )) {
+                        NavigationLink(
+                            destination: BenchmarkComparisonView(
+                                farm: farmData.farm,
+                                group: group,
+                                benchmarkStore: benchmarkStore,
+                                breedingStore: breedingStore,
+                                scanningStore: scanningStore,
+                                lambingStore: lambingStore,
+                                userId: viewModel.userId
+                            )
+                        ) {
                             BenchmarkGroupRow(farm: farmData.farm, group: group)
                         }
                     }
@@ -269,18 +276,6 @@ private struct PerformanceDashboardNavigationView: View {
             }
         }
         .listStyle(.insetGrouped)
-        // ✅ FIXED: Lazy destination - only created when user actually navigates
-        .navigationDestination(for: BenchmarkDestination.self) { destination in
-            BenchmarkComparisonView(
-                farm: destination.farm,
-                group: destination.group,
-                benchmarkStore: benchmarkStore,        // ✅ Injected from environment
-                breedingStore: breedingStore,          // ✅ Injected from environment
-                scanningStore: scanningStore,          // ✅ Injected from environment
-                lambingStore: lambingStore,            // ✅ Injected from environment
-                userId: destination.userId
-            )
-        }
     }
 }
 
@@ -355,8 +350,8 @@ final class PerformanceDashboardListViewModel: ObservableObject {
     @Published var farmsWithGroups: [FarmWithGroups] = []
     @Published var isLoading = false
     
-    let farmStore: FarmStore
-    let groupStore: LambingSeasonGroupStore
+    private var farmStore: FarmStore?
+    private var groupStore: LambingSeasonGroupStore?
     let userId: String
     
     struct FarmWithGroups: Identifiable {
@@ -371,13 +366,24 @@ final class PerformanceDashboardListViewModel: ObservableObject {
         }
     }
     
-    init(farmStore: FarmStore, groupStore: LambingSeasonGroupStore, userId: String) {
+    init(farmStore: FarmStore?, groupStore: LambingSeasonGroupStore?, userId: String) {
         self.farmStore = farmStore
         self.groupStore = groupStore
         self.userId = userId
     }
     
+    /// Inject stores from environment (called in .task modifier)
+    func setStores(farmStore: FarmStore, groupStore: LambingSeasonGroupStore) {
+        self.farmStore = farmStore
+        self.groupStore = groupStore
+    }
+    
     func loadFarmsAndGroups() async {
+        guard let farmStore = farmStore, let groupStore = groupStore else {
+            print("⚠️ [BENCHMARK-DASHBOARD] Stores not yet injected, skipping load")
+            return
+        }
+        
         isLoading = true
         defer { isLoading = false }
         

@@ -7,8 +7,10 @@
 
 import Foundation
 import FirebaseFirestore
+import Combine
 
-final class FirestoreBenchmarkStore: BenchmarkStore {
+@MainActor
+final class FirestoreBenchmarkStore: BenchmarkStore, ObservableObject {
     private let db = Firestore.firestore()
     
     init() {

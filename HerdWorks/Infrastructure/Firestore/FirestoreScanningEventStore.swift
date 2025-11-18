@@ -9,7 +9,8 @@ import Foundation
 import FirebaseFirestore
 import Combine
 
-final class FirestoreScanningEventStore: ScanningEventStore {
+@MainActor
+final class FirestoreScanningEventStore: ScanningEventStore, ObservableObject {
     private let db = Firestore.firestore()
     
     init() {

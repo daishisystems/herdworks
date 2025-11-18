@@ -17,7 +17,7 @@ extension FirestoreBenchmarkStore {
     ///   - province: South African province to filter by
     ///   - year: Year to filter by
     /// - Returns: Publisher that emits benchmark updates or nil if not found
-    func listen(breed: SheepBreed, province: SouthAfricanProvince, year: Int) -> AnyPublisher<BenchmarkData?, Error> {
+    nonisolated func listen(breed: SheepBreed, province: SouthAfricanProvince, year: Int) -> AnyPublisher<BenchmarkData?, Error> {
         let documentId = "\(breed.rawValue)_\(province.rawValue)_\(year)"
         let docRef = Firestore.firestore().collection("benchmarks_lambing").document(documentId)
         
