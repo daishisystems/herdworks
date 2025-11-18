@@ -75,8 +75,10 @@ struct BreedingEventDetailViewWithSelection: View {
                     Button("common.cancel".localized()) {
                         dismiss()
                     }
+                    .accessibility(label: Text("accessibility.button.cancel".localized()))
+                    .accessibility(hint: Text("accessibility.button.cancel.hint".localized()))
                 }
-                
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("common.save".localized()) {
                         Task {
@@ -89,6 +91,8 @@ struct BreedingEventDetailViewWithSelection: View {
                     }
                     .disabled(!canSave || viewModel.isSaving)
                     .opacity(!canSave || viewModel.isSaving ? 0.4 : 1.0)
+                    .accessibility(label: Text("accessibility.button.save".localized()))
+                    .accessibility(hint: Text("accessibility.button.save.hint".localized()))
                 }
             }
             .alert("common.error".localized(), isPresented: $viewModel.showError) {
@@ -139,6 +143,8 @@ struct BreedingEventDetailViewWithSelection: View {
                 }
             }
             .pickerStyle(.menu)
+            .accessibility(label: Text("accessibility.picker.farm".localized()))
+            .accessibility(hint: Text("accessibility.picker.farm.hint".localized()))
             
             // Group Picker (only if farm selected)
             if selectedFarm != nil {
@@ -149,6 +155,8 @@ struct BreedingEventDetailViewWithSelection: View {
                     }
                 }
                 .pickerStyle(.menu)
+                .accessibility(label: Text("accessibility.picker.group".localized()))
+                .accessibility(hint: Text("accessibility.picker.group.hint".localized()))
             }
         }
     }
@@ -166,6 +174,8 @@ struct BreedingEventDetailViewWithSelection: View {
                 }
             }
             .pickerStyle(.menu)
+            .accessibility(label: Text("accessibility.picker.mating_type".localized()))
+            .accessibility(hint: Text("accessibility.picker.mating_type.hint".localized()))
         }
     }
     
@@ -192,6 +202,8 @@ struct BreedingEventDetailViewWithSelection: View {
                 .focused($focusedField, equals: .numberOfEwes)
                 .contentShape(Rectangle())
                 .onTapGesture { focusedField = .numberOfEwes }
+                .accessibility(label: Text("accessibility.textfield.number_of_ewes".localized()))
+                .accessibility(hint: Text("accessibility.textfield.number_of_ewes.hint".localized()))
         }
     }
     
@@ -218,7 +230,9 @@ struct BreedingEventDetailViewWithSelection: View {
                 displayedComponents: [.date]
             )
             .datePickerStyle(.wheel)
-            
+            .accessibility(label: Text("accessibility.datepicker.natural_start".localized()))
+            .accessibility(hint: Text("accessibility.datepicker.natural_start.hint".localized()))
+
             TextField("breeding.natural_days".localized(), text: $viewModel.naturalMatingDays)
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
@@ -227,6 +241,8 @@ struct BreedingEventDetailViewWithSelection: View {
                 .focused($focusedField, equals: .naturalDays)
                 .contentShape(Rectangle())
                 .onTapGesture { focusedField = .naturalDays }
+                .accessibility(label: Text("accessibility.textfield.natural_days".localized()))
+                .accessibility(hint: Text("accessibility.textfield.natural_days.hint".localized()))
             
             // Auto-calculated end date (read-only)
             if let endDate = viewModel.naturalMatingEnd {
