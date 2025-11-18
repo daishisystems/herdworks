@@ -58,14 +58,20 @@ struct AllBreedingEventsView: View {
                     Button("common.done".localized()) {
                         dismiss()
                     }
+                    .accessibility(label: Text("accessibility.button.done".localized()))
+                    .accessibility(hint: Text("accessibility.button.done.hint".localized()))
                 }
-                
+
                 ToolbarItem(placement: .navigationBarLeading) {
                     filterMenu
+                        .accessibility(label: Text("accessibility.button.filter".localized()))
+                        .accessibility(hint: Text("accessibility.button.filter.hint".localized()))
                 }
-                
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     addButton
+                        .accessibility(label: Text("accessibility.button.add".localized()))
+                        .accessibility(hint: Text("accessibility.button.add.hint".localized()))
                 }
             }
             .task {
@@ -126,7 +132,8 @@ struct AllBreedingEventsView: View {
         VStack(spacing: 20) {
             ProgressView()
                 .scaleEffect(1.5)
-            
+                .accessibility(label: Text("accessibility.loading".localized()))
+
             Text("common.loading".localized())
                 .font(.headline)
                 .foregroundStyle(.secondary)
@@ -139,12 +146,14 @@ struct AllBreedingEventsView: View {
             Image(systemName: "heart.circle.fill")
                 .font(.system(size: 64))
                 .foregroundStyle(.green)
-            
+                .accessibility(label: Text("accessibility.empty_state.image".localized()))
+                .accessibility(hint: Text("accessibility.empty_state.breeding".localized()))
+
             VStack(spacing: 8) {
                 Text(filterYear != nil ? "breeding.no_events_for_year".localized() : "breeding.no_events".localized())
                     .font(.title2)
                     .fontWeight(.semibold)
-                
+
                 Text("breeding.no_events_subtitle".localized())
                     .font(.body)
                     .foregroundStyle(.secondary)
@@ -185,6 +194,9 @@ struct AllBreedingEventsView: View {
                 .onTapGesture {
                     selectedEvent = event
                 }
+                .accessibility(label: Text(String(format: "accessibility.row.breeding_event".localized(), viewModel.farmAndGroupName(for: event).group, event.numberOfEwesMated)))
+                .accessibility(hint: Text("accessibility.row.breeding_event.hint".localized()))
+                .accessibility(addTraits: .isButton)
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                     Button(role: .destructive) {
                         Task {
@@ -193,6 +205,8 @@ struct AllBreedingEventsView: View {
                     } label: {
                         Label("common.delete".localized(), systemImage: "trash")
                     }
+                    .accessibility(label: Text("accessibility.button.delete".localized()))
+                    .accessibility(hint: Text("accessibility.button.delete.hint".localized()))
                 }
             }
         }
