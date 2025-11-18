@@ -782,3 +782,185 @@
 "benchmark.industry_average" = "Bedryfsgemiddelde";
 "benchmark.industry_median" = "Bedryf Mediaan";
 "benchmark.top_10_percent" = "Top 10%";
+
+// MARK: - Toeganklikheid Etikette & Wenke
+
+// Navigasie & Oortjies
+"accessibility.tab.home" = "Tuis oortjie";
+"accessibility.tab.home.hint" = "Wys vinnige aksies en oorsig";
+"accessibility.tab.explore" = "Verken oortjie";
+"accessibility.tab.explore.hint" = "Ontdek nuwe kenmerke";
+"accessibility.tab.profile" = "Profiel oortjie";
+"accessibility.tab.profile.hint" = "Bekyk en wysig jou profiel";
+"accessibility.tab.settings" = "Instellings oortjie";
+"accessibility.tab.settings.hint" = "Stel program instellings op";
+
+// Vinnige Aksies
+"accessibility.quick_action.manage_farms" = "Bestuur plase knoppie";
+"accessibility.quick_action.manage_farms.hint" = "Dubbeltik om jou plase te bekyk en wysig";
+"accessibility.quick_action.lambing_seasons" = "Alle lam seisoene knoppie";
+"accessibility.quick_action.lambing_seasons.hint" = "Dubbeltik om alle lam seisoen groepe te bekyk";
+"accessibility.quick_action.breeding_events" = "Alle teelgebeurtenisse knoppie";
+"accessibility.quick_action.breeding_events.hint" = "Dubbeltik om alle teel aktiwiteite te bekyk";
+"accessibility.quick_action.scanning_events" = "Alle skandeergebeurtenisse knoppie";
+"accessibility.quick_action.scanning_events.hint" = "Dubbeltik om alle swangerskap skandeer resultate te bekyk";
+"accessibility.quick_action.lambing_events" = "Alle lamgebeurtenisse knoppie";
+"accessibility.quick_action.lambing_events.hint" = "Dubbeltik om alle lam rekords te bekyk";
+"accessibility.quick_action.performance_dashboard" = "Prestasie paneelbord knoppie";
+"accessibility.quick_action.performance_dashboard.hint" = "Dubbeltik om jou prestasie met bedryfsstandaarde te vergelyk";
+"accessibility.quick_action.edit_profile" = "Wysig profiel knoppie";
+"accessibility.quick_action.edit_profile.hint" = "Dubbeltik om jou persoonlike inligting op te dateer";
+
+// Nutsbalk Knoppies
+"accessibility.button.add" = "Voeg by knoppie";
+"accessibility.button.add.hint" = "Dubbeltik om 'n nuwe item te skep";
+"accessibility.button.edit" = "Wysig knoppie";
+"accessibility.button.edit.hint" = "Dubbeltik om hierdie item te wysig";
+"accessibility.button.delete" = "Verwyder knoppie";
+"accessibility.button.delete.hint" = "Dubbeltik om hierdie item te verwyder";
+"accessibility.button.close" = "Sluit knoppie";
+"accessibility.button.close.hint" = "Dubbeltik om hierdie skerm te sluit";
+"accessibility.button.done" = "Klaar knoppie";
+"accessibility.button.done.hint" = "Dubbeltik om te voltooi en terug te keer";
+"accessibility.button.save" = "Stoor knoppie";
+"accessibility.button.save.hint" = "Dubbeltik om veranderings te stoor";
+"accessibility.button.cancel" = "Kanselleer knoppie";
+"accessibility.button.cancel.hint" = "Dubbeltik om te kanselleer en veranderings te verwerp";
+"accessibility.button.refresh" = "Verfris knoppie";
+"accessibility.button.refresh.hint" = "Dubbeltik om data te herlaai";
+"accessibility.button.filter" = "Filter knoppie";
+"accessibility.button.filter.hint" = "Dubbeltik om die lys te filter";
+"accessibility.button.sign_out" = "Teken uit knoppie";
+"accessibility.button.sign_out.hint" = "Dubbeltik om uit jou rekening te teken";
+
+// Vorm Invoere - Algemeen
+"accessibility.picker.farm" = "Plaas kieser";
+"accessibility.picker.farm.hint" = "Dubbeltik om 'n plaas te kies";
+"accessibility.picker.group" = "Lam seisoen groep kieser";
+"accessibility.picker.group.hint" = "Dubbeltik om 'n lam seisoen groep te kies";
+"accessibility.picker.mating_type" = "Paring tipe kieser";
+"accessibility.picker.mating_type.hint" = "Dubbeltik om natuurlike paring of KI te kies";
+"accessibility.picker.breed" = "Skaapras kieser";
+"accessibility.picker.breed.hint" = "Dubbeltik om skaapras te kies";
+"accessibility.picker.province" = "Provinsie kieser";
+"accessibility.picker.province.hint" = "Dubbeltik om provinsie te kies";
+"accessibility.picker.year" = "Jaar filter kieser";
+"accessibility.picker.year.hint" = "Dubbeltik om volgens jaar te filter";
+
+// Vorm Invoere - Teel
+"accessibility.textfield.number_of_ewes" = "Aantal ooie gepaar";
+"accessibility.textfield.number_of_ewes.hint" = "Voer die aantal ooie in wat gepaar is";
+"accessibility.textfield.natural_days" = "Natuurlike paring duur in dae";
+"accessibility.textfield.natural_days.hint" = "Voer in hoeveel dae natuurlike paring plaasgevind het";
+"accessibility.datepicker.natural_start" = "Natuurlike paring begin datum";
+"accessibility.datepicker.natural_start.hint" = "Kies wanneer natuurlike paring begin het";
+"accessibility.datepicker.ai_date" = "Kunsmatige inseminasie datum";
+"accessibility.datepicker.ai_date.hint" = "Kies wanneer KI prosedure uitgevoer is";
+"accessibility.toggle.follow_up_rams" = "Opvolg ramme skakelaar";
+"accessibility.toggle.follow_up_rams.hint" = "Dubbeltik om opvolg ramme na KI te aktiveer of deaktiveer";
+"accessibility.textfield.follow_up_days" = "Opvolg ramme duur in dae";
+"accessibility.textfield.follow_up_days.hint" = "Voer in hoeveel dae opvolg ramme gebruik is";
+
+// Vorm Invoere - Skandering
+"accessibility.datepicker.scanning_date" = "Skandeer datum";
+"accessibility.datepicker.scanning_date.hint" = "Kies wanneer swangerskap skandering uitgevoer is";
+"accessibility.textfield.ewes_scanned" = "Aantal ooie geskandeer";
+"accessibility.textfield.ewes_scanned.hint" = "Voer die totale aantal ooie geskandeer in";
+"accessibility.textfield.ewes_pregnant" = "Aantal dragtige ooie";
+"accessibility.textfield.ewes_pregnant.hint" = "Voer in hoeveel ooie dragtig was";
+"accessibility.textfield.ewes_singles" = "Ooie met enkelinge";
+"accessibility.textfield.ewes_singles.hint" = "Voer aantal ooie in wat een lam dra";
+"accessibility.textfield.ewes_twins" = "Ooie met tweelinge";
+"accessibility.textfield.ewes_twins.hint" = "Voer aantal ooie in wat twee lammers dra";
+"accessibility.textfield.ewes_triplets" = "Ooie met drielinge of meer";
+"accessibility.textfield.ewes_triplets.hint" = "Voer aantal ooie in wat drie of meer lammers dra";
+
+// Vorm Invoere - Lam
+"accessibility.datepicker.lambing_date" = "Lam datum";
+"accessibility.datepicker.lambing_date.hint" = "Kies wanneer lam plaasgevind het";
+"accessibility.textfield.ewes_lambed" = "Aantal ooie gelam";
+"accessibility.textfield.ewes_lambed.hint" = "Voer die aantal ooie in wat geboorte gegee het";
+"accessibility.textfield.lambs_born" = "Totale lammers gebore";
+"accessibility.textfield.lambs_born.hint" = "Voer die totale aantal lammers gebore in";
+"accessibility.textfield.lambs_alive" = "Lammers lewend gebore";
+"accessibility.textfield.lambs_alive.hint" = "Voer die aantal lammers lewend gebore in";
+"accessibility.textfield.lamb_mortality" = "Lam mortaliteit telling";
+"accessibility.textfield.lamb_mortality.hint" = "Voer die aantal lammers in wat gesterf het";
+
+// Vorm Invoere - Plaas
+"accessibility.textfield.farm_name" = "Plaas naam";
+"accessibility.textfield.farm_name.hint" = "Voer 'n naam vir jou plaas in";
+"accessibility.textfield.farm_street" = "Plaas straatadres";
+"accessibility.textfield.farm_street.hint" = "Voer die plaas se straatadres in";
+"accessibility.textfield.farm_city" = "Plaas stad";
+"accessibility.textfield.farm_city.hint" = "Voer die stad in waar die plaas geleë is";
+"accessibility.textfield.farm_zip" = "Plaas poskode";
+"accessibility.textfield.farm_zip.hint" = "Voer die plaas se poskode in";
+
+// Lys Rye
+"accessibility.row.farm" = "Plaas: %@";
+"accessibility.row.farm.hint" = "Dubbeltik om plaas besonderhede te bekyk";
+"accessibility.row.lambing_group" = "Lam seisoen groep: %@";
+"accessibility.row.lambing_group.hint" = "Dubbeltik om groep besonderhede en gebeurtenisse te bekyk";
+"accessibility.row.breeding_event" = "Teelgebeurtenis: %@, %d ooie";
+"accessibility.row.breeding_event.hint" = "Dubbeltik om teel gebeurtenis besonderhede te bekyk";
+"accessibility.row.scanning_event" = "Skandeer gebeurtenis: %@, %d ooie geskandeer";
+"accessibility.row.scanning_event.hint" = "Dubbeltik om skandeer resultate te bekyk";
+"accessibility.row.lambing_event" = "Lam rekord: %@, %d ooie gelam";
+"accessibility.row.lambing_event.hint" = "Dubbeltik om lam besonderhede te bekyk";
+"accessibility.row.benchmark" = "Standaard vergelyking vir %@, %@";
+"accessibility.row.benchmark.hint" = "Dubbeltik om gedetailleerde prestasie vergelyking te bekyk";
+"accessibility.row.settings" = "%@ instelling";
+"accessibility.row.settings.hint" = "Dubbeltik om hierdie instelling op te stel";
+
+// Leë State
+"accessibility.empty_state.image" = "Leë staat illustrasie";
+"accessibility.empty_state.farms" = "Geen plase beskikbaar nie. Tik die voeg by knoppie om jou eerste plaas te skep.";
+"accessibility.empty_state.groups" = "Geen lam seisoen groepe nie. Voeg 'n groep by om te begin.";
+"accessibility.empty_state.breeding" = "Geen teelgebeurtenisse aangeteken nie. Tik voeg by om paring aktiwiteit aan te teken.";
+"accessibility.empty_state.scanning" = "Geen skandeer gebeurtenisse nie. Teken swangerskap skandeer resultate aan.";
+"accessibility.empty_state.lambing" = "Geen lam rekords nie. Voeg lam data by om prestasie na te spoor.";
+"accessibility.empty_state.benchmarks" = "Geen standaard data nie. Voltooi teel, skandeer, en lam rekords om prestasie te vergelyk.";
+
+// Laai State
+"accessibility.loading" = "Laai data. Wag asseblief.";
+"accessibility.saving" = "Stoor veranderings. Wag asseblief.";
+"accessibility.deleting" = "Verwyder item. Wag asseblief.";
+"accessibility.refreshing" = "Verfris data. Wag asseblief.";
+
+// Detail Aansigte - Waardes
+"accessibility.value.farm_name" = "Plaas naam: %@";
+"accessibility.value.breed" = "Ras: %@";
+"accessibility.value.province" = "Provinsie: %@";
+"accessibility.value.year" = "Jaar: %d";
+"accessibility.value.mating_type" = "Paring tipe: %@";
+"accessibility.value.ewes_mated" = "%d ooie gepaar";
+"accessibility.value.ewes_scanned" = "%d ooie geskandeer";
+"accessibility.value.ewes_pregnant" = "%d ooie dragtig";
+"accessibility.value.ewes_lambed" = "%d ooie gelam";
+"accessibility.value.lambs_born" = "%d lammers gebore";
+"accessibility.value.date" = "Datum: %@";
+
+// Standaard Vergelyking
+"accessibility.benchmark.metric_row" = "%@ metriek";
+"accessibility.benchmark.metric_row.hint" = "Dubbeltik om gedetailleerde statistieke te bekyk";
+"accessibility.benchmark.performance_tier.excellent" = "Prestasie: Uitstekend. Top 10 persent.";
+"accessibility.benchmark.performance_tier.good" = "Prestasie: Goed. Bo gemiddeld.";
+"accessibility.benchmark.performance_tier.needs_improvement" = "Prestasie: Moet verbeter. Onder gemiddeld.";
+"accessibility.benchmark.chart" = "Prestasie grafiek vir %@";
+"accessibility.benchmark.chart.hint" = "Wys jou prestasie vergeleke met bedryfsstandaard";
+"accessibility.benchmark.farm_value" = "Jou plaas: %@";
+"accessibility.benchmark.industry_value" = "Bedryfsgemiddelde: %@";
+
+// Validasie & Foute
+"accessibility.error.required_field" = "Vereiste veld. %@";
+"accessibility.error.invalid_input" = "Ongeldige invoer. %@";
+"accessibility.error.alert" = "Waarskuwing. %@";
+
+// Afdeling Opskrifte
+"accessibility.section.personal_info" = "Persoonlike inligting afdeling";
+"accessibility.section.farm_details" = "Plaas besonderhede afdeling";
+"accessibility.section.mating_details" = "Paring besonderhede afdeling";
+"accessibility.section.scanning_results" = "Skandeer resultate afdeling";
+"accessibility.section.lambing_results" = "Lam resultate afdeling";
+"accessibility.section.statistics" = "Statistieke afdeling";

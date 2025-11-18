@@ -84,24 +84,32 @@ struct LandingView: View {
                     Label("landing.home".localized(), systemImage: "house")
                 }
                 .tag(Tab.home)
+                .accessibility(label: Text("accessibility.tab.home".localized()))
+                .accessibility(hint: Text("accessibility.tab.home.hint".localized()))
             
             ExploreTab()
                 .tabItem {
                     Label("landing.explore".localized(), systemImage: "safari")
                 }
                 .tag(Tab.explore)
-            
+                .accessibility(label: Text("accessibility.tab.explore".localized()))
+                .accessibility(hint: Text("accessibility.tab.explore.hint".localized()))
+
             ProfileTab()
                 .tabItem {
                     Label("landing.profile".localized(), systemImage: "person")
                 }
                 .tag(Tab.profile)
-            
+                .accessibility(label: Text("accessibility.tab.profile".localized()))
+                .accessibility(hint: Text("accessibility.tab.profile.hint".localized()))
+
             SettingsView()
                 .tabItem {
                     Label("landing.settings".localized(), systemImage: "gearshape")
                 }
                 .tag(Tab.settings)
+                .accessibility(label: Text("accessibility.tab.settings".localized()))
+                .accessibility(hint: Text("accessibility.tab.settings.hint".localized()))
         }
         .tint(.accentColor)
         .sheet(isPresented: $profileGate.shouldPresentProfileEdit) {
@@ -218,6 +226,8 @@ private struct PerformanceDashboardNavigationView: View {
                     Button("common.close".localized()) {
                         dismiss()
                     }
+                    .accessibility(label: Text("accessibility.button.close".localized()))
+                    .accessibility(hint: Text("accessibility.button.close.hint".localized()))
                 }
             }
             .task {
@@ -268,6 +278,8 @@ private struct PerformanceDashboardNavigationView: View {
                         ) {
                             BenchmarkGroupRow(farm: farmData.farm, group: group)
                         }
+                        .accessibility(label: Text(String(format: "accessibility.row.benchmark".localized(), farmData.farm.name, group.displayName)))
+                        .accessibility(hint: Text("accessibility.row.benchmark.hint".localized()))
                     }
                 } header: {
                     Text(farmData.farm.name)
@@ -669,6 +681,8 @@ private struct ProfileTab: View {
                                 .foregroundStyle(.red)
                         }
                     }
+                    .accessibility(label: Text("accessibility.button.sign_out".localized()))
+                    .accessibility(hint: Text("accessibility.button.sign_out.hint".localized()))
                 }
             }
             .navigationTitle("profile.title".localized())
@@ -701,20 +715,20 @@ private struct QuickActionCard: View {
     let systemImage: String
     let color: Color
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             VStack(spacing: 12) {
                 Image(systemName: systemImage)
                     .font(.title2)
                     .foregroundStyle(color)
-                
+
                 VStack(spacing: 4) {
                     Text(title)
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .foregroundStyle(.primary)
-                    
+
                     Text(subtitle)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -726,6 +740,9 @@ private struct QuickActionCard: View {
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
+        .accessibility(label: Text(title))
+        .accessibility(hint: Text(subtitle))
+        .accessibility(addTraits: .isButton)
     }
 }
 
@@ -733,25 +750,28 @@ private struct SettingsRow: View {
     let title: String
     let systemImage: String
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
                 Image(systemName: systemImage)
                     .foregroundStyle(.secondary)
                     .frame(width: 20)
-                
+
                 Text(title)
                     .foregroundStyle(.primary)
-                
+
                 Spacer()
-                
+
                 Image(systemName: "chevron.right")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
         }
         .buttonStyle(.plain)
+        .accessibility(label: Text(String(format: "accessibility.row.settings".localized(), title)))
+        .accessibility(hint: Text("accessibility.row.settings.hint".localized()))
+        .accessibility(addTraits: .isButton)
     }
 }
 
