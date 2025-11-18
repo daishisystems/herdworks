@@ -1,9 +1,11 @@
 import Foundation
+import Combine
 
 #if canImport(FirebaseFirestore)
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
-actor FirestoreUserProfileStore: UserProfileStore {
+@MainActor
+final class FirestoreUserProfileStore: UserProfileStore, ObservableObject {
     private let db: Firestore
     private let collectionName: String
 
@@ -15,9 +17,16 @@ actor FirestoreUserProfileStore: UserProfileStore {
     func createOrUpdate(_ profile: UserProfile) async throws {
         let ref = db.collection(collectionName).document(profile.userId)
 
-        // Encode domain model to DTO first
+        // Encode domain model to DTO first (DTO is Sendable, so this is safe)
         let dto = FirestoreUserProfileDTO(fromDomain: profile)
-        var data = try Firestore.Encoder().encode(dto)
+        
+        // Encoding happens synchronously within the @MainActor context
+        var data: [String: Any]
+        do {
+            data = try Firestore.Encoder().encode(dto)
+        } catch {
+            throw error
+        }
 
         // Use server timestamps: createdAt only if document doesn't exist; updatedAt always
         let snapshot = try await ref.getDocument()
@@ -55,7 +64,8 @@ actor FirestoreUserProfileStore: UserProfileStore {
 #else
 
 // Fallback stub to keep builds green when Firebase isn't available.
-actor FirestoreUserProfileStore: UserProfileStore {
+@MainActor
+final class FirestoreUserProfileStore: UserProfileStore, ObservableObject {
     init() {}
     
     func createOrUpdate(_ profile: UserProfile) async throws {

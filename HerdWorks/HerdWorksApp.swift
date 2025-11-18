@@ -72,19 +72,40 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct HerdWorksApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    // MARK: - Existing State Objects
+
     // ✅ Use FirestoreUserProfileStore for production
     @StateObject private var profileGate = ProfileGate(
         store: FirestoreUserProfileStore()
     )
-    
+
     // ✅ Add LanguageManager
     @StateObject private var languageManager = LanguageManager.shared
+
+    // MARK: - Shared Firestore Stores
+    // ✅ FIX: Create shared store instances once at app level to prevent memory leak
+    // Previously: Each BenchmarkComparisonView created 4 new stores (64+ instances for 16 groups)
+    // Now: Single shared instance per store type used throughout app
+
+    @StateObject private var benchmarkStore = FirestoreBenchmarkStore()
+    @StateObject private var breedingStore = FirestoreBreedingEventStore()
+    @StateObject private var scanningStore = FirestoreScanningEventStore()
+    @StateObject private var lambingStore = FirestoreLambingRecordStore()
+    @StateObject private var farmStore = FirestoreFarmStore()
+    @StateObject private var groupStore = FirestoreLambingSeasonGroupStore()
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(profileGate)
-                .environmentObject(languageManager)  // ✅ Inject language manager
+                .environmentObject(languageManager)
+                // ✅ FIX: Inject shared stores into environment for dependency injection
+                .environmentObject(benchmarkStore)
+                .environmentObject(breedingStore)
+                .environmentObject(scanningStore)
+                .environmentObject(lambingStore)
+                .environmentObject(farmStore)
+                .environmentObject(groupStore)
         }
     }
 }

@@ -9,7 +9,8 @@ import Foundation
 import Combine
 
 /// In-memory implementation of LambingSeasonGroupStore for previews and testing
-actor InMemoryLambingSeasonGroupStore: LambingSeasonGroupStore {
+@MainActor
+final class InMemoryLambingSeasonGroupStore: LambingSeasonGroupStore, ObservableObject {
     private var groups: [String: LambingSeasonGroup] = [:]
     private var listeners: [String: [UUID: (Result<[LambingSeasonGroup], Error>) -> Void]] = [:]
     
@@ -123,20 +124,16 @@ actor InMemoryLambingSeasonGroupStore: LambingSeasonGroupStore {
         }
     }
     
-    nonisolated func listenAll(userId: String, farmId: String, onChange: @escaping (Result<[LambingSeasonGroup], Error>) -> Void) -> AnyCancellable {
+    func listenAll(userId: String, farmId: String, onChange: @escaping (Result<[LambingSeasonGroup], Error>) -> Void) -> AnyCancellable {
         let token = UUID()
-        // Register listener and emit initial snapshot on the actor
-        Task { [weak self] in
-            guard let self else { return }
-            await self.addListener(token: token, farmId: farmId, onChange: onChange)
-            await self.notifyListeners(userId: userId, farmId: farmId)
-        }
-        // Return cancellable that removes the listener on the actor
+        
+        // Register listener and emit initial snapshot
+        addListener(token: token, farmId: farmId, onChange: onChange)
+        notifyListeners(userId: userId, farmId: farmId)
+        
+        // Return cancellable that removes the listener
         return AnyCancellable { [weak self] in
-            Task { [weak self] in
-                guard let self else { return }
-                await self.removeListener(token: token, farmId: farmId)
-            }
+            self?.removeListener(token: token, farmId: farmId)
         }
     }
 }

@@ -12,6 +12,7 @@ struct FirestoreUserProfileDTO: Codable, Equatable, Sendable {
     var updatedAt: Date?
 }
 
+// Extension for domain conversion
 extension FirestoreUserProfileDTO {
     init(fromDomain profile: UserProfile) {
         self.userId = profile.userId

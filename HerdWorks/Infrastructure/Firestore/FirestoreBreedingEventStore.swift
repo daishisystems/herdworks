@@ -9,7 +9,8 @@ import Foundation
 import FirebaseFirestore
 import Combine
 
-final class FirestoreBreedingEventStore: BreedingEventStore {
+@MainActor
+final class FirestoreBreedingEventStore: BreedingEventStore, ObservableObject {
     private let db = Firestore.firestore()
     
     init() {

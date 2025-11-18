@@ -11,38 +11,32 @@ import FirebaseAuth
 struct LambingSeasonGroupDetailWithBenchmark: View {
     let farm: Farm
     let group: LambingSeasonGroup
-    
+
     @EnvironmentObject private var languageManager: LanguageManager
+
+    // ✅ FIX: Inject stores from environment instead of passing as parameters
+    @EnvironmentObject private var benchmarkStore: FirestoreBenchmarkStore
+    @EnvironmentObject private var breedingStore: FirestoreBreedingEventStore
+    @EnvironmentObject private var scanningStore: FirestoreScanningEventStore
+    @EnvironmentObject private var lambingStore: FirestoreLambingRecordStore
+
     @StateObject private var benchmarkViewModel: BenchmarkComparisonViewModel
     @State private var showingBenchmarkView = false
     @State private var farmPerformance: FarmPerformanceData?
-    
-    private let benchmarkStore: BenchmarkStore
-    private let breedingStore: BreedingEventStore
-    private let scanningStore: ScanningEventStore
-    private let lambingStore: LambingRecordStore
-    
-    init(
-        farm: Farm,
-        group: LambingSeasonGroup,
-        benchmarkStore: BenchmarkStore,
-        breedingStore: BreedingEventStore,
-        scanningStore: ScanningEventStore,
-        lambingStore: LambingRecordStore
-    ) {
+
+    // ✅ SIMPLIFIED: Init only takes farm and group now
+    init(farm: Farm, group: LambingSeasonGroup) {
         self.farm = farm
         self.group = group
-        self.benchmarkStore = benchmarkStore
-        self.breedingStore = breedingStore
-        self.scanningStore = scanningStore
-        self.lambingStore = lambingStore
-        
+
         let userId = Auth.auth().currentUser?.uid ?? ""
+        // Note: We create a temporary instance here for the detail view
+        // This is acceptable since it's only one instance, not 64 like before
         _benchmarkViewModel = StateObject(wrappedValue: BenchmarkComparisonViewModel(
-            benchmarkStore: benchmarkStore,
-            breedingStore: breedingStore,
-            scanningStore: scanningStore,
-            lambingStore: lambingStore,
+            benchmarkStore: FirestoreBenchmarkStore(),
+            breedingStore: FirestoreBreedingEventStore(),
+            scanningStore: FirestoreScanningEventStore(),
+            lambingStore: FirestoreLambingRecordStore(),
             userId: userId,
             farmId: farm.id,
             groupId: group.id
@@ -78,6 +72,7 @@ struct LambingSeasonGroupDetailWithBenchmark: View {
         .navigationBarTitleDisplayMode(.large)
         .background(Color(.systemGroupedBackground))
         .sheet(isPresented: $showingBenchmarkView) {
+            // ✅ FIXED: Use injected stores from environment
             BenchmarkComparisonView(
                 farm: farm,
                 group: group,
@@ -299,15 +294,16 @@ struct LambingSeasonGroupDetailWithBenchmark: View {
 struct LambingSeasonGroupDetailWithBenchmark_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
+            // ✅ FIXED: Simplified init, stores injected via environment
             LambingSeasonGroupDetailWithBenchmark(
                 farm: Farm.preview,
-                group: LambingSeasonGroup.preview,
-                benchmarkStore: InMemoryBenchmarkStore(),
-                breedingStore: InMemoryBreedingEventStore(),
-                scanningStore: InMemoryScanningEventStore(),
-                lambingStore: InMemoryLambingRecordStore()
+                group: LambingSeasonGroup.preview
             )
             .environmentObject(LanguageManager.shared)
+            .environmentObject(FirestoreBenchmarkStore())
+            .environmentObject(FirestoreBreedingEventStore())
+            .environmentObject(FirestoreScanningEventStore())
+            .environmentObject(FirestoreLambingRecordStore())
         }
     }
 }

@@ -9,7 +9,8 @@ import Foundation
 import FirebaseFirestore
 import Combine
 
-final class FirestoreLambingSeasonGroupStore: LambingSeasonGroupStore {
+@MainActor
+final class FirestoreLambingSeasonGroupStore: LambingSeasonGroupStore, ObservableObject {
     private let db = Firestore.firestore()
     
     init() {

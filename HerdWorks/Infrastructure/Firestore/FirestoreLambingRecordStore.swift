@@ -9,7 +9,8 @@ import Foundation
 import FirebaseFirestore
 import Combine
 
-final class FirestoreLambingRecordStore: LambingRecordStore {
+@MainActor
+final class FirestoreLambingRecordStore: LambingRecordStore, ObservableObject {
     private let db = Firestore.firestore()
     
     init() {

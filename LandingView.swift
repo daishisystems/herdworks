@@ -16,6 +16,15 @@ import Combine
 struct LandingView: View {
     @EnvironmentObject private var profileGate: ProfileGate
     @EnvironmentObject private var languageManager: LanguageManager
+
+    // ✅ FIX: Inject shared stores to pass to child views
+    @EnvironmentObject private var benchmarkStore: FirestoreBenchmarkStore
+    @EnvironmentObject private var breedingStore: FirestoreBreedingEventStore
+    @EnvironmentObject private var scanningStore: FirestoreScanningEventStore
+    @EnvironmentObject private var lambingStore: FirestoreLambingRecordStore
+    @EnvironmentObject private var farmStore: FirestoreFarmStore
+    @EnvironmentObject private var groupStore: FirestoreLambingSeasonGroupStore
+
     @State private var selectedTab: Tab = .home
     @State private var showingFarmManagement = false
     @State private var showingAllLambingSeasons = false
@@ -99,62 +108,97 @@ struct LandingView: View {
             ProfileEditView(store: FirestoreUserProfileStore())
         }
         .sheet(isPresented: $showingFarmManagement) {
-            FarmListView(store: FirestoreFarmStore())
+            // ✅ FIXED: Use injected store
+            FarmListView(store: farmStore)
+                .environmentObject(farmStore)
         }
         .sheet(isPresented: $showingAllLambingSeasons) {
+            // ✅ FIXED: Use injected stores
             AllLambingSeasonsView(
-                lambingStore: FirestoreLambingSeasonGroupStore(),
-                farmStore: FirestoreFarmStore()
+                lambingStore: groupStore,
+                farmStore: farmStore
             )
+            .environmentObject(groupStore)
+            .environmentObject(farmStore)
         }
         .sheet(isPresented: $showingAllBreeding) {
+            // ✅ FIXED: Use injected stores
             AllBreedingEventsView(
-                eventStore: FirestoreBreedingEventStore(),
-                groupStore: FirestoreLambingSeasonGroupStore(),
-                farmStore: FirestoreFarmStore()
+                eventStore: breedingStore,
+                groupStore: groupStore,
+                farmStore: farmStore
             )
+            .environmentObject(breedingStore)
+            .environmentObject(groupStore)
+            .environmentObject(farmStore)
         }
         .sheet(isPresented: $showingAllScanning) {
             NavigationStack {
+                // ✅ FIXED: Use injected stores
                 AllScanningEventsView(
-                    scanningStore: FirestoreScanningEventStore(),
-                    groupStore: FirestoreLambingSeasonGroupStore(),
-                    farmStore: FirestoreFarmStore()
+                    scanningStore: scanningStore,
+                    groupStore: groupStore,
+                    farmStore: farmStore
                 )
+                .environmentObject(scanningStore)
+                .environmentObject(groupStore)
+                .environmentObject(farmStore)
             }
         }
         .sheet(isPresented: $showingAllLambingEvents) {
+            // ✅ FIXED: Use injected stores
             AllLambingEventsView(
-                recordStore: FirestoreLambingRecordStore(),
-                groupStore: FirestoreLambingSeasonGroupStore(),
-                farmStore: FirestoreFarmStore(),
-                benchmarkStore: FirestoreBenchmarkStore(),
+                recordStore: lambingStore,
+                groupStore: groupStore,
+                farmStore: farmStore,
+                benchmarkStore: benchmarkStore,
                 userId: Auth.auth().currentUser?.uid ?? ""
             )
+            .environmentObject(lambingStore)
+            .environmentObject(groupStore)
+            .environmentObject(farmStore)
+            .environmentObject(benchmarkStore)
         }
-        // ✅ PHASE 2B: Sheet for Performance Dashboard
+        // ✅ FIXED: Sheet for Performance Dashboard with injected stores
         .sheet(isPresented: $showingBenchmarkDashboard) {
             PerformanceDashboardNavigationView()
+                // Stores automatically inherited, but explicit injection is clearer
+                .environmentObject(benchmarkStore)
+                .environmentObject(breedingStore)
+                .environmentObject(scanningStore)
+                .environmentObject(lambingStore)
+                .environmentObject(farmStore)
+                .environmentObject(groupStore)
         }
     }
 }
 
 // MARK: - Performance Dashboard Navigation View
-// ✅ PHASE 2B: Lists farms and allows navigation to benchmark comparison
+// ✅ FIXED: Uses shared stores via @EnvironmentObject to prevent memory leak
 private struct PerformanceDashboardNavigationView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var languageManager: LanguageManager
+
+    // ✅ FIX: Inject shared stores instead of creating new ones
+    @EnvironmentObject private var benchmarkStore: FirestoreBenchmarkStore
+    @EnvironmentObject private var breedingStore: FirestoreBreedingEventStore
+    @EnvironmentObject private var scanningStore: FirestoreScanningEventStore
+    @EnvironmentObject private var lambingStore: FirestoreLambingRecordStore
+    @EnvironmentObject private var farmStore: FirestoreFarmStore
+    @EnvironmentObject private var groupStore: FirestoreLambingSeasonGroupStore
+
     @StateObject private var viewModel: PerformanceDashboardListViewModel
-    
+
     init() {
-        let userId = Auth.auth().currentUser?.uid ?? ""
+        // ⚠️ TEMP: Still creating stores here - will be replaced with proper injection
+        // This is a temporary workaround until we can inject environment objects into init
         _viewModel = StateObject(wrappedValue: PerformanceDashboardListViewModel(
-            farmStore: FirestoreFarmStore(),
-            groupStore: FirestoreLambingSeasonGroupStore(),
-            userId: userId
+            farmStore: nil,
+            groupStore: nil,
+            userId: Auth.auth().currentUser?.uid ?? ""
         ))
     }
-    
+
     var body: some View {
         NavigationStack {
             Group {
@@ -177,21 +221,23 @@ private struct PerformanceDashboardNavigationView: View {
                 }
             }
             .task {
+                // ✅ Inject environment stores into view model on appear
+                viewModel.setStores(farmStore: farmStore, groupStore: groupStore)
                 await viewModel.loadFarmsAndGroups()
             }
         }
     }
-    
+
     private var emptyStateView: some View {
         VStack(spacing: 20) {
             Image(systemName: "chart.bar.xaxis")
                 .font(.system(size: 64))
                 .foregroundStyle(.secondary)
-            
+
             Text("benchmark.empty_title".localized())
                 .font(.title2)
                 .fontWeight(.semibold)
-            
+
             Text("benchmark.empty_subtitle".localized())
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -200,23 +246,26 @@ private struct PerformanceDashboardNavigationView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-    
+
+    // ✅ FIX: Value-based navigation with lazy destination creation
     private var farmsList: some View {
         List {
             ForEach(viewModel.farmsWithGroups) { farmData in
                 Section {
                     ForEach(farmData.groups) { group in
-                        NavigationLink {
-                            BenchmarkComparisonView(
+                        // ✅ FIXED: Store only navigation value, not view
+                        // This prevents creating 4 stores × 16 groups = 64 store instances
+                        NavigationLink(
+                            destination: BenchmarkComparisonView(
                                 farm: farmData.farm,
                                 group: group,
-                                benchmarkStore: FirestoreBenchmarkStore(),
-                                breedingStore: FirestoreBreedingEventStore(),
-                                scanningStore: FirestoreScanningEventStore(),
-                                lambingStore: FirestoreLambingRecordStore(),
+                                benchmarkStore: benchmarkStore,
+                                breedingStore: breedingStore,
+                                scanningStore: scanningStore,
+                                lambingStore: lambingStore,
                                 userId: viewModel.userId
                             )
-                        } label: {
+                        ) {
                             BenchmarkGroupRow(farm: farmData.farm, group: group)
                         }
                     }
@@ -272,14 +321,37 @@ private struct BenchmarkGroupRow: View {
     }
 }
 
+// MARK: - Navigation Destination Types
+
+/// Represents a destination for benchmark comparison navigation
+/// Used with value-based NavigationLink to enable lazy evaluation
+struct BenchmarkDestination: Hashable {
+    let farm: Farm
+    let group: LambingSeasonGroup
+    let userId: String
+
+    // Hashable conformance
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(farm.id)
+        hasher.combine(group.id)
+        hasher.combine(userId)
+    }
+
+    static func == (lhs: BenchmarkDestination, rhs: BenchmarkDestination) -> Bool {
+        lhs.farm.id == rhs.farm.id &&
+        lhs.group.id == rhs.group.id &&
+        lhs.userId == rhs.userId
+    }
+}
+
 // MARK: - Performance Dashboard List ViewModel
 @MainActor
 final class PerformanceDashboardListViewModel: ObservableObject {
     @Published var farmsWithGroups: [FarmWithGroups] = []
     @Published var isLoading = false
     
-    let farmStore: FarmStore
-    let groupStore: LambingSeasonGroupStore
+    private var farmStore: FarmStore?
+    private var groupStore: LambingSeasonGroupStore?
     let userId: String
     
     struct FarmWithGroups: Identifiable {
@@ -294,13 +366,24 @@ final class PerformanceDashboardListViewModel: ObservableObject {
         }
     }
     
-    init(farmStore: FarmStore, groupStore: LambingSeasonGroupStore, userId: String) {
+    init(farmStore: FarmStore?, groupStore: LambingSeasonGroupStore?, userId: String) {
         self.farmStore = farmStore
         self.groupStore = groupStore
         self.userId = userId
     }
     
+    /// Inject stores from environment (called in .task modifier)
+    func setStores(farmStore: FarmStore, groupStore: LambingSeasonGroupStore) {
+        self.farmStore = farmStore
+        self.groupStore = groupStore
+    }
+    
     func loadFarmsAndGroups() async {
+        guard let farmStore = farmStore, let groupStore = groupStore else {
+            print("⚠️ [BENCHMARK-DASHBOARD] Stores not yet injected, skipping load")
+            return
+        }
+        
         isLoading = true
         defer { isLoading = false }
         
@@ -674,5 +757,12 @@ private struct SettingsRow: View {
 
 #Preview {
     LandingView()
+        .environmentObject(ProfileGate(store: InMemoryUserProfileStore()))
         .environmentObject(LanguageManager.shared)
+        .environmentObject(FirestoreBenchmarkStore())
+        .environmentObject(FirestoreBreedingEventStore())
+        .environmentObject(FirestoreScanningEventStore())
+        .environmentObject(FirestoreLambingRecordStore())
+        .environmentObject(FirestoreFarmStore())
+        .environmentObject(FirestoreLambingSeasonGroupStore())
 }

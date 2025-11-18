@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
 extension FirestoreBenchmarkStore {
     /// Real-time listener for benchmark data
@@ -27,7 +27,10 @@ extension FirestoreBenchmarkStore {
         let subject = PassthroughSubject<BenchmarkData?, Error>()
         
         // Set up Firestore snapshot listener
-        let listener = docRef.addSnapshotListener { documentSnapshot, error in
+        // Note: The closure is called on a background thread by Firebase
+        let listener = docRef.addSnapshotListener { [weak subject] documentSnapshot, error in
+            guard let subject = subject else { return }
+            
             if let error = error {
                 print("❌ [BENCHMARK-STORE] Listener error: \(error.localizedDescription)")
                 subject.send(completion: .failure(error))

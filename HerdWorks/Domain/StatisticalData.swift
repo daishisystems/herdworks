@@ -12,7 +12,7 @@ import Foundation
 
 /// Statistical benchmark data for a single metric
 /// Contains mean, median, P90, and range information aggregated from all contributing farms
-struct StatisticalData: Codable, Equatable {
+struct StatisticalData: Codable, Equatable, Sendable {
     /// Average performance across all farms
     let mean: Double
     
@@ -117,7 +117,7 @@ struct StatisticalData: Codable, Equatable {
 // MARK: - Performance Tier
 
 /// Performance tier classification for visual indicators
-enum PerformanceTier: String, Codable {
+enum PerformanceTier: String, Codable, Sendable {
     case excellent = "Excellent"    // Top 10% (P90+)
     case good = "Good"              // Above average (50th-90th percentile)
     case average = "Average"        // Around average (30th-50th percentile)

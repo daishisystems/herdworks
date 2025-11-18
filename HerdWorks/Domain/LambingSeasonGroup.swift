@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LambingSeasonGroup: Identifiable, Codable, Equatable, Hashable {
+struct LambingSeasonGroup: Identifiable, Codable, Equatable, Hashable, Sendable {
     let id: String
     let userId: String
     let farmId: String
