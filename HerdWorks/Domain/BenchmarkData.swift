@@ -12,7 +12,7 @@ import Foundation
 
 /// Industry benchmark data aggregated from all farms for a specific breed, province, and year
 /// Matches the Cloud Function output structure exactly
-struct BenchmarkData: Identifiable, Codable {
+struct BenchmarkData: Identifiable, Codable, Sendable {
     let id: String  // Format: "{breed}_{province}_{year}"
     let breed: String
     let province: String
