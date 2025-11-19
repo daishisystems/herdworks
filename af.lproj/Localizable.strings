@@ -964,3 +964,29 @@
 "accessibility.section.scanning_results" = "Skandeer resultate afdeling";
 "accessibility.section.lambing_results" = "Lam resultate afdeling";
 "accessibility.section.statistics" = "Statistieke afdeling";
+
+// MARK: - Rekening Verwydering
+
+// Rekening Verwydering - Titels & Boodskappe
+"account_deletion.title" = "Verwyder Rekening";
+"account_deletion.confirmation_title" = "Verwyder Jou Rekening?";
+"account_deletion.confirmation_message" = "Dit sal jou rekening en alle plaas data permanent verwyder insluitend:\n\n• Alle plase en lam seisoen groepe\n• Teel, skandeer, en lam rekords\n• Standaard vergelykings\n• Gebruiker profiel\n\nHierdie aksie kan nie ongedaan gemaak word nie.";
+"account_deletion.button_confirm" = "Verwyder Rekening";
+"account_deletion.button_cancel" = "Behou Rekening";
+"account_deletion.button_delete" = "Verwyder Rekening";
+
+// Rekening Verwydering - Vordering Boodskappe
+"account_deletion.progress.fetching_farms" = "Haal jou plase op...";
+"account_deletion.progress.deleting_farm" = "Verwyder plaas %d van %d...";
+"account_deletion.progress.deleting_profile" = "Verwyder gebruiker profiel...";
+"account_deletion.progress.deleting_auth" = "Verwyder rekening...";
+
+// Rekening Verwydering - Foute
+"account_deletion.error.not_authenticated" = "Jy moet aangemeld wees om jou rekening te verwyder";
+"account_deletion.error.deletion_failed" = "Rekening verwydering het misluk: %@";
+"account_deletion.error.network_error" = "Netwerk fout. Gaan jou verbinding na en probeer weer.";
+"account_deletion.error.unknown" = "'n Onbekende fout het voorgekom. Probeer asseblief weer.";
+
+// Rekening Verwydering - Toeganklikheid
+"accessibility.button.delete_account" = "Verwyder rekening knoppie";
+"accessibility.button.delete_account.hint" = "Dubbeltik om jou rekening en alle data permanent te verwyder. Hierdie aksie kan nie ongedaan gemaak word nie.";
