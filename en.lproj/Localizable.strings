@@ -888,3 +888,29 @@
 "accessibility.section.scanning_results" = "Scanning results section";
 "accessibility.section.lambing_results" = "Lambing results section";
 "accessibility.section.statistics" = "Statistics section";
+
+// MARK: - Account Deletion
+
+// Account Deletion - Titles & Messages
+"account_deletion.title" = "Delete Account";
+"account_deletion.confirmation_title" = "Delete Your Account?";
+"account_deletion.confirmation_message" = "This will permanently delete your account and all farm data including:\n\n• All farms and lambing season groups\n• Breeding, scanning, and lambing records\n• Benchmark comparisons\n• User profile\n\nThis action cannot be undone.";
+"account_deletion.button_confirm" = "Delete Account";
+"account_deletion.button_cancel" = "Keep Account";
+"account_deletion.button_delete" = "Delete Account";
+
+// Account Deletion - Progress Messages
+"account_deletion.progress.fetching_farms" = "Fetching your farms...";
+"account_deletion.progress.deleting_farm" = "Deleting farm %d of %d...";
+"account_deletion.progress.deleting_profile" = "Deleting user profile...";
+"account_deletion.progress.deleting_auth" = "Deleting account...";
+
+// Account Deletion - Errors
+"account_deletion.error.not_authenticated" = "You must be signed in to delete your account";
+"account_deletion.error.deletion_failed" = "Account deletion failed: %@";
+"account_deletion.error.network_error" = "Network error. Please check your connection and try again.";
+"account_deletion.error.unknown" = "An unknown error occurred. Please try again.";
+
+// Account Deletion - Accessibility
+"accessibility.button.delete_account" = "Delete account button";
+"accessibility.button.delete_account.hint" = "Double tap to permanently delete your account and all data. This action cannot be undone.";

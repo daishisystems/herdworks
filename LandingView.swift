@@ -599,12 +599,24 @@ private struct ExploreTab: View {
 private struct ProfileTab: View {
     @EnvironmentObject private var profileGate: ProfileGate
     @EnvironmentObject private var languageManager: LanguageManager
+
+    // Inject stores for account deletion
+    @EnvironmentObject private var farmStore: FirestoreFarmStore
+    @EnvironmentObject private var breedingStore: FirestoreBreedingEventStore
+    @EnvironmentObject private var scanningStore: FirestoreScanningEventStore
+    @EnvironmentObject private var lambingStore: FirestoreLambingRecordStore
+    @EnvironmentObject private var groupStore: FirestoreLambingSeasonGroupStore
+
     @State private var showingSignOutAlert = false
-    
+    @State private var showingDeleteAccountAlert = false
+    @State private var showingDeletionProgress = false
+    @State private var deletionService: AccountDeletionService?
+    @State private var deletionError: Error?
+
     private var currentUserEmail: String {
         Auth.auth().currentUser?.email ?? "Unknown User"
     }
-    
+
     var body: some View {
         NavigationStack {
             List {
@@ -618,7 +630,7 @@ private struct ProfileTab: View {
                                     .font(.title2)
                                     .foregroundStyle(.secondary)
                             )
-                        
+
                         VStack(alignment: .leading, spacing: 4) {
                             Text("profile.title".localized())
                                 .font(.headline)
@@ -626,52 +638,52 @@ private struct ProfileTab: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
-                        
+
                         Spacer()
                     }
                     .padding(.vertical, 8)
                 }
-                
+
                 Section("landing.settings".localized()) {
                     SettingsRow(
                         title: "profile.preferences".localized(),
                         systemImage: "gearshape",
                         action: { /* TODO: Navigate to preferences */ }
                     )
-                    
+
                     SettingsRow(
                         title: "profile.notifications".localized(),
                         systemImage: "bell",
                         action: { /* TODO: Navigate to notifications */ }
                     )
-                    
+
                     SettingsRow(
                         title: "profile.privacy_security".localized(),
                         systemImage: "shield",
                         action: { /* TODO: Navigate to privacy settings */ }
                     )
-                    
+
                     SettingsRow(
                         title: "quick_action.edit_profile".localized(),
                         systemImage: "pencil",
                         action: { profileGate.shouldPresentProfileEdit = true }
                     )
                 }
-                
+
                 Section("quick_action.support".localized()) {
                     SettingsRow(
                         title: "profile.help_support".localized(),
                         systemImage: "questionmark.circle",
                         action: { /* TODO: Navigate to support */ }
                     )
-                    
+
                     SettingsRow(
                         title: "profile.send_feedback".localized(),
                         systemImage: "envelope",
                         action: { /* TODO: Open feedback form */ }
                     )
                 }
-                
+
                 Section {
                     Button(action: { showingSignOutAlert = true }) {
                         HStack {
@@ -683,6 +695,17 @@ private struct ProfileTab: View {
                     }
                     .accessibility(label: Text("accessibility.button.sign_out".localized()))
                     .accessibility(hint: Text("accessibility.button.sign_out.hint".localized()))
+
+                    Button(action: { showingDeleteAccountAlert = true }) {
+                        HStack {
+                            Image(systemName: "trash")
+                                .foregroundStyle(.red)
+                            Text("account_deletion.button_delete".localized())
+                                .foregroundStyle(.red)
+                        }
+                    }
+                    .accessibility(label: Text("accessibility.button.delete_account".localized()))
+                    .accessibility(hint: Text("accessibility.button.delete_account.hint".localized()))
                 }
             }
             .navigationTitle("profile.title".localized())
@@ -695,15 +718,98 @@ private struct ProfileTab: View {
             } message: {
                 Text("settings.sign_out_alert_message".localized())
             }
+            .alert("account_deletion.confirmation_title".localized(), isPresented: $showingDeleteAccountAlert) {
+                Button("account_deletion.button_cancel".localized(), role: .cancel) { }
+                Button("account_deletion.button_confirm".localized(), role: .destructive) {
+                    deleteAccount()
+                }
+            } message: {
+                Text("account_deletion.confirmation_message".localized())
+            }
+            .sheet(isPresented: $showingDeletionProgress) {
+                if let service = deletionService {
+                    DeletionProgressView(service: service)
+                }
+            }
+            .alert("Error", isPresented: .constant(deletionError != nil)) {
+                Button("common.ok".localized(), role: .cancel) {
+                    deletionError = nil
+                }
+            } message: {
+                if let error = deletionError {
+                    Text(error.localizedDescription)
+                }
+            }
         }
     }
-    
+
     private func signOut() {
         do {
             try Auth.auth().signOut()
         } catch {
             print("❌ Sign out error: \(error.localizedDescription)")
         }
+    }
+
+    private func deleteAccount() {
+        print("🗑️ [PROFILE] Starting account deletion")
+
+        // Create deletion service with injected stores
+        let profileStore = FirestoreUserProfileStore()
+        let service = AccountDeletionService(
+            farmStore: farmStore,
+            breedingStore: breedingStore,
+            scanningStore: scanningStore,
+            lambingStore: lambingStore,
+            groupStore: groupStore,
+            profileStore: profileStore
+        )
+
+        deletionService = service
+        showingDeletionProgress = true
+
+        Task {
+            do {
+                try await service.deleteAccount()
+                print("✅ [PROFILE] Account deletion completed successfully")
+                // User will be automatically signed out and redirected to auth screen
+                showingDeletionProgress = false
+            } catch {
+                print("❌ [PROFILE] Account deletion failed: \(error.localizedDescription)")
+                deletionError = error
+                showingDeletionProgress = false
+            }
+        }
+    }
+}
+
+// MARK: - Deletion Progress View
+
+private struct DeletionProgressView: View {
+    @ObservedObject var service: AccountDeletionService
+
+    var body: some View {
+        VStack(spacing: 24) {
+            ProgressView()
+                .scaleEffect(1.5)
+                .padding()
+
+            Text("account_deletion.title".localized())
+                .font(.title2)
+                .fontWeight(.semibold)
+
+            Text(service.deletionProgress)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+
+            Text("Please wait. This may take a moment.")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+        .interactiveDismissDisabled()
     }
 }
 
