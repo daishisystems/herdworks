@@ -144,11 +144,11 @@ To delete your account and all data:
 3. Select "Delete Account"
 4. Confirm deletion
 
-Alternatively, email us at support@herdworks.app (replace with your actual support email).
+Alternatively, email us at paul@nexair.io.
 
 ### Data Portability
 
-Upon request, we can provide your data in a machine-readable format (JSON or CSV). Contact support@herdworks.app.
+Upon request, we can provide your data in a machine-readable format (JSON or CSV). Contact paul@nexair.io.
 
 ## Children's Privacy
 
@@ -213,8 +213,10 @@ Your continued use of HerdWorks after changes are posted constitutes acceptance 
 
 If you have questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact us:
 
-**Email:** support@herdworks.app
-**Address:** Daishi Systems, South Africa
+**Company:** NexAir Industries
+**Email:** paul@nexair.io
+**Website:** nexair.io
+**Location:** South Africa
 
 For South African users, you may also contact the Information Regulator:
 - Website: https://inforegulator.org.za/
