@@ -727,7 +727,9 @@ private struct ProfileTab: View {
                 Text("account_deletion.confirmation_message".localized())
             }
             .sheet(isPresented: $showingDeletionProgress) {
-                DeletionProgressView(service: deletionService)
+                if let service = deletionService {
+                    DeletionProgressView(service: service)
+                }
             }
             .alert("Error", isPresented: .constant(deletionError != nil)) {
                 Button("common.ok".localized(), role: .cancel) {
@@ -784,7 +786,7 @@ private struct ProfileTab: View {
 // MARK: - Deletion Progress View
 
 private struct DeletionProgressView: View {
-    @ObservedObject var service: AccountDeletionService?
+    @ObservedObject var service: AccountDeletionService
 
     var body: some View {
         VStack(spacing: 24) {
@@ -796,13 +798,11 @@ private struct DeletionProgressView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            if let service = service {
-                Text(service.deletionProgress)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-            }
+            Text(service.deletionProgress)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
 
             Text("Please wait. This may take a moment.")
                 .font(.caption)
