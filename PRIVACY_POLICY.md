@@ -214,8 +214,7 @@ Your continued use of HerdWorks after changes are posted constitutes acceptance 
 If you have questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact us:
 
 **Email:** support@herdworks.app
-**Address:** [Your Business Address]
-**Data Protection Officer:** [If applicable]
+**Address:** Daishi Systems, South Africa
 
 For South African users, you may also contact the Information Regulator:
 - Website: https://inforegulator.org.za/
