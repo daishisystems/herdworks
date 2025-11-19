@@ -88,10 +88,12 @@ struct BenchmarkComparisonView: View {
                         Button(action: exportComparison) {
                             Label("benchmark.export".localized(), systemImage: "square.and.arrow.up")
                         }
-                        
+
                         Button(action: refreshData) {
                             Label("common.refresh".localized(), systemImage: "arrow.clockwise")
                         }
+                        .accessibility(label: Text("accessibility.button.refresh".localized()))
+                        .accessibility(hint: Text("accessibility.button.refresh.hint".localized()))
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
@@ -394,32 +396,32 @@ struct MetricComparisonRow: View {
                         .font(.title3)
                         .foregroundStyle(metric.performanceTier.color)
                         .frame(width: 30)
-                    
+
                     // Metric Name
                     VStack(alignment: .leading, spacing: 2) {
                         Text(metric.localizedKey.localized())
                             .font(.subheadline)
                             .fontWeight(.medium)
                             .foregroundStyle(.primary)
-                        
+
                         Text(metric.performanceTier.localizedDescription())
                             .font(.caption2)
                             .foregroundStyle(metric.performanceTier.color)
                     }
-                    
+
                     Spacer()
-                    
+
                     // Farm Value
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(metric.formattedFarmValue())
                             .font(.headline)
                             .foregroundStyle(.primary)
-                        
+
                         Text("vs \(metric.formattedBenchmarkMean())")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
-                    
+
                     // Expand Chevron
                     Image(systemName: "chevron.right")
                         .font(.caption)
@@ -431,6 +433,9 @@ struct MetricComparisonRow: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibility(label: Text(String(format: "accessibility.benchmark.metric_row".localized(), metric.localizedKey.localized())))
+            .accessibility(hint: Text("accessibility.benchmark.metric_row.hint".localized()))
+            .accessibility(value: Text(String(format: "accessibility.benchmark.farm_value".localized(), metric.formattedFarmValue())))
             
             if isExpanded {
                 Divider()

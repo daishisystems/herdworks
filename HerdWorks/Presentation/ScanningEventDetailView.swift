@@ -80,8 +80,10 @@ struct ScanningEventDetailView: View {
                     Button("common.cancel".localized()) {
                         dismiss()
                     }
+                    .accessibility(label: Text("accessibility.button.cancel".localized()))
+                    .accessibility(hint: Text("accessibility.button.cancel.hint".localized()))
                 }
-                
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("common.save".localized()) {
                         Task {
@@ -94,6 +96,8 @@ struct ScanningEventDetailView: View {
                     }
                     .disabled(!viewModel.isValid || viewModel.isSaving)
                     .opacity(!viewModel.isValid || viewModel.isSaving ? 0.4 : 1.0)
+                    .accessibility(label: Text("accessibility.button.save".localized()))
+                    .accessibility(hint: Text("accessibility.button.save.hint".localized()))
                 }
             }
             .alert("common.error".localized(), isPresented: $viewModel.showError) {
@@ -125,6 +129,8 @@ struct ScanningEventDetailView: View {
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .ewesMated)
+                    .accessibility(label: Text("accessibility.textfield.number_of_ewes".localized()))
+                    .accessibility(hint: Text("accessibility.textfield.number_of_ewes.hint".localized()))
             }
             .contentShape(Rectangle())
             .onTapGesture { focusedField = .ewesMated }
@@ -148,6 +154,8 @@ struct ScanningEventDetailView: View {
                     .multilineTextAlignment(.trailing)
                     .frame(width: 100)
                     .focused($focusedField, equals: .ewesScanned)
+                    .accessibility(label: Text("accessibility.textfield.ewes_scanned".localized()))
+                    .accessibility(hint: Text("accessibility.textfield.ewes_scanned.hint".localized()))
             }
             .contentShape(Rectangle())
             .onTapGesture { focusedField = .ewesScanned }

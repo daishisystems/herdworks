@@ -32,23 +32,27 @@ struct ScanningEventDetailViewWithSelection: View {
                     Picker("farm.select_farm".localized(), selection: $selectedFarm) {
                         Text("farm.select_farm_placeholder".localized())
                             .tag(nil as Farm?)
-                        
+
                         ForEach(farms) { farm in
                             Text(farm.name)
                                 .tag(farm as Farm?)
                         }
                     }
-                    
+                    .accessibility(label: Text("accessibility.picker.farm".localized()))
+                    .accessibility(hint: Text("accessibility.picker.farm.hint".localized()))
+
                     if selectedFarm != nil {
                         Picker("lambing.select_group".localized(), selection: $selectedGroup) {
                             Text("lambing.select_group_placeholder".localized())
                                 .tag(nil as LambingSeasonGroup?)
-                            
+
                             ForEach(availableGroups) { group in
                                 Text(group.displayName)
                                     .tag(group as LambingSeasonGroup?)
                             }
                         }
+                        .accessibility(label: Text("accessibility.picker.group".localized()))
+                        .accessibility(hint: Text("accessibility.picker.group.hint".localized()))
                     }
                 } header: {
                     Text("breeding.select_farm_and_group".localized())
@@ -78,6 +82,8 @@ struct ScanningEventDetailViewWithSelection: View {
                     Button("common.cancel".localized()) {
                         dismiss()
                     }
+                    .accessibility(label: Text("accessibility.button.cancel".localized()))
+                    .accessibility(hint: Text("accessibility.button.cancel.hint".localized()))
                 }
             }
             .sheet(isPresented: $showingEventDetail) {
