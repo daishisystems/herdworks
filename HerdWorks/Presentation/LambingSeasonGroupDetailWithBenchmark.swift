@@ -291,6 +291,7 @@ struct LambingSeasonGroupDetailWithBenchmark: View {
 
 // MARK: - Preview
 
+#if DEBUG
 struct LambingSeasonGroupDetailWithBenchmark_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
@@ -307,3 +308,4 @@ struct LambingSeasonGroupDetailWithBenchmark_Previews: PreviewProvider {
         }
     }
 }
+#endif

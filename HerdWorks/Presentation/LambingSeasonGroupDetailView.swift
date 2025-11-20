@@ -311,6 +311,7 @@ struct LambingSeasonGroupDetailView: View {
     }
 }
 
+#if DEBUG
 #Preview("New Group") {
     LambingSeasonGroupDetailView(
         store: InMemoryLambingSeasonGroupStore(),
@@ -327,3 +328,4 @@ struct LambingSeasonGroupDetailView: View {
     )
     .environmentObject(LanguageManager.shared)
 }
+#endif

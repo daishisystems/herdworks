@@ -523,6 +523,7 @@ struct MetricDetailView: View {
 
 // MARK: - Preview
 
+#if DEBUG
 struct BenchmarkComparisonView_Previews: PreviewProvider {
     static var previews: some View {
         BenchmarkComparisonView(
@@ -537,3 +538,4 @@ struct BenchmarkComparisonView_Previews: PreviewProvider {
         .environmentObject(LanguageManager.shared)
     }
 }
+#endif

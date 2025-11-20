@@ -297,6 +297,7 @@ struct LambingSeasonGroupRowView: View {
     }
 }
 
+#if DEBUG
 #Preview("With Groups") {
     NavigationStack {
         LambingSeasonGroupListView(
@@ -326,3 +327,4 @@ struct LambingSeasonGroupRowView: View {
         .environmentObject(LanguageManager.shared)
     }
 }
+#endif
