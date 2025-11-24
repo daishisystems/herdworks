@@ -23,16 +23,18 @@ struct BenchmarkPerformanceChart: View {
             
             // Chart
             GeometryReader { geometry in
-                ZStack {
-                    // Background circles
-                    ForEach([0.25, 0.5, 0.75, 1.0], id: \.self) { scale in
-                        Circle()
-                            .stroke(Color(.separator), lineWidth: 0.5)
-                            .frame(
-                                width: geometry.size.width * scale,
-                                height: geometry.size.width * scale
-                            )
-                    }
+                // ✅ FIX: Prevent 0-height image rendering errors
+                if geometry.size.width > 0 && geometry.size.height > 0 && !metrics.isEmpty {
+                    ZStack {
+                        // Background circles
+                        ForEach([0.25, 0.5, 0.75, 1.0], id: \.self) { scale in
+                            Circle()
+                                .stroke(Color(.separator), lineWidth: 0.5)
+                                .frame(
+                                    width: geometry.size.width * scale,
+                                    height: geometry.size.width * scale
+                                )
+                        }
                     
                     // Axis lines
                     ForEach(0..<metrics.count, id: \.self) { index in
@@ -70,9 +72,16 @@ struct BenchmarkPerformanceChart: View {
                             total: metrics.count
                         )
                     }
+                    // ✅ FIX: Close ZStack guard
+                    }
+                    .frame(width: geometry.size.width, height: geometry.size.width)
+                    .animation(.easeInOut(duration: 0.5), value: animationProgress)
+                } else {
+                    // ✅ FIX: Show placeholder when no data
+                    Text("No metrics to display")
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .frame(width: geometry.size.width, height: geometry.size.width)
-                .animation(.easeInOut(duration: 0.5), value: animationProgress)
             }
             .aspectRatio(1, contentMode: .fit)
             

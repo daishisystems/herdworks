@@ -66,10 +66,22 @@ struct AuthView: View {
             }
 
             if let err = vm.errorMessage {
-                Text(err)
-                    .foregroundColor(.red)
-                    .font(.footnote)
-                    .multilineTextAlignment(.center)
+                VStack(spacing: 8) {
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.red)
+                            .imageScale(.small)
+                        Text(err)
+                            .foregroundColor(.red)
+                            .font(.footnote)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.red.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
             }
 
             Spacer()
@@ -89,6 +101,7 @@ struct AuthView: View {
             Button("common.ok".localized(), role: .cancel) { }
         } message: {
             Text(String(format: "auth.password_reset_sent_message".localized(), vm.email))
+            + Text("\n\nCheck your spam folder if you don't see it within 5 minutes.")
         }
     }
 }

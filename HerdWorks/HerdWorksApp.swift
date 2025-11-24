@@ -19,9 +19,19 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let resolvedName = Bundle.main.object(forInfoDictionaryKey: "FIREBASE_PLIST_NAME") as? String ?? "(missing)"
         print("FIREBASE_PLIST_NAME =", resolvedName)
         #endif
+        
+        // ✅ FIX: Gracefully handle missing Firebase configuration instead of crashing
         guard let path = Bundle.main.path(forResource: plistName, ofType: "plist"),
               let options = FirebaseOptions(contentsOfFile: path) else {
-            fatalError("❌ Missing Firebase plist: \(plistName).plist")
+            #if DEBUG
+            // In debug builds, assert for developer awareness
+            assertionFailure("❌ Missing Firebase plist: \(plistName).plist")
+            print("❌ CRITICAL: Firebase configuration file '\(plistName).plist' not found.")
+            print("❌ Please ensure the correct GoogleService-Info plist is included in your target.")
+            #endif
+            // In production, continue without crashing - app will show error UI when Firebase is needed
+            print("⚠️ WARNING: Firebase not configured. Some features may be unavailable.")
+            return
         }
 
         print("Bundle.main.bundleIdentifier =", Bundle.main.bundleIdentifier ?? "nil")
@@ -81,6 +91,9 @@ struct HerdWorksApp: App {
 
     // ✅ Add LanguageManager
     @StateObject private var languageManager = LanguageManager.shared
+    
+    // ✅ FIX: Add NetworkMonitor for connectivity awareness
+    @StateObject private var networkMonitor = NetworkMonitor.shared
 
     // MARK: - Shared Firestore Stores
     // ✅ FIX: Create shared store instances once at app level to prevent memory leak
@@ -99,6 +112,7 @@ struct HerdWorksApp: App {
             RootView()
                 .environmentObject(profileGate)
                 .environmentObject(languageManager)
+                .environmentObject(networkMonitor)  // ✅ FIX: Add network monitor
                 // ✅ FIX: Inject shared stores into environment for dependency injection
                 .environmentObject(benchmarkStore)
                 .environmentObject(breedingStore)

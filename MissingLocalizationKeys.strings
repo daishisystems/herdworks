@@ -1,0 +1,44 @@
+// MISSING LOCALIZATION KEYS
+// Add these to your Localizable.strings files
+
+// Error Messages
+"error.profile_load_failed_title" = "Profile Load Failed";
+"error.check_connection" = "Please check your internet connection and try again.";
+"error.network_timeout" = "The request timed out. Please try again.";
+
+// Network Status
+"network.wifi" = "Wi-Fi";
+"network.cellular" = "Cellular";
+"network.ethernet" = "Ethernet";
+"network.unknown" = "Unknown";
+"network.none" = "No Connection";
+"network.offline" = "Offline";
+"network.offline_banner" = "No Internet Connection";
+"network.offline_mode" = "Changes will sync when online";
+
+// Common
+"common.ok" = "OK";
+"common.close" = "Close";
+
+// Accessibility
+"accessibility.button.close" = "Close";
+"accessibility.button.close.hint" = "Dismiss this screen";
+"accessibility.button.refresh" = "Refresh";
+"accessibility.button.refresh.hint" = "Reload the current data";
+"accessibility.button.cancel" = "Cancel";
+"accessibility.button.cancel.hint" = "Cancel and go back";
+"accessibility.button.save" = "Save";
+"accessibility.button.save.hint" = "Save your changes";
+"accessibility.row.benchmark" = "Benchmark for %@ - %@";
+"accessibility.row.benchmark.hint" = "Tap to view detailed benchmark comparison";
+"accessibility.tab.home" = "Home";
+"accessibility.tab.home.hint" = "View your farms and recent activity";
+"accessibility.tab.explore" = "Explore";
+"accessibility.tab.explore.hint" = "Discover features and resources";
+"accessibility.tab.profile" = "Profile";
+"accessibility.tab.profile.hint" = "Manage your account and settings";
+"accessibility.tab.settings" = "Settings";
+"accessibility.tab.settings.hint" = "Configure app preferences";
+
+// Form Validation
+"form.fix_highlighted_fields_to_save" = "Fix highlighted fields to save";

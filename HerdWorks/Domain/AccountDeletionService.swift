@@ -79,10 +79,18 @@ final class AccountDeletionService: ObservableObject {
             print("✅ [ACCOUNT-DELETE] Firebase Auth account deleted")
 
             print("✅ [ACCOUNT-DELETE] Account deletion completed successfully")
+            
+            // ✅ Success haptic feedback
+            HapticFeedbackManager.shared.success()
+            
             isDeleting = false
 
         } catch {
             print("❌ [ACCOUNT-DELETE] Error during deletion: \(error.localizedDescription)")
+            
+            // ✅ Error haptic feedback
+            HapticFeedbackManager.shared.error()
+            
             self.error = error
             isDeleting = false
             throw error

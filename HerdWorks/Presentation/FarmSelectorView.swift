@@ -51,8 +51,10 @@ struct FarmSelectorView: View {
     private var emptyStateView: some View {
         VStack(spacing: 24) {
             Image(systemName: "building.2")
-                .font(.system(size: 64))
+                .font(.system(size: 64))  // ⚠️ Size intentionally fixed for decorative icon
+                .imageScale(.large)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)  // ✅ FIX: Hide decorative image from VoiceOver
             
             VStack(spacing: 8) {
                 Text("lambing.no_farms_title".localized())

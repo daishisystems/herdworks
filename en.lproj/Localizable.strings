@@ -914,3 +914,17 @@
 // Account Deletion - Accessibility
 "accessibility.button.delete_account" = "Delete account button";
 "accessibility.button.delete_account.hint" = "Double tap to permanently delete your account and all data. This action cannot be undone.";
+
+"error.profile_load_failed_title" = "Profile Load Failed";
+"error.check_connection" = "Please check your internet connection and try again.";
+"error.network_timeout" = "The request timed out. Please try again.";
+
+// MARK: - Network Status
+"network.wifi" = "Wi-Fi";
+"network.cellular" = "Cellular";
+"network.ethernet" = "Ethernet";
+"network.unknown" = "Unknown";
+"network.none" = "No Connection";
+"network.offline" = "Offline";
+"network.offline_banner" = "No Internet Connection";
+"network.offline_mode" = "Changes will sync when online";

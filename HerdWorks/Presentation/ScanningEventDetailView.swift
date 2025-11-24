@@ -89,8 +89,17 @@ struct ScanningEventDetailView: View {
                         Task {
                             await MainActor.run { focusedField = nil }
                             try? await Task.sleep(nanoseconds: 150_000_000)
+                            
+                            // ✅ Prepare haptic for better timing
+                            HapticFeedbackManager.shared.prepareNotification()
+                            
                             if await viewModel.save() {
+                                // ✅ Success haptic
+                                HapticFeedbackManager.shared.success()
                                 dismiss()
+                            } else {
+                                // ✅ Error haptic
+                                HapticFeedbackManager.shared.error()
                             }
                         }
                     }

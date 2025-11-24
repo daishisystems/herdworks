@@ -990,3 +990,18 @@
 // Rekening Verwydering - Toeganklikheid
 "accessibility.button.delete_account" = "Verwyder rekening knoppie";
 "accessibility.button.delete_account.hint" = "Dubbeltik om jou rekening en alle data permanent te verwyder. Hierdie aksie kan nie ongedaan gemaak word nie.";
+
+// MARK: - Foutboodskappe (Voeg by bestaande Foute afdeling)
+"error.profile_load_failed_title" = "Profiel Laai Misluk";
+"error.check_connection" = "Gaan asseblief jou internetverbinding na en probeer weer.";
+"error.network_timeout" = "Die versoek het verval. Probeer asseblief weer.";
+
+// MARK: - Netwerk Status (Voeg nuwe afdeling na Foute)
+"network.wifi" = "Wi-Fi";
+"network.cellular" = "Sellulêr";
+"network.ethernet" = "Ethernet";
+"network.unknown" = "Onbekend";
+"network.none" = "Geen Verbinding";
+"network.offline" = "Vanlyn";
+"network.offline_banner" = "Geen Internetverbinding";
+"network.offline_mode" = "Veranderinge sal sinchroniseer wanneer aanlyn";

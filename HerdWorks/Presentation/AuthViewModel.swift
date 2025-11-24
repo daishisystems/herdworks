@@ -42,18 +42,23 @@ final class AuthViewModel: ObservableObject {
 
     func signIn() async {
         await run {
-            _ = try await self.useCases.signIn(email: self.email, password: self.password)
+            // ✅ FIX: Trim whitespace from email to prevent sign-in issues
+            let cleanEmail = self.email.trimmingCharacters(in: .whitespacesAndNewlines)
+            _ = try await self.useCases.signIn(email: cleanEmail, password: self.password)
         }
     }
 
     func signUp() async {
         await run {
-            _ = try await self.useCases.signUp(email: self.email, password: self.password)
+            // ✅ FIX: Trim whitespace from email to prevent sign-up issues
+            let cleanEmail = self.email.trimmingCharacters(in: .whitespacesAndNewlines)
+            _ = try await self.useCases.signUp(email: cleanEmail, password: self.password)
         }
     }
 
     func resetPassword() async {
         await run {
+            // Already trimmed in FirebaseAuthRepository
             try await self.useCases.resetPassword(email: self.email)
         }
     }

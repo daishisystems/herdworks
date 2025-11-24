@@ -16,6 +16,7 @@ import Combine
 struct LandingView: View {
     @EnvironmentObject private var profileGate: ProfileGate
     @EnvironmentObject private var languageManager: LanguageManager
+    @EnvironmentObject private var networkMonitor: NetworkMonitor  // ✅ Add network monitoring
 
     // ✅ FIX: Inject shared stores to pass to child views
     @EnvironmentObject private var benchmarkStore: FirestoreBenchmarkStore
@@ -112,6 +113,7 @@ struct LandingView: View {
                 .accessibility(hint: Text("accessibility.tab.settings.hint".localized()))
         }
         .tint(.accentColor)
+        .networkBanner(networkMonitor)  // ✅ Show offline banner when no connectivity
         .sheet(isPresented: $profileGate.shouldPresentProfileEdit) {
             ProfileEditView(store: FirestoreUserProfileStore())
         }
